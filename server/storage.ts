@@ -152,7 +152,8 @@ export class MemStorage implements IStorage {
     const id = randomUUID();
     const hashedPassword = await bcrypt.hash(insertUser.password, 10);
     const user: User = { 
-      ...insertUser, 
+      ...insertUser,
+      role: insertUser.role || "customer",
       id, 
       password: hashedPassword,
       createdAt: new Date(),
@@ -172,7 +173,11 @@ export class MemStorage implements IStorage {
 
   async createServicePackage(pkg: InsertServicePackage): Promise<ServicePackage> {
     const id = randomUUID();
-    const servicePackage: ServicePackage = { ...pkg, id };
+    const servicePackage: ServicePackage = { 
+      ...pkg, 
+      id,
+      popular: pkg.popular || false,
+    };
     this.servicePackages.set(id, servicePackage);
     return servicePackage;
   }
@@ -197,10 +202,12 @@ export class MemStorage implements IStorage {
   async createOrder(insertOrder: InsertOrder): Promise<Order> {
     const id = randomUUID();
     const order: Order = { 
-      ...insertOrder, 
+      ...insertOrder,
+      status: insertOrder.status || "pending",
       id, 
       createdAt: new Date(),
       completedAt: null,
+      notes: insertOrder.notes || null,
     };
     this.orders.set(id, order);
     return order;
@@ -225,7 +232,9 @@ export class MemStorage implements IStorage {
   async createQuestionnaire(insertQuestionnaire: InsertQuestionnaire): Promise<Questionnaire> {
     const id = randomUUID();
     const questionnaire: Questionnaire = { 
-      ...insertQuestionnaire, 
+      ...insertQuestionnaire,
+      userId: insertQuestionnaire.userId || null,
+      recommendation: insertQuestionnaire.recommendation || null,
       id, 
       createdAt: new Date(),
     };

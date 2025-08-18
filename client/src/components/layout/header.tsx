@@ -52,17 +52,14 @@ export function Header({ onLoginClick }: HeaderProps) {
           key={item.href}
           href={item.href}
           onClick={() => mobile && setIsMobileMenuOpen(false)}
+          className={`px-3 py-2 text-sm font-medium transition-colors ${
+            location === item.href
+              ? "text-primary border-b-2 border-primary"
+              : "text-neutral-600 hover:text-neutral-900"
+          } ${mobile ? "block w-full text-left" : ""}`}
+          data-testid={`nav-${item.label.toLowerCase()}`}
         >
-          <a
-            className={`px-3 py-2 text-sm font-medium transition-colors ${
-              location === item.href
-                ? "text-primary border-b-2 border-primary"
-                : "text-neutral-600 hover:text-neutral-900"
-            } ${mobile ? "block w-full text-left" : ""}`}
-            data-testid={`nav-${item.label.toLowerCase()}`}
-          >
-            {item.label}
-          </a>
+          {item.label}
         </Link>
       ))}
     </>
@@ -73,11 +70,9 @@ export function Header({ onLoginClick }: HeaderProps) {
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
-            <Link href="/">
-              <a className="flex items-center" data-testid="logo">
-                <Building className="text-primary text-2xl mr-3" />
-                <span className="text-2xl font-bold text-neutral-900">BizHub</span>
-              </a>
+            <Link href="/" className="flex items-center" data-testid="logo">
+              <Building className="text-primary text-2xl mr-3" />
+              <span className="text-2xl font-bold text-neutral-900">BizHub</span>
             </Link>
             <div className="hidden md:block ml-10">
               <div className="flex items-baseline space-x-8">
