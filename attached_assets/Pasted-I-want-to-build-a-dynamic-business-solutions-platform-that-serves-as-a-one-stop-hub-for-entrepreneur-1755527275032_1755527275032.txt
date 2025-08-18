@@ -1,0 +1,31 @@
+I want to build a dynamic business solutions platform that serves as a one-stop hub for entrepreneurs and companies. The platform should allow customers to learn about different incorporation options (sole proprietorship, partnership firm, limited liability partnership, one person company, private limited company, public limited company, and other services) and then choose service packages.
+
+Please guide me step by step through the full development with code snippets, explanations, and best practices, covering:
+	1.	Project Setup & Architecture
+	•	Recommend a modern stack: Python (FastAPI or Django) for backend, PostgreSQL for database, React + TailwindCSS for frontend.
+	•	Suggest modular folder structure and development environment.
+	•	Use Docker + Docker Compose for containerization.
+	2.	Database & Models
+	•	Design PostgreSQL schema with SQLAlchemy (or Django ORM).
+	•	Entities: Users (customers, admins), Service Packages, Orders/Requests, Invoices, Payments.
+	•	Relationships: Users place Orders → linked to chosen Service Package → generates Invoice & Payment.
+	•	Support roles (customer/admin/service provider).
+	3.	Backend API
+	•	Build REST API with JWT-based authentication and role-based access.
+	•	CRUD for Users and Service Packages.
+	•	Order placement, tracking (pending, processing, completed).
+	•	Invoice generation and payment integration (e.g., Stripe/Razorpay).
+	•	Clean route/service/controller structure.
+	4.	Frontend Development
+	•	Customer portal: homepage with incorporation options, guided package selection, order placement.
+	•	Customer dashboard: track orders, invoices, payments.
+	•	Admin portal: manage users, service packages, orders, invoices.
+	•	Responsive design with React + TailwindCSS.
+	5.	Deployment & Scaling
+	•	Containerize backend, frontend, and PostgreSQL with Docker.
+	•	Configure environment variables securely.
+	•	Set up Nginx as reverse proxy.
+	•	Deploy on VPS (AWS/DigitalOcean).
+	•	Recommend scaling strategies: caching (Redis), load balancing, monitoring tools.
+
+Act as a full-stack mentor and provide me with a detailed, step-by-step implementation plan, including code examples, configurations, and explanations.
