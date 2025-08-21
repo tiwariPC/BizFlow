@@ -24,7 +24,7 @@ export function Header({ onLoginClick }: HeaderProps) {
     const checkAuth = () => {
       setUser(authService.getUser());
     };
-    
+
     window.addEventListener('auth-change', checkAuth);
     return () => window.removeEventListener('auth-change', checkAuth);
   }, []);
@@ -86,7 +86,7 @@ export function Header({ onLoginClick }: HeaderProps) {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center space-x-2" data-testid="user-menu">
-                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-sm font-medium">
+                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
                       {user.fullName.charAt(0).toUpperCase()}
                     </div>
                     <span className="hidden sm:block">{user.fullName}</span>

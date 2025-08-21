@@ -1,0 +1,17 @@
+apiVersion: v2
+name: bizflow
+description: A Helm chart for BizFlow Business Solutions Platform
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - business
+  - solutions
+  - platform
+  - saas
+home: https://bizflow.com
+sources:
+  - https://github.com/your-org/bizflow
+maintainers:
+  - name: BizFlow Team
+    email: dev-team@bizflow.com

@@ -223,21 +223,21 @@ export default function Questionnaire() {
     });
 
     // Find the package type with highest score
-    const topPackageType = Object.entries(scores).reduce((a, b) => 
+    const topPackageType = Object.entries(scores).reduce((a, b) =>
       scores[a[0]] > scores[b[0]] ? a : b
     )[0];
 
     // Map package types to actual packages
     const packageMapping: Record<string, string> = {
       "sole-proprietorship": "Sole Proprietorship",
-      "partnership": "Partnership Firm", 
+      "partnership": "Partnership Firm",
       "llp": "Limited Liability Partnership",
       "opc": "One Person Company",
       "private": "Private Limited Company",
       "public": "Public Limited Company"
     };
 
-    const recommendedPackage = packages.find(p => 
+    const recommendedPackage = packages.find(p =>
       p.name === packageMapping[topPackageType]
     );
 
@@ -277,7 +277,7 @@ export default function Questionnaire() {
                   {recommendation.description}
                 </p>
                 {recommendation.popular && (
-                  <Badge className="bg-primary text-white mb-4">Most Popular Choice</Badge>
+                  <Badge className="bg-blue-600 text-white mb-4">Most Popular Choice</Badge>
                 )}
               </div>
 
@@ -369,24 +369,24 @@ export default function Questionnaire() {
               <h3 className="text-2xl font-semibold text-neutral-900 mb-6" data-testid="current-question">
                 {currentQ.text}
               </h3>
-              
-              <RadioGroup 
-                value={selectedAnswer || ""} 
+
+              <RadioGroup
+                value={selectedAnswer || ""}
                 onValueChange={handleAnswerChange}
                 className="space-y-4"
               >
                 {currentQ.options.map((option) => (
                   <div
                     key={option.value}
-                    className="flex items-center space-x-3 p-4 border border-neutral-200 rounded-lg hover:bg-primary-50 cursor-pointer"
+                    className="flex items-center space-x-3 p-4 border border-neutral-200 rounded-lg hover:bg-blue-50 cursor-pointer"
                   >
-                    <RadioGroupItem 
-                      value={option.value} 
+                    <RadioGroupItem
+                      value={option.value}
                       id={option.value}
                       data-testid={`option-${option.value}`}
                     />
-                    <Label 
-                      htmlFor={option.value} 
+                    <Label
+                      htmlFor={option.value}
                       className="flex-1 cursor-pointer text-neutral-700"
                     >
                       {option.label}
@@ -406,7 +406,7 @@ export default function Questionnaire() {
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Previous
               </Button>
-              
+
               <Button
                 onClick={handleNext}
                 disabled={!selectedAnswer}

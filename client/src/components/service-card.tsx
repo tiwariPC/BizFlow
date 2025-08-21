@@ -2,12 +2,12 @@ import { ServicePackage } from "@shared/schema";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  User, 
-  Users, 
-  Handshake, 
-  Bus, 
-  Building, 
+import {
+  User,
+  Users,
+  Handshake,
+  Bus,
+  Building,
   TrendingUp,
   LucideIcon
 } from "lucide-react";
@@ -30,14 +30,14 @@ export function ServiceCard({ package: pkg, onSelect }: ServiceCardProps) {
   const IconComponent = iconMap[pkg.icon] || Building;
 
   return (
-    <Card className="relative hover:shadow-lg transition-shadow cursor-pointer group" data-testid={`service-card-${pkg.id}`}>
+    <Card className="relative hover:shadow-lg transition-shadow cursor-pointer group h-full" data-testid={`service-card-${pkg.id}`}>
       {pkg.popular && (
-        <Badge className="absolute top-4 right-4 bg-primary text-white">
+        <Badge className="absolute top-4 right-4 bg-blue-600 text-white">
           Popular
         </Badge>
       )}
-      
-      <CardContent className="p-6">
+
+      <CardContent className="p-6 h-full flex flex-col">
         <div className="mb-4">
           <IconComponent className="text-primary text-3xl mb-3 w-8 h-8" />
           <h3 className="text-xl font-semibold text-neutral-900 mb-2" data-testid={`service-title-${pkg.id}`}>
@@ -47,7 +47,7 @@ export function ServiceCard({ package: pkg, onSelect }: ServiceCardProps) {
             {pkg.description}
           </p>
         </div>
-        
+
         <div className="mb-4">
           <div className="flex items-center justify-between text-sm text-neutral-600 mb-2">
             <span>Setup Time:</span>
@@ -68,9 +68,10 @@ export function ServiceCard({ package: pkg, onSelect }: ServiceCardProps) {
             </span>
           </div>
         </div>
-        
+
         <Button
-          className="w-full group-hover:bg-primary-700 transition-colors"
+          variant="outline"
+          className="mt-auto w-full border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition-colors"
           onClick={() => onSelect(pkg.id)}
           data-testid={`service-select-${pkg.id}`}
         >

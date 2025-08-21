@@ -1,23 +1,24 @@
 import { Building, Facebook, Twitter, Linkedin, Phone, Mail, MapPin } from "lucide-react";
+import { Link } from "wouter";
 
 export function Footer() {
   const footerSections = [
     {
       title: "Services",
       links: [
-        { label: "Company Registration", href: "#" },
-        { label: "GST Registration", href: "#" },
-        { label: "Tax Filing", href: "#" },
-        { label: "Legal Compliance", href: "#" },
+        { label: "Company Registration", href: "/company-registration" },
+        { label: "GST Registration", href: "/gst-registration" },
+        { label: "Tax Filing", href: "/tax-filing" },
+        { label: "Legal Compliance", href: "/compliance" },
       ],
     },
     {
       title: "Support",
       links: [
-        { label: "Help Center", href: "#" },
-        { label: "Contact Us", href: "#" },
-        { label: "Documentation", href: "#" },
-        { label: "Status Page", href: "#" },
+        { label: "Help Center", href: "/help" },
+        { label: "Contact Us", href: "/contact" },
+        { label: "Documentation", href: "/docs" },
+        { label: "Status Page", href: "/status" },
       ],
     },
   ];
@@ -47,9 +48,9 @@ export function Footer() {
               <ul className="space-y-2 text-neutral-400">
                 {section.links.map((link) => (
                   <li key={link.label}>
-                    <a href={link.href} className="hover:text-white transition-colors">
+                    <Link href={link.href} className="hover:text-white transition-colors">
                       {link.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -76,13 +77,13 @@ export function Footer() {
         </div>
 
         <hr className="border-neutral-800 my-8" />
-        
+
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-neutral-400 text-sm">© 2024 BizHub. All rights reserved.</p>
           <div className="flex space-x-6 text-sm text-neutral-400 mt-4 md:mt-0">
-            <a href="#" className="hover:text-white">Privacy Policy</a>
-            <a href="#" className="hover:text-white">Terms of Service</a>
-            <a href="#" className="hover:text-white">Cookie Policy</a>
+            <Link href="/privacy" className="hover:text-white">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-white">Terms of Service</Link>
+            <Link href="/cookies" className="hover:text-white">Cookie Policy</Link>
           </div>
         </div>
       </div>

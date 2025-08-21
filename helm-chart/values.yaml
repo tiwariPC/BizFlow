@@ -1,0 +1,130 @@
+# Default values for BizFlow application
+replicaCount: 3
+
+image:
+  repository: bizflow-app
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1001
+  fsGroup: 1001
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 3000
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  hosts:
+    - host: bizflow.com
+      paths:
+        - path: /
+          pathType: Prefix
+    - host: www.bizflow.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: bizflow-tls
+      hosts:
+        - bizflow.com
+        - www.bizflow.com
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Environment variables
+env:
+  NODE_ENV: "production"
+  PORT: "3000"
+  LOG_LEVEL: "info"
+
+# Secrets (should be provided via external secret management)
+secrets:
+  databaseUrl: ""
+  jwtSecret: ""
+  smtpPassword: ""
+
+# Health check configuration
+healthCheck:
+  livenessProbe:
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+  readinessProbe:
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    timeoutSeconds: 3
+    failureThreshold: 3
+
+# Database configuration
+database:
+  enabled: true
+  type: "postgresql"
+  host: "localhost"
+  port: 5432
+  name: "bizflow"
+  user: "bizflow_user"
+
+# Monitoring configuration
+monitoring:
+  enabled: true
+  prometheus:
+    enabled: true
+    path: "/metrics"
+  grafana:
+    enabled: true
+    dashboard:
+      enabled: true
+
+# Backup configuration
+backup:
+  enabled: true
+  schedule: "0 2 * * *"  # Daily at 2 AM
+  retention: 30  # days
