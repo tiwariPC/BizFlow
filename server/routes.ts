@@ -417,6 +417,207 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Document upload routes
+  app.post("/api/documents/upload", authenticateToken, async (req: any, res) => {
+    try {
+      // For now, we'll simulate file upload
+      // In production, you'd use multer or similar middleware
+      const { fileName, fileSize, category, metadata } = req.body;
+
+      const document = {
+        id: Math.random().toString(36).substr(2, 9),
+        name: fileName,
+        type: 'application/pdf', // Default type
+        size: fileSize || 1024 * 1024, // 1MB default
+        uploadedAt: new Date().toISOString(),
+        status: 'pending' as const,
+        category: category || 'general',
+        url: `/documents/${fileName}`,
+        metadata: metadata || {}
+      };
+
+      // In production, save to database
+      // await storage.createDocument({ ...document, userId: req.user.id });
+
+      res.json({ success: true, document });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to upload document" });
+    }
+  });
+
+  app.get("/api/documents", authenticateToken, async (req: any, res) => {
+    try {
+      const { category } = req.query;
+
+      // Mock documents for now
+      const mockDocuments = [
+        {
+          id: '1',
+          name: 'Certificate of Incorporation',
+          type: 'application/pdf',
+          size: 2457600,
+          uploadedAt: '2024-01-10T10:30:00Z',
+          status: 'verified',
+          category: 'incorporation',
+          url: '/documents/incorporation-certificate.pdf'
+        },
+        {
+          id: '2',
+          name: 'GST Certificate',
+          type: 'application/pdf',
+          size: 1843200,
+          uploadedAt: '2024-01-12T14:20:00Z',
+          status: 'verified',
+          category: 'gst',
+          url: '/documents/gst-certificate.pdf'
+        },
+        {
+          id: '3',
+          name: 'Bank Account Details',
+          type: 'application/pdf',
+          size: 1228800,
+          uploadedAt: '2024-01-15T09:15:00Z',
+          status: 'pending',
+          category: 'banking',
+          url: '/documents/bank-account.pdf'
+        }
+      ];
+
+      let documents = mockDocuments;
+      if (category) {
+        documents = mockDocuments.filter(doc => doc.category === category);
+      }
+
+      res.json({ documents });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch documents" });
+    }
+  });
+
+  app.get("/api/documents/:id/download", authenticateToken, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+
+      // Mock download - in production, serve actual file
+      const mockDocument = {
+        id,
+        name: 'document.pdf',
+        type: 'application/pdf'
+      };
+
+      // Create a mock PDF blob
+      const mockPdfContent = '%PDF-1.4\n1 0 obj\n<<\n/Type /Catalog\n/Pages 2 0 R\n>>\nendobj\n2 0 obj\n<<\n/Type /Pages\n/Kids [3 0 R]\n/Count 1\n>>\nendobj\n3 0 obj\n<<\n/Type /Page\n/Parent 2 0 R\n/MediaBox [0 0 612 792]\n/Contents 4 0 R\n>>\nendobj\n4 0 obj\n<<\n/Length 44\n>>\nstream\nBT\n/F1 12 Tf\n72 720 Td\n(Hello World) Tj\nET\nendstream\nendobj\nxref\n0 5\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \n0000000204 00000 n \ntrailer\n<<\n/Size 5\n/Root 1 0 R\n>>\nstartxref\n297\n%%EOF';
+
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="${mockDocument.name}"`);
+      res.send(Buffer.from(mockPdfContent, 'utf8'));
+    } catch (error) {
+      res.status(500).json({ message: "Failed to download document" });
+    }
+  });
+
+  app.delete("/api/documents/:id", authenticateToken, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+
+      // In production, delete from database
+      // await storage.deleteDocument(id, req.user.id);
+
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete document" });
+    }
+  });
+
+  app.post("/api/documents/:id/verify", authenticateToken, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+
+      // In production, update document status in database
+      // await storage.verifyDocument(id, req.user.id);
+
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to verify document" });
+    }
+  });
+
+  app.get("/api/documents/categories", authenticateToken, async (req: any, res) => {
+    try {
+      const categories = [
+        {
+          id: 'incorporation',
+          name: 'Incorporation Documents',
+          description: 'Business registration and incorporation documents',
+          required: true,
+          acceptedTypes: ['.pdf', '.jpg', '.jpeg', '.png'],
+          maxSize: 10
+        },
+        {
+          id: 'gst',
+          name: 'GST Documents',
+          description: 'GST registration and compliance documents',
+          required: true,
+          acceptedTypes: ['.pdf', '.jpg', '.jpeg', '.png'],
+          maxSize: 10
+        },
+        {
+          id: 'banking',
+          name: 'Banking Documents',
+          description: 'Bank account and financial documents',
+          required: true,
+          acceptedTypes: ['.pdf', '.jpg', '.jpeg', '.png'],
+          maxSize: 5
+        },
+        {
+          id: 'compliance',
+          name: 'Compliance Documents',
+          description: 'Regulatory compliance and legal documents',
+          required: false,
+          acceptedTypes: ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png'],
+          maxSize: 15
+        },
+        {
+          id: 'tax',
+          name: 'Tax Documents',
+          description: 'Tax filing and payment documents',
+          required: false,
+          acceptedTypes: ['.pdf', '.xlsx', '.xls', '.jpg', '.jpeg', '.png'],
+          maxSize: 10
+        }
+      ];
+
+      res.json({ categories });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch document categories" });
+    }
+  });
+
+  app.get("/api/documents/compliance-status", authenticateToken, async (req: any, res) => {
+    try {
+      // Mock compliance status
+      const status = {
+        overallProgress: 75,
+        completedSteps: 3,
+        totalSteps: 4,
+        missingDocuments: ['Bank Account Details']
+      };
+
+      res.json(status);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch compliance status" });
+    }
+  });
+
+  // Health check endpoint
+  app.get("/api/health", (req, res) => {
+    res.json({
+      status: "healthy",
+      timestamp: new Date().toISOString(),
+      version: "1.0.0"
+    });
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

@@ -1,6 +1,6 @@
-# BizHub - Business Solutions Platform
+# BizFlow - Business Solutions Platform
 
-A comprehensive business solutions platform that serves as a one-stop hub for entrepreneurs, providing business incorporation, compliance management, and growth tools.
+A comprehensive business solutions platform that serves as a one-stop hub for entrepreneurs, providing business incorporation, compliance management, financial tools, and growth solutions.
 
 ## 🚀 Quick Start
 
@@ -28,7 +28,7 @@ A comprehensive business solutions platform that serves as a one-stop hub for en
    ```
 
 4. **Access the application**
-   - **Local Development**: http://localhost:3001
+   - **Local Development**: http://localhost:3000
    - **Production**: Configure your deployment platform
 
 ## 🔧 Environment Variables
@@ -161,6 +161,9 @@ npm run setup        # Run setup script (chmod +x setup.sh && ./setup.sh)
 - **Labour Law Compliance**: Employment regulation adherence
 - **Trademark Registration**: Intellectual property protection
 - **License Management**: Business permit management
+- **Document Management**: Upload, organize, and track compliance documents
+- **Compliance Calendar**: Automated reminders and deadline tracking
+- **Compliance Reports**: Generate and export compliance status reports
 
 #### **Business Management Tools**
 - **CRM System**: Customer relationship management
@@ -175,6 +178,13 @@ npm run setup        # Run setup script (chmod +x setup.sh && ./setup.sh)
 - **Loan Management**: Business financing options
 - **Investor Connect**: Funding and investment opportunities
 - **Financial Planning**: Business financial strategy
+- **Invoice Management**: Create, manage, and track professional invoices
+- **Advanced Invoice Designer**: Customizable invoice templates with branding
+- **Multi-Format Export**: PDF and Excel export options
+- **Expense Tracking**: Categorize and monitor business expenses
+- **Financial Reports**: Comprehensive financial analytics and reporting
+- **Bank Account Integration**: Connect and manage multiple bank accounts
+- **Tax Management**: Tax calculation and filing assistance
 
 #### **Growth & Marketing**
 - **Website Builder**: Drag-and-drop website creation
@@ -290,6 +300,10 @@ npm run setup        # Run setup script (chmod +x setup.sh && ./setup.sh)
 - **PostgreSQL Support**: Production-ready database
 - **Data Validation**: Zod schema validation
 - **API Management**: RESTful API endpoints
+- **Local Storage Integration**: Persistent data storage for invoices and documents
+- **File Upload System**: Secure document and image upload capabilities
+- **Search & Filter**: Advanced search functionality across all data
+- **Data Export**: Multiple format export (PDF, Excel, JSON)
 
 #### **Security Features**
 - **Input Validation**: Comprehensive data sanitization
@@ -336,6 +350,35 @@ npm run setup        # Run setup script (chmod +x setup.sh && ./setup.sh)
 ## 🌐 Application Features
 
 > 📖 **For a complete list of all features, see [FEATURES.md](./FEATURES.md)**
+
+### 🆕 **Recently Added Features**
+
+#### **Advanced Invoice Designer (Tier 1 & 2 Users)**
+- **Custom Branding**: Upload company logos and custom images
+- **Header & Footer Customization**: Custom text, colors, and images
+- **Template System**: Modern, Classic, and Minimal invoice templates
+- **Real-time Preview**: Live preview of all customizations
+- **Professional Export**: High-quality PDF and Excel output
+
+#### **Enhanced Document Management**
+- **Drag & Drop Upload**: Intuitive file upload interface
+- **Document Categories**: Organized document organization
+- **Compliance Tracking**: Automated compliance status monitoring
+- **Search & Filter**: Advanced document search capabilities
+- **Bulk Operations**: Multiple document management
+
+#### **Financial Management System**
+- **Invoice Creation**: Professional invoice generation
+- **Expense Tracking**: Categorized expense management
+- **Bank Integration**: Multiple bank account management
+- **Financial Reports**: Comprehensive financial analytics
+- **Multi-Format Export**: PDF, Excel, and JSON export options
+
+#### **Advanced Search & Storage**
+- **Real-time Search**: Instant search across all data
+- **Persistent Storage**: Local storage for data persistence
+- **Smart Filtering**: Intelligent data filtering and organization
+- **Export Capabilities**: Bulk export and individual export options
 
 ### Authentication & Security
 - **Multi-tier User System**: Platform Admin, Organization, Employee roles
@@ -415,6 +458,28 @@ POST /api/questionnaire    # Submit questionnaire
 ### Admin (Admin only)
 ```bash
 GET /api/admin/stats       # System statistics
+```
+
+### Documents & Compliance
+```bash
+GET    /api/documents              # List user documents
+POST   /api/documents/upload       # Upload new document
+GET    /api/documents/:id          # Get specific document
+GET    /api/documents/:id/download # Download document
+DELETE /api/documents/:id          # Delete document
+POST   /api/documents/:id/verify   # Verify document
+GET    /api/documents/categories   # Get document categories
+GET    /api/documents/compliance-status # Get compliance status
+```
+
+### Finance & Invoices
+```bash
+GET    /api/invoices               # List user invoices
+POST   /api/invoices               # Create new invoice
+GET    /api/invoices/:id           # Get specific invoice
+PATCH  /api/invoices/:id/status    # Update invoice status
+DELETE /api/invoices/:id           # Delete invoice
+POST   /api/invoices/:id/export    # Export invoice (PDF/Excel)
 ```
 
 ### Debug (Development)
