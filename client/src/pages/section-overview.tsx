@@ -5,6 +5,15 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { authService } from '@/lib/auth';
+import { Header } from '@/components/layout/header';
+import { LoginForm } from '@/components/auth/login-form';
+import { RegisterForm } from '@/components/auth/register-form';
+import {
+  Dialog,
+  DialogContent,
+  DialogPortal,
+  DialogOverlay,
+} from '@/components/ui/dialog';
 import {
   Building2,
   Scale,
@@ -279,6 +288,8 @@ export default function SectionOverview() {
   const [sectionId, setSectionId] = useState<string>('');
   const [section, setSection] = useState<SectionData | null>(null);
   const [user, setUser] = useState<any>(null);
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
 
   useEffect(() => {
     if (match && params?.sectionId) {
@@ -290,6 +301,45 @@ export default function SectionOverview() {
   useEffect(() => {
     setUser(authService.getUser());
   }, []);
+
+  const handleLoginClick = () => {
+    setAuthMode('login');
+    setShowAuthDialog(true);
+  };
+
+  const handleSignupClick = () => {
+    setAuthMode('register');
+    setShowAuthDialog(true);
+  };
+
+  const handleAuthSuccess = () => {
+    setShowAuthDialog(false);
+  };
+
+  const switchToRegister = () => {
+    setAuthMode('register');
+  };
+
+  const switchToLogin = () => {
+    setAuthMode('login');
+  };
+
+  // Handle Escape key to close dialog and body scroll
+  useEffect(() => {
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && showAuthDialog) {
+        setShowAuthDialog(false);
+      }
+    };
+    if (showAuthDialog) {
+      document.addEventListener('keydown', handleEscapeKey);
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+      document.body.style.overflow = 'unset';
+    };
+  }, [showAuthDialog]);
 
   // If user is signed in, redirect to the actual section
   useEffect(() => {
@@ -316,15 +366,18 @@ export default function SectionOverview() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      {/* Header */}
+      <Header onLoginClick={handleLoginClick} onSignupClick={handleSignupClick} />
+      
       {/* Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className={`absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br ${section.bgGradient} rounded-full blur-3xl opacity-30`}></div>
-        <div className={`absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br ${section.bgGradient} rounded-full blur-3xl opacity-30`}></div>
+        <div className={`absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br ${section.bgGradient} rounded-full blur-3xl opacity-20`}></div>
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Header Section */}
-        <motion.div 
+        <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -355,17 +408,20 @@ export default function SectionOverview() {
                   This section requires authentication to access all features and tools. Sign in to explore the complete functionality.
                 </p>
                 <div className="flex gap-3 justify-center">
-                  <Link href="/">
-                    <Button variant="outline" className="border-orange-300 text-orange-700 hover:bg-orange-100">
-                      <UserPlus className="w-4 h-4 mr-2" />
-                      Sign Up
-                    </Button>
-                  </Link>
-                  <Link href="/">
-                    <Button className="bg-orange-600 hover:bg-orange-700">
-                      Sign In
-                    </Button>
-                  </Link>
+                  <Button 
+                    variant="outline" 
+                    className="border-orange-300 text-orange-700 hover:bg-orange-100"
+                    onClick={handleSignupClick}
+                  >
+                    <UserPlus className="w-4 h-4 mr-2" />
+                    Sign Up
+                  </Button>
+                  <Button 
+                    className="bg-orange-600 hover:bg-orange-700"
+                    onClick={handleLoginClick}
+                  >
+                    Sign In
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -509,23 +565,54 @@ export default function SectionOverview() {
                   Sign in to access all features and start using {section.title.toLowerCase()} tools and services.
                 </p>
                 <div className="flex gap-4 justify-center">
-                  <Link href="/">
-                    <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
-                      <UserPlus className="w-4 h-4 mr-2" />
-                      Create Account
-                    </Button>
-                  </Link>
-                  <Link href="/">
-                    <Button size="lg" variant="outline" className="border-blue-300 text-blue-700 hover:bg-blue-50">
-                      Sign In
-                    </Button>
-                  </Link>
+                  <Button 
+                    size="lg" 
+                    className="bg-blue-600 hover:bg-blue-700"
+                    onClick={handleSignupClick}
+                  >
+                    <UserPlus className="w-4 h-4 mr-2" />
+                    Create Account
+                  </Button>
+                  <Button 
+                    size="lg" 
+                    variant="outline" 
+                    className="border-blue-300 text-blue-700 hover:bg-blue-50"
+                    onClick={handleLoginClick}
+                  >
+                    Sign In
+                  </Button>
                 </div>
               </CardContent>
             </Card>
           </div>
         </motion.div>
       </div>
+
+      {/* Authentication Dialog */}
+      <Dialog open={showAuthDialog} onOpenChange={setShowAuthDialog}>
+        <DialogPortal>
+          <DialogOverlay
+            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 cursor-pointer"
+            onClick={() => setShowAuthDialog(false)}
+          />
+          <div
+            className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {authMode === 'login' ? (
+              <LoginForm
+                onSuccess={handleAuthSuccess}
+                onSwitchToRegister={switchToRegister}
+              />
+            ) : (
+              <RegisterForm
+                onSuccess={handleAuthSuccess}
+                onSwitchToLogin={switchToLogin}
+              />
+            )}
+          </div>
+        </DialogPortal>
+      </Dialog>
     </div>
   );
 }
