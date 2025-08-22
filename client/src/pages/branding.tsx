@@ -51,7 +51,16 @@ import {
   CreditCard,
   Mail,
   Stamp,
-  Info
+  Info,
+  Video,
+  Mic,
+  Camera,
+  Brush,
+  Ruler,
+  Grid,
+  Zap,
+  MousePointer,
+  FileVideo
 } from "lucide-react";
 
 // Interfaces
@@ -263,6 +272,117 @@ const recentDesigns = [
     status: "completed",
     created: "3 days ago",
     size: "856 KB"
+  }
+];
+
+// Design Tools Data
+const designTools = [
+  {
+    id: 1,
+    name: "Logo Designer",
+    description: "Create professional logos with AI assistance",
+    icon: Palette,
+    color: "bg-blue-100 text-blue-600",
+    status: "active",
+    lastUsed: "2 hours ago"
+  },
+  {
+    id: 2,
+    name: "Image Editor",
+    description: "Edit and enhance your images",
+    icon: ImageIcon,
+    color: "bg-green-100 text-green-600",
+    status: "active",
+    lastUsed: "1 day ago"
+  },
+  {
+    id: 3,
+    name: "Color Palette Generator",
+    description: "Generate brand color schemes",
+    icon: Droplets,
+    color: "bg-purple-100 text-purple-600",
+    status: "active",
+    lastUsed: "3 days ago"
+  },
+  {
+    id: 4,
+    name: "Typography Tool",
+    description: "Choose and pair fonts for your brand",
+    icon: Type,
+    color: "bg-orange-100 text-orange-600",
+    status: "inactive",
+    lastUsed: "1 week ago"
+  }
+];
+
+// Content Services Data
+const contentServices = [
+  {
+    id: 1,
+    name: "Content Writing",
+    description: "Professional copywriting and content creation",
+    icon: FileText,
+    color: "bg-blue-100 text-blue-600",
+    price: "₹2,000 - ₹15,000",
+    delivery: "3-5 days"
+  },
+  {
+    id: 2,
+    name: "Video Production",
+    description: "Create engaging videos for marketing",
+    icon: Video,
+    color: "bg-green-100 text-green-600",
+    price: "₹10,000 - ₹50,000",
+    delivery: "7-10 days"
+  },
+  {
+    id: 3,
+    name: "Voice Over",
+    description: "Professional voice recording services",
+    icon: Mic,
+    color: "bg-purple-100 text-purple-600",
+    price: "₹1,500 - ₹8,000",
+    delivery: "2-3 days"
+  },
+  {
+    id: 4,
+    name: "Photography",
+    description: "Product and lifestyle photography",
+    icon: Camera,
+    color: "bg-orange-100 text-orange-600",
+    price: "₹5,000 - ₹25,000",
+    delivery: "5-7 days"
+  }
+];
+
+// Recent Projects Data
+const recentProjects = [
+  {
+    id: 1,
+    name: "Company Logo Design",
+    type: "Logo Design",
+    status: "completed",
+    created: "2 days ago",
+    size: "2.4 MB",
+    designer: "Design Studio Pro"
+  },
+  {
+    id: 2,
+    name: "Website Content",
+    type: "Content Writing",
+    status: "in-progress",
+    created: "1 week ago",
+    size: "1.8 MB",
+    writer: "Content Creators Hub"
+  },
+  {
+    id: 3,
+    name: "Product Video",
+    type: "Video Production",
+    status: "review",
+    created: "3 days ago",
+    size: "45.2 MB",
+    producer: "Video Masters"
   }
 ];
 
@@ -517,7 +637,7 @@ export default function Branding() {
       guidelines: brandGuidelines,
       exportedAt: new Date().toISOString()
     };
-    
+
     const dataStr = JSON.stringify(brandKit, null, 2);
     const dataBlob = new Blob([dataStr], { type: 'application/json' });
     const url = URL.createObjectURL(dataBlob);
@@ -535,12 +655,12 @@ export default function Branding() {
   const openPrintDesigner = (type: 'letterhead' | 'business-card' | 'envelope' | 'stamp') => {
     setSelectedPrintType(type);
     setShowPrintDesigner(true);
-    
+
     // Initialize design based on type
     const defaultDesign = {
       header: { text: companyInfo.name, fontSize: 24, color: '#2563EB', position: { x: 50, y: 50 } },
       logo: { url: companyInfo.logo, position: { x: 50, y: 100 }, size: { width: 100, height: 50 } },
-      contact: { 
+      contact: {
         address: companyInfo.address,
         phone: companyInfo.phone,
         email: companyInfo.email,
@@ -548,13 +668,13 @@ export default function Branding() {
         position: { x: 50, y: 200 }
       }
     };
-    
+
     setCurrentPrintDesign(defaultDesign);
   };
 
   const savePrintTemplate = () => {
     if (!selectedPrintType || !currentPrintDesign) return;
-    
+
     const template: PrintTemplate = {
       id: Date.now().toString(),
       name: `${selectedPrintType.charAt(0).toUpperCase() + selectedPrintType.slice(1)} - ${companyInfo.name}`,
@@ -565,7 +685,7 @@ export default function Branding() {
       createdAt: new Date().toISOString().split('T')[0],
       status: 'draft'
     };
-    
+
     setPrintTemplates(prev => [template, ...prev]);
     setShowPrintDesigner(false);
     alert('Print template saved successfully!');
@@ -577,7 +697,7 @@ export default function Branding() {
       ...template,
       exportedAt: new Date().toISOString()
     };
-    
+
     const dataStr = JSON.stringify(templateData, null, 2);
     const dataBlob = new Blob([dataStr], { type: 'application/json' });
     const url = URL.createObjectURL(dataBlob);
@@ -594,9 +714,9 @@ export default function Branding() {
   const printTemplate = (template: PrintTemplate) => {
     // In a real implementation, this would send to a print service
     alert(`Printing ${template.name}...\nQuantity: ${template.specifications.quantity}\nPaper: ${template.specifications.paper}\nColor: ${template.specifications.color}`);
-    
+
     // Update status to printed
-    setPrintTemplates(prev => prev.map(t => 
+    setPrintTemplates(prev => prev.map(t =>
       t.id === template.id ? { ...t, status: 'printed' } : t
     ));
   };
@@ -629,6 +749,23 @@ export default function Branding() {
       }
     };
     return specs[type as keyof typeof specs] || specs.letterhead;
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "completed":
+        return <Badge className="bg-green-100 text-green-800">Completed</Badge>;
+      case "in-progress":
+        return <Badge className="bg-yellow-100 text-yellow-800">In Progress</Badge>;
+      case "review":
+        return <Badge className="bg-blue-100 text-blue-800">Under Review</Badge>;
+      case "active":
+        return <Badge className="bg-green-100 text-green-800">Active</Badge>;
+      case "inactive":
+        return <Badge className="bg-gray-100 text-gray-800">Inactive</Badge>;
+      default:
+        return <Badge className="bg-gray-100 text-gray-800">Unknown</Badge>;
+    }
   };
 
   const hexToRgb = (hex: string) => {
@@ -723,16 +860,16 @@ export default function Branding() {
     alert('Copied to clipboard!');
   };
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "completed":
-        return <Badge className="bg-green-100 text-green-800">Completed</Badge>;
-      case "in-progress":
-        return <Badge className="bg-yellow-100 text-yellow-800">In Progress</Badge>;
-      default:
-        return <Badge className="bg-gray-100 text-gray-800">Draft</Badge>;
-    }
-  };
+//   const getStatusBadge = (status: string) => {
+//     switch (status) {
+//       case "completed":
+//         return <Badge className="bg-green-100 text-green-800">Completed</Badge>;
+//       case "in-progress":
+//         return <Badge className="bg-yellow-100 text-yellow-800">In Progress</Badge>;
+//       default:
+//         return <Badge className="bg-gray-100 text-gray-800">Draft</Badge>;
+//     }
+//   };
 
   return (
     <DashboardLayout>
@@ -744,10 +881,10 @@ export default function Branding() {
 
       {/* Tab Navigation */}
       <div className="mb-8">
-        <div className="flex space-x-1 bg-white p-1 rounded-lg border">
+        <div className="flex space-x-1 bg-white p-1 rounded-lg border overflow-x-auto">
           <button
             onClick={() => setActiveTab("overview")}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+            className={`flex-shrink-0 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
               activeTab === "overview"
                 ? "bg-blue-600 text-white"
                 : "text-neutral-600 hover:text-neutral-900"
@@ -757,17 +894,17 @@ export default function Branding() {
           </button>
           <button
             onClick={() => setActiveTab("logo")}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+            className={`flex-shrink-0 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
               activeTab === "logo"
                 ? "bg-blue-600 text-white"
                 : "text-neutral-600 hover:text-neutral-900"
             }`}
           >
-            Logo Generator
+            Logo Tools
           </button>
           <button
             onClick={() => setActiveTab("brand-kit")}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+            className={`flex-shrink-0 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
               activeTab === "brand-kit"
                 ? "bg-blue-600 text-white"
                 : "text-neutral-600 hover:text-neutral-900"
@@ -776,14 +913,34 @@ export default function Branding() {
             Brand Kit
           </button>
           <button
+            onClick={() => setActiveTab("design-tools")}
+            className={`flex-shrink-0 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+              activeTab === "design-tools"
+                ? "bg-blue-600 text-white"
+                : "text-neutral-600 hover:text-neutral-900"
+            }`}
+          >
+            Design Tools
+          </button>
+          <button
+            onClick={() => setActiveTab("content-services")}
+            className={`flex-shrink-0 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+              activeTab === "content-services"
+                ? "bg-blue-600 text-white"
+                : "text-neutral-600 hover:text-neutral-900"
+            }`}
+          >
+            Content Services
+          </button>
+          <button
             onClick={() => setActiveTab("templates")}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+            className={`flex-shrink-0 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
               activeTab === "templates"
                 ? "bg-blue-600 text-white"
                 : "text-neutral-600 hover:text-neutral-900"
             }`}
           >
-            Templates
+            Print Templates
           </button>
         </div>
       </div>
@@ -796,11 +953,11 @@ export default function Branding() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-neutral-600 mb-1">Total Assets</p>
-                    <p className="text-2xl font-bold text-neutral-900">24</p>
+                    <p className="text-sm text-neutral-600 mb-1">Design Assets</p>
+                    <p className="text-2xl font-bold text-neutral-900">156</p>
                   </div>
                   <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                                              <ImageIcon className="w-6 h-6 text-blue-600" />
+                    <Palette className="w-6 h-6 text-blue-600" />
                   </div>
                 </div>
               </CardContent>
@@ -810,11 +967,11 @@ export default function Branding() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-neutral-600 mb-1">Brand Colors</p>
-                    <p className="text-2xl font-bold text-neutral-900">4</p>
+                    <p className="text-sm text-neutral-600 mb-1">Active Projects</p>
+                    <p className="text-2xl font-bold text-neutral-900">12</p>
                   </div>
                   <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                    <Palette className="w-6 h-6 text-green-600" />
+                    <PenTool className="w-6 h-6 text-green-600" />
                   </div>
                 </div>
               </CardContent>
@@ -824,8 +981,8 @@ export default function Branding() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-neutral-600 mb-1">Templates</p>
-                    <p className="text-2xl font-bold text-neutral-900">12</p>
+                    <p className="text-sm text-neutral-600 mb-1">Content Pieces</p>
+                    <p className="text-2xl font-bold text-neutral-900">89</p>
                   </div>
                   <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
                     <FileText className="w-6 h-6 text-purple-600" />
@@ -838,11 +995,11 @@ export default function Branding() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-neutral-600 mb-1">Downloads</p>
-                    <p className="text-2xl font-bold text-neutral-900">169</p>
+                    <p className="text-sm text-neutral-600 mb-1">Templates Used</p>
+                    <p className="text-2xl font-bold text-neutral-900">34</p>
                   </div>
                   <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
-                    <Download className="w-6 h-6 text-orange-600" />
+                    <Layers className="w-6 h-6 text-orange-600" />
                   </div>
                 </div>
               </CardContent>
@@ -855,61 +1012,90 @@ export default function Branding() {
               <CardTitle>Quick Actions</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
                 <Button
                   onClick={() => setActiveTab("logo")}
                   className="h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700"
                 >
-                  <Sparkles className="w-6 h-6" />
-                  <span>Logo Tools</span>
-                  <span className="text-xs opacity-90">AI + Manual</span>
+                  <Sparkles className="w-5 h-5" />
+                  <span className="text-xs">Logo Tools</span>
                 </Button>
 
                 <Button
                   onClick={() => setActiveTab("brand-kit")}
                   className="h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700"
                 >
-                  <Palette className="w-6 h-6" />
-                  <span>Create Brand Kit</span>
+                  <Palette className="w-5 h-5" />
+                  <span className="text-xs">Brand Kit</span>
                 </Button>
 
                 <Button
-                  onClick={() => setShowTemplateDesigner(true)}
+                  onClick={() => setActiveTab("design-tools")}
                   className="h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700"
                 >
-                  <FileText className="w-6 h-6" />
-                  <span>Design Template</span>
+                  <PenTool className="w-5 h-5" />
+                  <span className="text-xs">Design</span>
+                </Button>
+
+                <Button
+                  onClick={() => setActiveTab("content-services")}
+                  className="h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700"
+                >
+                  <FileText className="w-5 h-5" />
+                  <span className="text-xs">Content</span>
+                </Button>
+
+                <Button
+                  onClick={() => setActiveTab("templates")}
+                  className="h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700"
+                >
+                  <Printer className="w-5 h-5" />
+                  <span className="text-xs">Print</span>
+                </Button>
+
+                <Button
+                  onClick={() => setActiveTab("content-services")}
+                  className="h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-indigo-500 to-indigo-600 text-white hover:from-indigo-600 hover:to-indigo-700"
+                >
+                  <Video className="w-5 h-5" />
+                  <span className="text-xs">Video</span>
                 </Button>
               </div>
             </CardContent>
           </Card>
 
-          {/* Recent Designs */}
+          {/* Recent Projects */}
           <Card>
             <CardHeader>
-              <CardTitle>Recent Designs</CardTitle>
+              <CardTitle>Recent Projects</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {recentDesigns.map((design) => (
-                  <div key={design.id} className="flex items-center justify-between p-4 border border-neutral-200 rounded-lg">
+                {recentProjects.map((project) => (
+                  <div key={project.id} className="flex items-center justify-between p-4 border border-neutral-200 rounded-lg">
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <ImageIcon className="w-6 h-6 text-blue-600" />
+                        <PenTool className="w-6 h-6 text-blue-600" />
                       </div>
                       <div>
-                        <h4 className="font-medium text-neutral-900">{design.name}</h4>
-                        <p className="text-sm text-neutral-600">{design.type} • {design.size}</p>
+                        <h4 className="font-medium text-neutral-900">{project.name}</h4>
+                        <p className="text-sm text-neutral-600">{project.type} • {project.designer || project.writer || project.producer}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      {getStatusBadge(design.status)}
-                      <Button size="sm" variant="outline">
-                        <Eye className="w-4 h-4" />
-                      </Button>
-                      <Button size="sm" variant="outline">
-                        <Download className="w-4 h-4" />
-                      </Button>
+                    <div className="flex items-center gap-4">
+                      <div className="text-right">
+                        <p className="text-sm text-neutral-600">{project.size}</p>
+                        <p className="text-xs text-neutral-500">{project.created}</p>
+                      </div>
+                      {getStatusBadge(project.status)}
+                      <div className="flex items-center gap-2">
+                        <Button size="sm" variant="outline">
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          <Download className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -1396,6 +1582,197 @@ export default function Branding() {
         </div>
       )}
 
+      {activeTab === "design-tools" && (
+        <div className="space-y-8">
+          {/* Design Tools Header */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-neutral-900">Design Tools</h2>
+              <p className="text-neutral-600">Professional design tools for creating stunning visuals</p>
+            </div>
+          </div>
+
+          {/* Design Tools Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {designTools.map((tool) => (
+              <Card key={tool.id} className="hover:shadow-lg transition-shadow cursor-pointer">
+                <CardContent className="p-6">
+                  <div className={`w-16 h-16 ${tool.color} rounded-full flex items-center justify-center mx-auto mb-4`}>
+                    <tool.icon className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-neutral-900 mb-2 text-center">{tool.name}</h3>
+                  <p className="text-sm text-neutral-600 mb-4 text-center">{tool.description}</p>
+                  <div className="flex items-center justify-between text-sm text-neutral-600 mb-4">
+                    {getStatusBadge(tool.status)}
+                    <span>{tool.lastUsed}</span>
+                  </div>
+                  <Button className="w-full" onClick={() => {
+                    if (tool.name === "Logo Designer") {
+                      setActiveTab("logo");
+                    } else if (tool.name === "Color Palette Generator") {
+                      setActiveTab("brand-kit");
+                    } else {
+                      alert(`${tool.name} tool is coming soon!`);
+                    }
+                  }}>
+                    Open Tool
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Advanced Design Features */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Zap className="w-5 h-5" />
+                Advanced Features
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="p-4 border border-neutral-200 rounded-lg">
+                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-3">
+                    <Brush className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <h4 className="font-medium text-neutral-900 mb-2">AI-Powered Design</h4>
+                  <p className="text-sm text-neutral-600 mb-3">Generate designs with artificial intelligence</p>
+                  <Button size="sm" variant="outline" className="w-full" onClick={() => setActiveTab("logo")}>
+                    Try AI Design
+                  </Button>
+                </div>
+
+                <div className="p-4 border border-neutral-200 rounded-lg">
+                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-3">
+                    <Ruler className="w-6 h-6 text-green-600" />
+                  </div>
+                  <h4 className="font-medium text-neutral-900 mb-2">Precise Measurements</h4>
+                  <p className="text-sm text-neutral-600 mb-3">Pixel-perfect design with measurement tools</p>
+                  <Button size="sm" variant="outline" className="w-full">
+                    Open Ruler
+                  </Button>
+                </div>
+
+                <div className="p-4 border border-neutral-200 rounded-lg">
+                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-3">
+                    <Grid className="w-6 h-6 text-purple-600" />
+                  </div>
+                  <h4 className="font-medium text-neutral-900 mb-2">Grid System</h4>
+                  <p className="text-sm text-neutral-600 mb-3">Professional layout with grid alignment</p>
+                  <Button size="sm" variant="outline" className="w-full">
+                    Enable Grid
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {activeTab === "content-services" && (
+        <div className="space-y-8">
+          {/* Content Services Header */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-neutral-900">Content Services</h2>
+              <p className="text-neutral-600">Professional content creation and media production services</p>
+            </div>
+          </div>
+
+          {/* Service Providers */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {contentServices.map((service) => (
+              <Card key={service.id} className="hover:shadow-lg transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center ${service.color}`}>
+                        <service.icon className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-neutral-900">{service.name}</h3>
+                        <p className="text-sm text-neutral-600">{service.description}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-3 mb-4">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-neutral-600">Price Range:</span>
+                      <span className="font-medium">{service.price}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-neutral-600">Delivery Time:</span>
+                      <span className="font-medium">{service.delivery}</span>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button className="flex-1" onClick={() => alert(`Requesting ${service.name} service...`)}>
+                      Request Service
+                    </Button>
+                    <Button variant="outline">
+                      <Eye className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Content Request Form */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Request Custom Content</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">
+                    Content Type
+                  </label>
+                  <select className="w-full p-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option>Select content type</option>
+                    <option>Blog Post</option>
+                    <option>Social Media Content</option>
+                    <option>Website Copy</option>
+                    <option>Email Newsletter</option>
+                    <option>Product Description</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">
+                    Word Count
+                  </label>
+                  <Input
+                    type="number"
+                    placeholder="e.g., 500 words"
+                    className="w-full"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">
+                    Project Description
+                  </label>
+                  <Textarea
+                    placeholder="Describe your content requirements..."
+                    className="w-full h-32 resize-none"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white" onClick={() => alert('Content request submitted successfully!')}>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Submit Request
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
       {activeTab === "templates" && (
         <div className="space-y-8">
           {/* Print Templates Header */}
@@ -1432,7 +1809,7 @@ export default function Branding() {
                           <p className="text-xs text-neutral-500">{template.createdAt}</p>
                         </div>
                       </div>
-                      
+
                       <div className="space-y-2 mb-4">
                         <div className="flex items-center justify-between text-xs">
                           <span>Status:</span>
@@ -1453,7 +1830,7 @@ export default function Branding() {
                           <span>{template.specifications.paper}</span>
                         </div>
                       </div>
-                      
+
                       <div className="flex gap-2">
                         <Button size="sm" variant="outline" className="flex-1" onClick={() => exportPrintTemplate(template)}>
                           <Download className="w-3 h-3 mr-1" />
@@ -1484,7 +1861,7 @@ export default function Branding() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <Button 
+                <Button
                   className="h-40 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-neutral-300 hover:border-neutral-400 hover:bg-neutral-50 transition-colors"
                   onClick={() => openPrintDesigner('letterhead')}
                 >
@@ -1496,8 +1873,8 @@ export default function Branding() {
                     <p className="text-xs text-neutral-600 mt-1">Professional letterhead design</p>
                   </div>
                 </Button>
-                
-                <Button 
+
+                <Button
                   className="h-40 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-neutral-300 hover:border-neutral-400 hover:bg-neutral-50 transition-colors"
                   onClick={() => openPrintDesigner('business-card')}
                 >
@@ -1509,8 +1886,8 @@ export default function Branding() {
                     <p className="text-xs text-neutral-600 mt-1">Professional business cards</p>
                   </div>
                 </Button>
-                
-                <Button 
+
+                <Button
                   className="h-40 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-neutral-300 hover:border-neutral-400 hover:bg-neutral-50 transition-colors"
                   onClick={() => openPrintDesigner('envelope')}
                 >
@@ -1522,8 +1899,8 @@ export default function Branding() {
                     <p className="text-xs text-neutral-600 mt-1">Custom envelope design</p>
                   </div>
                 </Button>
-                
-                <Button 
+
+                <Button
                   className="h-40 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-neutral-300 hover:border-neutral-400 hover:bg-neutral-50 transition-colors"
                   onClick={() => openPrintDesigner('stamp')}
                 >
@@ -1558,7 +1935,7 @@ export default function Branding() {
                     <p><strong>Color:</strong> Full Color</p>
                   </div>
                 </div>
-                
+
                 <div className="p-4 border border-neutral-200 rounded-lg">
                   <h4 className="font-medium text-neutral-900 mb-2">Business Card</h4>
                   <div className="space-y-1 text-sm text-neutral-600">
@@ -1568,7 +1945,7 @@ export default function Branding() {
                     <p><strong>Color:</strong> Full Color</p>
                   </div>
                 </div>
-                
+
                 <div className="p-4 border border-neutral-200 rounded-lg">
                   <h4 className="font-medium text-neutral-900 mb-2">Envelope</h4>
                   <div className="space-y-1 text-sm text-neutral-600">
@@ -1578,7 +1955,7 @@ export default function Branding() {
                     <p><strong>Color:</strong> Full Color</p>
                   </div>
                 </div>
-                
+
                 <div className="p-4 border border-neutral-200 rounded-lg">
                   <h4 className="font-medium text-neutral-900 mb-2">Company Stamp</h4>
                   <div className="space-y-1 text-sm text-neutral-600">
@@ -2419,8 +2796,8 @@ export default function Branding() {
                     <div className="space-y-3">
                       <div>
                         <label className="block text-sm font-medium mb-1">Size</label>
-                        <Select 
-                          value={printSpecifications.size} 
+                        <Select
+                          value={printSpecifications.size}
                           onValueChange={(value) => setPrintSpecifications(prev => ({ ...prev, size: value }))}
                         >
                           <SelectTrigger>
@@ -2460,8 +2837,8 @@ export default function Branding() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium mb-1">Paper</label>
-                        <Select 
-                          value={printSpecifications.paper} 
+                        <Select
+                          value={printSpecifications.paper}
                           onValueChange={(value) => setPrintSpecifications(prev => ({ ...prev, paper: value }))}
                         >
                           <SelectTrigger>
@@ -2510,8 +2887,8 @@ export default function Branding() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium mb-1">Color</label>
-                        <Select 
-                          value={printSpecifications.color} 
+                        <Select
+                          value={printSpecifications.color}
                           onValueChange={(value) => setPrintSpecifications(prev => ({ ...prev, color: value }))}
                         >
                           <SelectTrigger>
@@ -2554,7 +2931,7 @@ export default function Branding() {
                                 </div>
                               </div>
                             </div>
-                            
+
                             {/* Content Area */}
                             <div className="absolute top-48 left-8 right-8 bottom-8">
                               <div className="border-l-4 border-blue-600 pl-4">

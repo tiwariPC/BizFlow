@@ -399,9 +399,8 @@ npm run setup        # Run setup script (chmod +x setup.sh && ./setup.sh)
 - **Dashboard** (`/dashboard`) - Overview with quick stats and actions
 - **Business Setup & Compliance** (`/compliance`) - Setup checklist and document management
 - **Finance & Accounting** (`/finance`) - Invoice management and expense tracking
-- **Branding & Identity** (`/branding`) - Logo generator and brand kit
+- **Branding & Design** (`/branding`) - Logo creation, brand kit, design tools, content services, and print templates
 - **Marketing & Sales** (`/marketing`) - Campaigns and CRM
-- **Graphic & Content Services** (`/graphic-services`) - Design tools and content creation
 - **HR & Team** (`/tools`) - Employee management and payroll
 - **Knowledge Hub** (`/knowledge-hub`) - Articles, guides, and tutorials
 - **Community** (`/community`) - Forum and expert connections

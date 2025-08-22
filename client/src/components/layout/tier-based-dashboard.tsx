@@ -51,7 +51,7 @@ const tier2Modules = [
   { icon: Banknote, label: "Finance & Accounting", href: "/finance" },
   { icon: Palette, label: "Branding & Identity", href: "/branding" },
   { icon: TrendingUp, label: "Marketing & Sales", href: "/marketing" },
-  { icon: PenTool, label: "Graphic & Content Services", href: "/graphic-services" },
+      { icon: PenTool, label: "Branding & Design", href: "/branding" },
   { icon: BookOpen, label: "Knowledge Hub", href: "/knowledge-hub" },
   { icon: Network, label: "Community", href: "/community" },
   { icon: Store, label: "Service Store", href: "/store" },

@@ -29,7 +29,7 @@ import Growth from "@/pages/growth";
 import Marketplace from "@/pages/marketplace";
 import Branding from "@/pages/branding";
 import Marketing from "@/pages/marketing";
-import GraphicServices from "@/pages/graphic-services";
+
 import Help from "@/pages/help";
 import KnowledgeHub from "@/pages/knowledge-hub";
 import Community from "@/pages/community";
@@ -66,7 +66,7 @@ function Router() {
       <Route path="/marketplace" component={Marketplace} />
       <Route path="/branding" component={Branding} />
       <Route path="/marketing" component={Marketing} />
-      <Route path="/graphic-services" component={GraphicServices} />
+
       <Route path="/help" component={Help} />
       <Route path="/knowledge-hub" component={KnowledgeHub} />
       <Route path="/community" component={Community} />
