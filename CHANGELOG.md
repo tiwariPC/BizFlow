@@ -26,6 +26,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced invoice creation workflow
 - Document compliance tracking
 - Advanced compliance reporting
+- **Modern Authentication UI**: Sleek glassmorphism login/register dialogs
+- **Smart Dialog Controls**: Close dialog with Escape key or click outside
+- **Role-Based Signup Flow**: Three-tier user registration system
+- **OAuth Integration**: Google and Apple Sign-In support
+- **Enhanced Form Validation**: Real-time validation with error handling
+- **Password Toggle**: Show/hide password functionality
+- **Loading States**: Animated loading indicators
+- **Responsive Design**: Mobile-optimized authentication forms
 
 ### Changed
 - Enhanced invoice creation process
@@ -34,12 +42,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced compliance page with document management
 - Improved search functionality across all modules
 - Better state management for complex data
+- **Port Configuration**: Updated to use port 3000 instead of 5000 for better compatibility
+- **Authentication Flow**: Streamlined login/register process with modern UI
+- **Dialog Management**: Removed close button, added intuitive close methods
+- **Form Design**: Modernized all authentication forms with glassmorphism effects
 
 ### Fixed
 - Invoice creation button error
 - TypeScript linter issues
 - Component import errors
 - State management issues
+- **Port Conflicts**: Resolved port 5000 conflicts on macOS
+- **Dialog Accessibility**: Fixed dialog close functionality
+- **Form Validation**: Improved error handling and user feedback
+- **Mobile Responsiveness**: Enhanced mobile experience for authentication forms
 
 ## [1.0.0] - 2024-12-21
 

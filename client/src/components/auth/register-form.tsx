@@ -16,7 +16,27 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { authService } from '@/lib/auth';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
-import { Mail, Chrome, Apple, Crown, Building, UserCheck, Info, Loader2 } from 'lucide-react';
+import {
+  Mail,
+  Chrome,
+  Apple,
+  Crown,
+  Building,
+  UserCheck,
+  Info,
+  Loader2,
+  User,
+  Lock,
+  Eye,
+  EyeOff,
+  ArrowRight,
+  Sparkles,
+  Shield,
+  Zap,
+  Globe,
+  Users,
+  CheckCircle
+} from 'lucide-react';
 
 // OAuth API TypeScript declarations
 declare global {
@@ -50,6 +70,7 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [appleLoading, setAppleLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
   const [businessType, setBusinessType] = useState<'individual' | 'startup' | 'smb'>('individual');
   const [selectedTier, setSelectedTier] = useState<'tier1' | 'tier2' | 'tier3'>('tier2');
@@ -384,341 +405,452 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
 
   if (showEmailForm) {
     return (
-      <Card className='w-full max-w-md mx-auto'>
-        <CardHeader>
-          <CardTitle className='text-2xl font-bold text-center'>Sign up with Email</CardTitle>
-          <p className='text-center text-neutral-600'>
-            Complete your{' '}
-            {selectedTier === 'tier1'
-              ? 'admin'
-              : selectedTier === 'tier2'
-                ? 'organization'
-                : 'employee'}{' '}
-            account
-          </p>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
-            <div>
-              <Label htmlFor='fullName'>Full Name</Label>
-              <Input
-                id='fullName'
-                {...form.register('fullName')}
-                className='mt-1'
-                data-testid='input-fullname'
-              />
-              {form.formState.errors.fullName && (
-                <p className='text-sm text-red-600 mt-1'>
-                  {form.formState.errors.fullName.message}
-                </p>
-              )}
-            </div>
+      <div className="relative w-full max-w-md mx-auto">
+        {/* Background gradient blur effect */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-indigo-500/20 rounded-3xl blur-3xl"></div>
 
-            <div>
-              <Label htmlFor='email'>Email</Label>
-              <Input
-                id='email'
-                type='email'
-                {...form.register('email')}
-                className='mt-1'
-                data-testid='input-email'
-              />
-              {form.formState.errors.email && (
-                <p className='text-sm text-red-600 mt-1'>{form.formState.errors.email.message}</p>
-              )}
-            </div>
+        <Card className="relative w-full bg-white/80 backdrop-blur-xl border-0 shadow-2xl rounded-3xl overflow-hidden">
+          {/* Header with gradient */}
+          <CardHeader className="relative p-8 pb-6 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 text-white">
+            {/* Decorative elements */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
 
-            <div>
-              <Label htmlFor='username'>Username</Label>
-              <Input
-                id='username'
-                {...form.register('username')}
-                className='mt-1'
-                data-testid='input-username'
-              />
-              {form.formState.errors.username && (
-                <p className='text-sm text-red-600 mt-1'>
-                  {form.formState.errors.username.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <Label htmlFor='password'>Password</Label>
-              <Input
-                id='password'
-                type='password'
-                {...form.register('password')}
-                className='mt-1'
-                data-testid='input-password'
-              />
-              {form.formState.errors.password && (
-                <p className='text-sm text-red-600 mt-1'>
-                  {form.formState.errors.password.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <Label>Selected Role</Label>
-              <div className='mt-2 p-3 bg-neutral-50 rounded-lg border'>
-                <div className='flex items-center gap-2'>
-                  {selectedTier === 'tier1' && <Crown className='w-4 h-4 text-purple-600' />}
-                  {selectedTier === 'tier2' && <Building className='w-4 h-4 text-blue-600' />}
-                  {selectedTier === 'tier3' && <UserCheck className='w-4 h-4 text-green-600' />}
-                  <span className='font-medium'>
-                    {selectedTier === 'tier1'
-                      ? 'Platform Administrator'
-                      : selectedTier === 'tier2'
-                        ? 'Organization'
-                        : 'Employee'}
-                  </span>
-                </div>
-                <p className='text-sm text-neutral-600 mt-1'>
-                  {selectedTier === 'tier1'
-                    ? 'Full platform control and management'
-                    : selectedTier === 'tier2'
-                      ? 'Business organization management'
-                      : 'Individual employee access'}
-                </p>
-              </div>
-            </div>
-
-            {selectedTier === 'tier2' && (
-              <div>
-                <Label>Type of Business</Label>
-                <div className='mt-2 grid grid-cols-3 gap-2'>
-                  {(
-                    [
-                      { key: 'individual', label: 'Individual' },
-                      { key: 'startup', label: 'Startup' },
-                      { key: 'smb', label: 'SMB' },
-                    ] as const
-                  ).map(opt => (
-                    <button
-                      key={opt.key}
-                      type='button'
-                      onClick={() => setBusinessType(opt.key)}
-                      className={`text-sm rounded-md border px-3 py-2 transition-colors ${
-                        businessType === opt.key
-                          ? 'bg-blue-600 text-white border-blue-600'
-                          : 'bg-white text-neutral-700 border-neutral-200 hover:bg-neutral-50'
-                      }`}
-                      data-testid={`business-type-${opt.key}`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
+            <div className="relative z-10 text-center">
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                  <Globe className="w-8 h-8 text-white" />
                 </div>
               </div>
-            )}
+              <CardTitle className="text-3xl font-black mb-2">Create Account</CardTitle>
+              <p className="text-blue-100 font-medium">Complete your {selectedTier === 'tier1' ? 'admin' : selectedTier === 'tier2' ? 'organization' : 'employee'} account</p>
+            </div>
+          </CardHeader>
 
-            <Button
-              type='submit'
-              className='w-full'
-              disabled={isLoading}
-              data-testid='button-submit'
-            >
-              {isLoading ? 'Creating Account...' : 'Create Account'}
-            </Button>
-          </form>
+          <CardContent className="p-8 pt-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              {/* Full Name field */}
+              <div className="space-y-2">
+                <Label htmlFor="fullName" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                  <User className="w-4 h-4" />
+                  Full Name
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="fullName"
+                    {...form.register('fullName')}
+                    className="h-12 pl-12 pr-4 bg-gray-50/50 border-2 border-gray-200 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100 rounded-xl transition-all duration-200 text-gray-900 placeholder-gray-500"
+                    placeholder="Enter your full name"
+                    data-testid="input-fullname"
+                  />
+                  <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                </div>
+                {form.formState.errors.fullName && (
+                  <p className="text-sm text-red-500 font-medium flex items-center gap-1">
+                    <Shield className="w-4 h-4" />
+                    {form.formState.errors.fullName.message}
+                  </p>
+                )}
+              </div>
 
-          <div className='mt-4 text-center'>
-            <button
-              onClick={() => setShowEmailForm(false)}
-              className='text-sm text-neutral-600 hover:text-neutral-800'
-            >
-              ← Back to role selection
-            </button>
-          </div>
-        </CardContent>
-      </Card>
+              {/* Email field */}
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                  <Mail className="w-4 h-4" />
+                  Email
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="email"
+                    type="email"
+                    {...form.register('email')}
+                    className="h-12 pl-12 pr-4 bg-gray-50/50 border-2 border-gray-200 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100 rounded-xl transition-all duration-200 text-gray-900 placeholder-gray-500"
+                    placeholder="Enter your email"
+                    data-testid="input-email"
+                  />
+                  <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                </div>
+                {form.formState.errors.email && (
+                  <p className="text-sm text-red-500 font-medium flex items-center gap-1">
+                    <Shield className="w-4 h-4" />
+                    {form.formState.errors.email.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Username field */}
+              <div className="space-y-2">
+                <Label htmlFor="username" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                  <User className="w-4 h-4" />
+                  Username
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="username"
+                    {...form.register('username')}
+                    className="h-12 pl-12 pr-4 bg-gray-50/50 border-2 border-gray-200 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100 rounded-xl transition-all duration-200 text-gray-900 placeholder-gray-500"
+                    placeholder="Choose a username"
+                    data-testid="input-username"
+                  />
+                  <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                </div>
+                {form.formState.errors.username && (
+                  <p className="text-sm text-red-500 font-medium flex items-center gap-1">
+                    <Shield className="w-4 h-4" />
+                    {form.formState.errors.username.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Password field */}
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                  <Lock className="w-4 h-4" />
+                  Password
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    {...form.register('password')}
+                    className="h-12 pl-12 pr-12 bg-gray-50/50 border-2 border-gray-200 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100 rounded-xl transition-all duration-200 text-gray-900 placeholder-gray-500"
+                    placeholder="Create a password"
+                    data-testid="input-password"
+                  />
+                  <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
+                {form.formState.errors.password && (
+                  <p className="text-sm text-red-500 font-medium flex items-center gap-1">
+                    <Shield className="w-4 h-4" />
+                    {form.formState.errors.password.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Selected Role Display */}
+              <div className="space-y-2">
+                <Label className="text-sm font-semibold text-gray-700">Selected Role</Label>
+                <div className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+                  <div className="flex items-center gap-3">
+                    {selectedTier === 'tier1' && <Crown className="w-5 h-5 text-purple-600" />}
+                    {selectedTier === 'tier2' && <Building className="w-5 h-5 text-blue-600" />}
+                    {selectedTier === 'tier3' && <UserCheck className="w-5 h-5 text-green-600" />}
+                    <div>
+                      <p className="font-semibold text-gray-900">
+                        {selectedTier === 'tier1' ? 'Platform Administrator' : selectedTier === 'tier2' ? 'Organization' : 'Employee'}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {selectedTier === 'tier1' ? 'Full platform control and management' : selectedTier === 'tier2' ? 'Business organization management' : 'Individual employee access'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Business Type Selection for Tier 2 */}
+              {selectedTier === 'tier2' && (
+                <div className="space-y-2">
+                  <Label className="text-sm font-semibold text-gray-700">Type of Business</Label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {(
+                      [
+                        { key: 'individual', label: 'Individual' },
+                        { key: 'startup', label: 'Startup' },
+                        { key: 'smb', label: 'SMB' },
+                      ] as const
+                    ).map(opt => (
+                      <button
+                        key={opt.key}
+                        type="button"
+                        onClick={() => setBusinessType(opt.key)}
+                        className={`text-sm rounded-xl border-2 px-3 py-2 transition-all duration-200 ${
+                          businessType === opt.key
+                            ? 'bg-blue-600 text-white border-blue-600 shadow-md'
+                            : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50 hover:border-gray-300'
+                        }`}
+                        data-testid={`business-type-${opt.key}`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Submit button */}
+              <Button
+                type="submit"
+                className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 group"
+                disabled={isLoading}
+                data-testid="button-submit"
+              >
+                {isLoading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    Creating Account...
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    Create Account
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                )}
+              </Button>
+            </form>
+
+            {/* Back button */}
+            <div className="mt-6 text-center">
+              <button
+                onClick={() => setShowEmailForm(false)}
+                className="text-sm text-gray-600 hover:text-gray-800 font-medium transition-colors"
+              >
+                ← Back to role selection
+              </button>
+              <p className="text-xs text-gray-400 mt-2">
+                Press <kbd className="px-1 py-0.5 bg-gray-100 rounded text-xs">Esc</kbd> or click outside to close
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
   return (
-    <Card className='w-full max-w-md mx-auto'>
-      <CardHeader>
-        <CardTitle className='text-2xl font-bold text-center'>Join BizHub</CardTitle>
-        <p className='text-center text-neutral-600'>Choose your role to get started</p>
-      </CardHeader>
-      <CardContent className='space-y-6'>
-        {/* OAuth Setup Notice */}
-        {(!isGoogleConfigured || !isAppleConfigured) && (
-          <div className='p-3 bg-blue-50 border border-blue-200 rounded-lg'>
-            <p className='text-sm text-blue-800'>
-              <Info className='w-4 h-4 inline mr-2' />
-              To enable OAuth sign-in, create a{' '}
-              <code className='bg-blue-100 px-1 rounded'>.env</code> file in the client directory
-              with your OAuth Client IDs using VITE_ prefix.
+    <div className="relative w-full max-w-md mx-auto">
+      {/* Background gradient blur effect */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-indigo-500/20 rounded-3xl blur-3xl"></div>
+
+      <Card className="relative w-full bg-white/80 backdrop-blur-xl border-0 shadow-2xl rounded-3xl overflow-hidden">
+        {/* Header with gradient */}
+        <CardHeader className="relative p-8 pb-6 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 text-white">
+          {/* Decorative elements */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
+
+          <div className="relative z-10 text-center">
+            <div className="flex justify-center mb-4">
+              <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                <Users className="w-8 h-8 text-white" />
+              </div>
+            </div>
+            <CardTitle className="text-3xl font-black mb-2">Join BizHub</CardTitle>
+            <p className="text-blue-100 font-medium">Choose your role to get started</p>
+          </div>
+        </CardHeader>
+
+        <CardContent className="p-8 pt-6 space-y-6">
+          {/* OAuth Setup Notice */}
+          {(!isGoogleConfigured || !isAppleConfigured) && (
+            <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl">
+              <div className="flex items-start gap-3">
+                <Info className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-blue-800">
+                  To enable OAuth sign-in, create a{' '}
+                  <code className="bg-blue-100 px-1 rounded text-xs">.env</code> file in the client directory
+                  with your OAuth Client IDs using VITE_ prefix.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Role Selection Cards */}
+          <div className="space-y-4">
+            {/* Tier 1 - Main Admin */}
+            <div
+              className={`border-2 rounded-2xl p-6 cursor-pointer transition-all duration-200 ${
+                selectedTier === 'tier1'
+                  ? 'border-purple-500 bg-purple-50 shadow-lg'
+                  : 'border-gray-200 hover:border-purple-300 hover:bg-purple-50/50'
+              }`}
+              onClick={() => setSelectedTier('tier1')}
+            >
+              <div className="flex items-center gap-4">
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-200 ${
+                  selectedTier === 'tier1' ? 'bg-purple-100' : 'bg-gray-100'
+                }`}>
+                  <Crown className={`w-7 h-7 ${selectedTier === 'tier1' ? 'text-purple-600' : 'text-gray-500'}`} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-lg text-gray-900 mb-1">Platform Administrator</h3>
+                  <p className="text-sm text-gray-600 mb-2">Full platform control and management</p>
+                  <div className="flex items-center gap-1 text-xs text-gray-500">
+                    <Info className="w-3 h-3" />
+                    Manage entire platform, users, and organizations
+                  </div>
+                </div>
+                {selectedTier === 'tier1' && (
+                  <CheckCircle className="w-6 h-6 text-purple-600" />
+                )}
+              </div>
+            </div>
+
+            {/* Tier 2 - Organization */}
+            <div
+              className={`border-2 rounded-2xl p-6 cursor-pointer transition-all duration-200 ${
+                selectedTier === 'tier2'
+                  ? 'border-blue-500 bg-blue-50 shadow-lg'
+                  : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50/50'
+              }`}
+              onClick={() => setSelectedTier('tier2')}
+            >
+              <div className="flex items-center gap-4">
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-200 ${
+                  selectedTier === 'tier2' ? 'bg-blue-100' : 'bg-gray-100'
+                }`}>
+                  <Building className={`w-7 h-7 ${selectedTier === 'tier2' ? 'text-blue-600' : 'text-gray-500'}`} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-lg text-gray-900 mb-1">Organization</h3>
+                  <p className="text-sm text-gray-600 mb-2">Business organization management</p>
+                  <div className="flex items-center gap-1 text-xs text-gray-500">
+                    <Info className="w-3 h-3" />
+                    Manage your business, employees, and services
+                  </div>
+                </div>
+                {selectedTier === 'tier2' && (
+                  <CheckCircle className="w-6 h-6 text-blue-600" />
+                )}
+              </div>
+            </div>
+
+            {/* Tier 3 - Employee */}
+            <div
+              className={`border-2 rounded-2xl p-6 cursor-pointer transition-all duration-200 ${
+                selectedTier === 'tier3'
+                  ? 'border-green-500 bg-green-50 shadow-lg'
+                  : 'border-gray-200 hover:border-green-300 hover:bg-green-50/50'
+              }`}
+              onClick={() => setSelectedTier('tier3')}
+            >
+              <div className="flex items-center gap-4">
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-200 ${
+                  selectedTier === 'tier3' ? 'bg-green-100' : 'bg-gray-100'
+                }`}>
+                  <UserCheck className={`w-7 h-7 ${selectedTier === 'tier3' ? 'text-green-600' : 'text-gray-500'}`} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-lg text-gray-900 mb-1">Employee</h3>
+                  <p className="text-sm text-gray-600 mb-2">Individual employee access</p>
+                  <div className="flex items-center gap-1 text-xs text-gray-500">
+                    <Info className="w-3 h-3" />
+                    Access assigned modules and personal workspace
+                  </div>
+                </div>
+                {selectedTier === 'tier3' && (
+                  <CheckCircle className="w-6 h-6 text-green-600" />
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="space-y-4">
+            <Button
+              onClick={() => setShowEmailForm(true)}
+              className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 group"
+              disabled={!selectedTier}
+            >
+              <div className="flex items-center gap-2">
+                Continue with Email
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Button>
+
+            {/* OAuth options */}
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-gray-200" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-white px-2 text-gray-500 font-semibold">Or continue with</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="relative">
+                {!isGoogleConfigured ? (
+                  <Button
+                    variant="outline"
+                    className="h-12 w-full border-2 border-gray-200 hover:border-gray-300 rounded-xl"
+                    disabled={true}
+                    title="Google OAuth not configured. Please set REACT_APP_GOOGLE_CLIENT_ID in your .env file"
+                  >
+                    <Chrome className="w-5 h-5 mr-2" />
+                    Google (Not Configured)
+                  </Button>
+                ) : (
+                  <>
+                    {googleLoading && (
+                      <div className="absolute inset-0 bg-white/80 rounded-xl flex items-center justify-center z-10">
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                      </div>
+                    )}
+                    <div
+                      id="google-signin-button"
+                      className={`h-12 ${!selectedTier ? 'opacity-50 pointer-events-none' : ''}`}
+                    />
+                  </>
+                )}
+              </div>
+              <div className="relative">
+                {!isAppleConfigured ? (
+                  <Button
+                    variant="outline"
+                    className="h-12 w-full border-2 border-gray-200 hover:border-gray-300 rounded-xl"
+                    disabled={true}
+                    title="Apple Sign-In not configured. Please set VITE_APPLE_CLIENT_ID in your .env file"
+                  >
+                    <Apple className="w-5 h-5 mr-2" />
+                    Apple (Not Configured)
+                  </Button>
+                ) : (
+                  <>
+                    {appleLoading && (
+                      <div className="absolute inset-0 bg-white/80 rounded-xl flex items-center justify-center z-10">
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                      </div>
+                    )}
+                    <Button
+                      onClick={handleAppleSignIn}
+                      disabled={appleLoading || !selectedTier}
+                      variant="outline"
+                      className="h-12 w-full border-2 border-gray-200 hover:border-gray-300 rounded-xl"
+                    >
+                      <Apple className="w-5 h-5 mr-2" />
+                      {appleLoading ? 'Signing in...' : 'Apple'}
+                    </Button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Sign in link */}
+          <div className="text-center">
+            <p className="text-sm text-gray-600">
+              Already have an account?{' '}
+              <button
+                onClick={onSwitchToLogin}
+                className="text-blue-600 hover:text-blue-800 font-semibold hover:underline transition-colors"
+                data-testid="link-login"
+              >
+                Sign in here
+              </button>
+            </p>
+            <p className="text-xs text-gray-400 mt-2">
+              Press <kbd className="px-1 py-0.5 bg-gray-100 rounded text-xs">Esc</kbd> or click outside to close
             </p>
           </div>
-        )}
-
-        {/* Tier 1 - Main Admin */}
-        <div
-          className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
-            selectedTier === 'tier1'
-              ? 'border-purple-500 bg-purple-50'
-              : 'border-neutral-200 hover:border-purple-300'
-          }`}
-          onClick={() => setSelectedTier('tier1')}
-        >
-          <div className='flex items-center gap-3'>
-            <div className='w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center'>
-              <Crown className='w-6 h-6 text-purple-600' />
-            </div>
-            <div className='flex-1'>
-              <h3 className='font-semibold text-lg text-neutral-900'>Platform Administrator</h3>
-              <p className='text-sm text-neutral-600'>Full platform control and management</p>
-            </div>
-          </div>
-          <div className='mt-3 text-xs text-neutral-500'>
-            <Info className='w-4 h-4 inline mr-1' />
-            Manage entire platform, users, and organizations
-          </div>
-        </div>
-
-        {/* Tier 2 - Organization */}
-        <div
-          className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
-            selectedTier === 'tier2'
-              ? 'border-blue-500 bg-blue-50'
-              : 'border-neutral-200 hover:border-blue-300'
-          }`}
-          onClick={() => setSelectedTier('tier2')}
-        >
-          <div className='flex items-center gap-3'>
-            <div className='w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center'>
-              <Building className='w-6 h-6 text-blue-600' />
-            </div>
-            <div className='flex-1'>
-              <h3 className='font-semibold text-lg text-neutral-900'>Organization</h3>
-              <p className='text-sm text-neutral-600'>Business organization management</p>
-            </div>
-          </div>
-          <div className='mt-3 text-xs text-neutral-500'>
-            <Info className='w-4 h-4 inline mr-1' />
-            Manage your business, employees, and services
-          </div>
-        </div>
-
-        {/* Tier 3 - Employee */}
-        <div
-          className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
-            selectedTier === 'tier3'
-              ? 'border-green-500 bg-green-50'
-              : 'border-neutral-200 hover:border-green-300'
-          }`}
-          onClick={() => setSelectedTier('tier3')}
-        >
-          <div className='flex items-center gap-3'>
-            <div className='w-12 h-12 bg-green-100 rounded-full flex items-center justify-center'>
-              <UserCheck className='w-6 h-6 text-green-600' />
-            </div>
-            <div className='flex-1'>
-              <h3 className='font-semibold text-lg text-neutral-900'>Employee</h3>
-              <p className='text-sm text-neutral-600'>Individual employee access</p>
-            </div>
-          </div>
-          <div className='mt-3 text-xs text-neutral-500'>
-            <Info className='w-4 h-4 inline mr-1' />
-            Access assigned modules and personal workspace
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className='space-y-3'>
-          <Button
-            onClick={() => setShowEmailForm(true)}
-            className='w-full h-12 text-base'
-            disabled={!selectedTier}
-          >
-            Continue with Email
-          </Button>
-
-          {/* OAuth options */}
-          <div className='relative my-4'>
-            <div className='absolute inset-0 flex items-center'>
-              <span className='w-full border-t border-neutral-200' />
-            </div>
-            <div className='relative flex justify-center text-xs uppercase'>
-              <span className='bg-white px-2 text-neutral-500'>Or continue with</span>
-            </div>
-          </div>
-
-          <div className='grid grid-cols-2 gap-3'>
-            <div className='relative'>
-              {!isGoogleConfigured ? (
-                <Button
-                  variant='outline'
-                  className='h-12 w-full'
-                  disabled={true}
-                  title='Google OAuth not configured. Please set REACT_APP_GOOGLE_CLIENT_ID in your .env file'
-                >
-                  <Chrome className='w-5 h-5 mr-2' />
-                  Google (Not Configured)
-                </Button>
-              ) : (
-                <>
-                  {googleLoading && (
-                    <div className='absolute inset-0 bg-white/80 rounded-md flex items-center justify-center z-10'>
-                      <Loader2 className='w-5 h-5 animate-spin' />
-                    </div>
-                  )}
-                  <div
-                    id='google-signin-button'
-                    className={`h-12 ${!selectedTier ? 'opacity-50 pointer-events-none' : ''}`}
-                  />
-                </>
-              )}
-            </div>
-            <div className='relative'>
-              {!isAppleConfigured ? (
-                <Button
-                  variant='outline'
-                  className='h-12 w-full'
-                  disabled={true}
-                  title='Apple Sign-In not configured. Please set VITE_APPLE_CLIENT_ID in your .env file'
-                >
-                  <Apple className='w-5 h-5 mr-2' />
-                  Apple (Not Configured)
-                </Button>
-              ) : (
-                <>
-                  {appleLoading && (
-                    <div className='absolute inset-0 bg-white/80 rounded-md flex items-center justify-center z-10'>
-                      <Loader2 className='w-5 h-5 animate-spin' />
-                    </div>
-                  )}
-                  <Button
-                    onClick={handleAppleSignIn}
-                    disabled={appleLoading || !selectedTier}
-                    variant='outline'
-                    className='h-12 w-full'
-                  >
-                    <Apple className='w-5 h-5 mr-2' />
-                    {appleLoading ? 'Signing in...' : 'Apple'}
-                  </Button>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className='text-center'>
-          <p className='text-sm text-neutral-600'>
-            Already have an account?{' '}
-            <button
-              onClick={onSwitchToLogin}
-              className='text-primary hover:underline'
-              data-testid='link-login'
-            >
-              Sign in here
-            </button>
-          </p>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

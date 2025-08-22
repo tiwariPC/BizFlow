@@ -24,7 +24,7 @@ A comprehensive business solutions platform that serves as a one-stop hub for en
 
 3. **Start development server**
    ```bash
-   PORT=3000 npm run dev
+   npm run dev
    ```
 
 4. **Access the application**
@@ -53,7 +53,7 @@ Create a `.env` file in the root directory:
 
 ```env
 # Server Configuration
-PORT=3001
+PORT=3000
 NODE_ENV=development
 
 # JWT Configuration
@@ -76,11 +76,11 @@ To enable Google and Apple Sign-In, create a `.env` file in the `client/` direct
 ```env
 # Google OAuth Configuration
 VITE_GOOGLE_CLIENT_ID=your-google-client-id-here
-VITE_GOOGLE_REDIRECT_URI=http://localhost:3002/auth/google/callback
+VITE_GOOGLE_REDIRECT_URI=http://localhost:3000/auth/google/callback
 
 # Apple OAuth Configuration
 VITE_APPLE_CLIENT_ID=your-apple-client-id-here
-VITE_APPLE_REDIRECT_URI=http://localhost:3002/auth/apple/callback
+VITE_APPLE_REDIRECT_URI=http://localhost:3000/auth/apple/callback
 ```
 
 **To get Google OAuth credentials:**
@@ -89,8 +89,8 @@ VITE_APPLE_REDIRECT_URI=http://localhost:3002/auth/apple/callback
 3. Enable Google+ API and Google Identity Services
 4. Go to Credentials → Create Credentials → OAuth 2.0 Client ID
 5. Set Application Type to "Web application"
-6. Add authorized origins: `http://localhost:3002`
-7. Add authorized redirect URIs: `http://localhost:3002/auth/google/callback`
+6. Add authorized origins: `http://localhost:3000`
+7. Add authorized redirect URIs: `http://localhost:3000/auth/google/callback`
 8. Copy the Client ID to your `client/.env` file
 
 **To get Apple OAuth credentials:**
@@ -264,6 +264,16 @@ npm run setup            # Run setup script (chmod +x setup.sh && ./setup.sh)
 - **Dark/Light Themes**: Customizable visual themes
 - **Glassmorphism Effects**: Modern glass-like UI elements
 - **Gradient Backgrounds**: Dynamic and engaging visual design
+
+#### **Enhanced Authentication UI**
+- **Modern Login Dialog**: Sleek glassmorphism design with backdrop blur
+- **Role-Based Signup**: Three-tier user registration (Admin, Organization, Employee)
+- **OAuth Integration**: Google and Apple Sign-In support
+- **Smart Close Functionality**: Close dialog with Escape key or click outside
+- **Form Validation**: Real-time validation with error handling
+- **Loading States**: Animated loading indicators
+- **Password Toggle**: Show/hide password functionality
+- **Responsive Design**: Works perfectly on all devices
 
 #### **Component Library**
 - **Reusable UI Components**: Button, Card, Input, Modal, etc.
@@ -725,7 +735,7 @@ npm run format:check
 ## 🐛 Troubleshooting
 
 ### Port Conflicts
-If you encounter port conflicts (especially on macOS with port 5000):
+If you encounter port conflicts (especially on macOS with port 3000):
 ```bash
 # Use a different port
 PORT=3001 npm run dev
@@ -734,8 +744,8 @@ PORT=3001 npm run dev
 ### Login Issues
 If login doesn't work:
 1. Check server logs for initialization messages
-2. Verify users exist: `curl http://localhost:3002/api/debug/users`
-3. Test login API directly: `curl -X POST http://localhost:3002/api/auth/login -H "Content-Type: application/json" -d '{"username":"admin","password":"admin123"}'`
+2. Verify users exist: `curl http://localhost:3000/api/debug/users`
+3. Test login API directly: `curl -X POST http://localhost:3000/api/auth/login -H "Content-Type: application/json" -d '{"username":"admin","password":"admin123"}'`
 
 ### Build Issues
 ```bash

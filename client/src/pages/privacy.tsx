@@ -51,7 +51,7 @@ export default function Privacy() {
 
   return (
     <div className='min-h-screen flex flex-col'>
-      <Header onLoginClick={() => {}} />
+      <Header onLoginClick={() => {}} onSignupClick={() => {}} />
 
       <main className='flex-1'>
         {/* Hero Section */}

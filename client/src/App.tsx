@@ -1,10 +1,10 @@
 import { Switch, Route } from 'wouter';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './lib/queryClient';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogPortal, DialogOverlay } from '@/components/ui/dialog';
 
 // Layout components
 import { Header } from '@/components/layout/header';
@@ -100,6 +100,11 @@ function App() {
     setShowAuthDialog(true);
   };
 
+  const handleSignupClick = () => {
+    setAuthMode('register');
+    setShowAuthDialog(true);
+  };
+
   const handleAuthSuccess = () => {
     setShowAuthDialog(false);
   };
@@ -112,11 +117,43 @@ function App() {
     setAuthMode('login');
   };
 
+  // Listen for custom signup events from other components
+  useEffect(() => {
+    const handleOpenSignup = () => {
+      setAuthMode('register');
+      setShowAuthDialog(true);
+    };
+
+    window.addEventListener('open-signup', handleOpenSignup);
+    return () => window.removeEventListener('open-signup', handleOpenSignup);
+  }, []);
+
+  // Handle Escape key to close dialog
+  useEffect(() => {
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && showAuthDialog) {
+        setShowAuthDialog(false);
+      }
+    };
+
+    if (showAuthDialog) {
+      document.addEventListener('keydown', handleEscapeKey);
+      // Prevent body scroll when dialog is open
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+      // Restore body scroll when dialog is closed
+      document.body.style.overflow = 'unset';
+    };
+  }, [showAuthDialog]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <div className='min-h-screen flex flex-col'>
-          <Header onLoginClick={handleLoginClick} />
+          <Header onLoginClick={handleLoginClick} onSignupClick={handleSignupClick} />
 
           <main className='flex-1'>
             <Router />
@@ -127,15 +164,24 @@ function App() {
 
         <Toaster />
 
-        {/* Auth Dialog */}
+        {/* Auth Dialog - Custom without close button */}
         <Dialog open={showAuthDialog} onOpenChange={setShowAuthDialog}>
-          <DialogContent className='sm:max-w-md'>
-            {authMode === 'login' ? (
-              <LoginForm onSuccess={handleAuthSuccess} onSwitchToRegister={switchToRegister} />
-            ) : (
-              <RegisterForm onSuccess={handleAuthSuccess} onSwitchToLogin={switchToLogin} />
-            )}
-          </DialogContent>
+          <DialogPortal>
+            <DialogOverlay
+              className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 cursor-pointer"
+              onClick={() => setShowAuthDialog(false)}
+            />
+            <div
+              className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {authMode === 'login' ? (
+                <LoginForm onSuccess={handleAuthSuccess} onSwitchToRegister={switchToRegister} />
+              ) : (
+                <RegisterForm onSuccess={handleAuthSuccess} onSwitchToLogin={switchToLogin} />
+              )}
+            </div>
+          </DialogPortal>
         </Dialog>
       </TooltipProvider>
     </QueryClientProvider>

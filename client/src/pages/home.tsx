@@ -247,18 +247,20 @@ export default function Home() {
             </p>
 
             <div className='flex justify-center items-center mb-12'>
-              <Link href='/incorporation'>
-                <Button
-                  size='lg'
-                  className='group relative bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-12 py-6 text-xl font-bold shadow-2xl hover:shadow-blue-500/40 transition-all duration-300 transform hover:scale-105 border-0 rounded-2xl overflow-hidden'
-                >
-                  <div className='absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300'></div>
-                  <span className='relative flex items-center'>
-                    Start Your Business
-                    <ArrowRight className='w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform' />
-                  </span>
-                </Button>
-              </Link>
+              <Button
+                size='lg'
+                className='group relative bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-12 py-6 text-xl font-bold shadow-2xl hover:shadow-blue-500/40 transition-all duration-300 transform hover:scale-105 border-0 rounded-2xl overflow-hidden'
+                onClick={() => {
+                  // Trigger signup flow by dispatching a custom event
+                  window.dispatchEvent(new CustomEvent('open-signup'));
+                }}
+              >
+                <div className='absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300'></div>
+                <span className='relative flex items-center'>
+                  Start Your Business
+                  <ArrowRight className='w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform' />
+                </span>
+              </Button>
             </div>
 
             {/* Enhanced Trust Indicators */}
@@ -493,6 +495,10 @@ export default function Home() {
                         ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-purple-500/40'
                         : 'bg-gray-900 hover:bg-gray-800 text-white'
                     } transition-all duration-300 transform hover:scale-105`}
+                    onClick={() => {
+                      // Trigger signup flow by dispatching a custom event
+                      window.dispatchEvent(new CustomEvent('open-signup'));
+                    }}
                   >
                     Get Started
                   </Button>
@@ -616,18 +622,20 @@ export default function Home() {
           </p>
 
           <div className='flex flex-col sm:flex-row gap-8 justify-center items-center mb-16'>
-            <Link href='/incorporation'>
-              <Button
-                size='lg'
-                className='group relative bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-16 py-8 text-2xl font-bold shadow-2xl hover:shadow-blue-500/40 transition-all duration-300 transform hover:scale-105 border-0 rounded-2xl overflow-hidden'
-              >
-                <div className='absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300'></div>
-                <span className='relative flex items-center'>
-                  Start Free Trial
-                  <ArrowRight className='w-8 h-8 ml-4 group-hover:translate-x-2 transition-transform' />
-                </span>
-              </Button>
-            </Link>
+            <Button
+              size='lg'
+              className='group relative bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-16 py-8 text-2xl font-bold shadow-2xl hover:shadow-blue-500/40 transition-all duration-300 transform hover:scale-105 border-0 rounded-2xl overflow-hidden'
+              onClick={() => {
+                // Trigger signup flow by dispatching a custom event
+                window.dispatchEvent(new CustomEvent('open-signup'));
+              }}
+            >
+              <div className='absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300'></div>
+              <span className='relative flex items-center'>
+                Start Free Trial
+                <ArrowRight className='w-8 h-8 ml-4 group-hover:translate-x-2 transition-transform' />
+              </span>
+            </Button>
 
             <Link href='/contact'>
               <Button

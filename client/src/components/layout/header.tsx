@@ -13,9 +13,10 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 interface HeaderProps {
   onLoginClick: () => void;
+  onSignupClick: () => void;
 }
 
-export function Header({ onLoginClick }: HeaderProps) {
+export function Header({ onLoginClick, onSignupClick }: HeaderProps) {
   const [location] = useLocation();
   const [user, setUser] = useState(authService.getUser());
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -109,7 +110,7 @@ export function Header({ onLoginClick }: HeaderProps) {
                 <Button variant='ghost' onClick={onLoginClick} data-testid='login-button'>
                   Login
                 </Button>
-                <Button data-testid='signup-button'>Sign Up</Button>
+                <Button onClick={onSignupClick} data-testid='signup-button'>Sign Up</Button>
               </>
             )}
 
