@@ -341,12 +341,8 @@ export default function SectionOverview() {
     };
   }, [showAuthDialog]);
 
-  // If user is signed in, redirect to the actual section
-  useEffect(() => {
-    if (user && section) {
-      window.location.href = section.href;
-    }
-  }, [user, section]);
+  // No automatic redirect - allow users to navigate freely
+  // Section overview pages are accessible to everyone
 
   if (!section) {
     return (
@@ -368,7 +364,7 @@ export default function SectionOverview() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       {/* Header */}
       <Header onLoginClick={handleLoginClick} onSignupClick={handleSignupClick} />
-      
+
       {/* Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className={`absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br ${section.bgGradient} rounded-full blur-3xl opacity-30`}></div>
@@ -408,20 +404,31 @@ export default function SectionOverview() {
                   This section requires authentication to access all features and tools. Sign in to explore the complete functionality.
                 </p>
                 <div className="flex gap-3 justify-center">
-                  <Button 
-                    variant="outline" 
-                    className="border-orange-300 text-orange-700 hover:bg-orange-100"
-                    onClick={handleSignupClick}
-                  >
-                    <UserPlus className="w-4 h-4 mr-2" />
-                    Sign Up
-                  </Button>
-                  <Button 
-                    className="bg-orange-600 hover:bg-orange-700"
-                    onClick={handleLoginClick}
-                  >
-                    Sign In
-                  </Button>
+                  {user ? (
+                    <Link href={section.href}>
+                      <Button className="bg-green-600 hover:bg-green-700">
+                        <ArrowRight className="w-4 h-4 mr-2" />
+                        Go to {section.title}
+                      </Button>
+                    </Link>
+                  ) : (
+                    <>
+                      <Button
+                        variant="outline"
+                        className="border-orange-300 text-orange-700 hover:bg-orange-100"
+                        onClick={handleSignupClick}
+                      >
+                        <UserPlus className="w-4 h-4 mr-2" />
+                        Sign Up
+                      </Button>
+                      <Button
+                        className="bg-orange-600 hover:bg-orange-700"
+                        onClick={handleLoginClick}
+                      >
+                        Sign In
+                      </Button>
+                    </>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -548,44 +555,7 @@ export default function SectionOverview() {
           </Card>
         </motion.div>
 
-        {/* CTA Section */}
-        <motion.div
-          className="text-center mt-16"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.0 }}
-        >
-          <div className="max-w-4xl mx-auto">
-            <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
-              <CardContent className="p-12">
-                <h3 className="text-3xl font-bold text-slate-900 mb-4">
-                  Ready to Get Started?
-                </h3>
-                <p className="text-xl text-slate-600 mb-8 max-w-2xl mx-auto">
-                  Sign in to access all features and start using {section.title.toLowerCase()} tools and services.
-                </p>
-                <div className="flex gap-4 justify-center">
-                  <Button 
-                    size="lg" 
-                    className="bg-blue-600 hover:bg-blue-700"
-                    onClick={handleSignupClick}
-                  >
-                    <UserPlus className="w-4 h-4 mr-2" />
-                    Create Account
-                  </Button>
-                  <Button 
-                    size="lg" 
-                    variant="outline" 
-                    className="border-blue-300 text-blue-700 hover:bg-blue-50"
-                    onClick={handleLoginClick}
-                  >
-                    Sign In
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </motion.div>
+
       </div>
 
       {/* Authentication Dialog */}
