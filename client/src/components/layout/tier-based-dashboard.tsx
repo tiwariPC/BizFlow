@@ -122,7 +122,7 @@ export function TierBasedDashboardLayout({ children }: TierBasedDashboardLayoutP
     if (user.role === 'tier1' || user.tier === 'tier1') {
       return <Badge className='bg-purple-100 text-purple-800'>Platform Admin</Badge>;
     }
-    
+
     switch (tier) {
       case 'tier2':
         return <Badge className='bg-blue-100 text-blue-800'>Organization</Badge>;
@@ -141,7 +141,7 @@ export function TierBasedDashboardLayout({ children }: TierBasedDashboardLayoutP
     if (user.role === 'tier1' || user.tier === 'tier1') {
       return <Crown className='w-5 h-5 text-purple-600' />;
     }
-    
+
     switch (tier) {
       case 'tier2':
         return <Building className='w-5 h-5 text-blue-600' />;

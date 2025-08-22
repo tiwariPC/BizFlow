@@ -52,7 +52,7 @@ export function useAccessToken(): UseAccessTokenReturn {
     if (user && (user.role === 'admin' || user.role === 'tier1' || user.tier === 'tier1')) {
       return true;
     }
-    
+
     // Tier 2 users have access to all modules
     if (user && (user.tier === 'tier2')) {
       return true;
