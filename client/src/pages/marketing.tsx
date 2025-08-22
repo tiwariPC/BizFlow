@@ -569,7 +569,7 @@ export default function Marketing() {
           </motion.div>
         )}
 
-        {activeTab === "crm" && (
+        {activeTab === "CRM" && (
           <motion.div
             key="crm"
             initial={{ opacity: 0, y: 20 }}
