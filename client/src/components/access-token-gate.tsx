@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
+import { authService } from '@/lib/auth';
 import { Shield, Key, AlertCircle, CheckCircle } from 'lucide-react';
 
 interface AccessTokenGateProps {
@@ -28,6 +29,14 @@ export function AccessTokenGate({ module, children, fallback }: AccessTokenGateP
   const [accessToken, setAccessToken] = useState<AccessTokenData | null>(null);
   const [hasAccess, setHasAccess] = useState(false);
   const { toast } = useToast();
+
+  // Get current user
+  const user = authService.getUser();
+
+  // Admin users and Tier1 users always have access - render children directly
+  if (user && (user.role === 'admin' || user.role === 'tier1' || user.tier === 'tier1')) {
+    return <>{children}</>;
+  }
 
   const validateToken = async () => {
     if (!token.trim()) {

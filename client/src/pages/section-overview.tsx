@@ -5,38 +5,23 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { authService } from '@/lib/auth';
-import { Header } from '@/components/layout/header';
-import { LoginForm } from '@/components/auth/login-form';
-import { RegisterForm } from '@/components/auth/register-form';
 import {
-  Dialog,
-  DialogContent,
-  DialogPortal,
-  DialogOverlay,
-} from '@/components/ui/dialog';
-import {
-  Building2,
-  Scale,
-  Wrench,
   Banknote,
-  TrendingUp,
   Network,
-  LayoutDashboard,
   ShieldCheck,
   Palette,
   PenTool,
   Users,
   BookOpen,
   ArrowRight,
-  Sparkles,
   CheckCircle,
   Lock,
   UserPlus,
-  ArrowUpRight,
   Star,
   Clock,
   Target,
   Zap,
+  TrendingUp,
 } from 'lucide-react';
 
 interface SectionData {
@@ -288,8 +273,7 @@ export default function SectionOverview() {
   const [sectionId, setSectionId] = useState<string>('');
   const [section, setSection] = useState<SectionData | null>(null);
   const [user, setUser] = useState<any>(null);
-  const [showAuthDialog, setShowAuthDialog] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+
 
   useEffect(() => {
     if (match && params?.sectionId) {
@@ -303,43 +287,26 @@ export default function SectionOverview() {
   }, []);
 
   const handleLoginClick = () => {
-    setAuthMode('login');
-    setShowAuthDialog(true);
+    // Try direct window method first
+    if ((window as any).openLoginDialog) {
+      (window as any).openLoginDialog();
+    } else {
+      // Fallback to custom event with standard event name
+      window.dispatchEvent(new Event('open-login'));
+    }
   };
 
   const handleSignupClick = () => {
-    setAuthMode('register');
-    setShowAuthDialog(true);
-  };
-
-  const handleAuthSuccess = () => {
-    setShowAuthDialog(false);
-  };
-
-  const switchToRegister = () => {
-    setAuthMode('register');
-  };
-
-  const switchToLogin = () => {
-    setAuthMode('login');
-  };
-
-  // Handle Escape key to close dialog and body scroll
-  useEffect(() => {
-    const handleEscapeKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && showAuthDialog) {
-        setShowAuthDialog(false);
-      }
-    };
-    if (showAuthDialog) {
-      document.addEventListener('keydown', handleEscapeKey);
-      document.body.style.overflow = 'hidden';
+    // Try direct window method first
+    if ((window as any).openSignupDialog) {
+      (window as any).openSignupDialog();
+    } else {
+      // Fallback to custom event with standard event name
+      window.dispatchEvent(new Event('open-signup'));
     }
-    return () => {
-      document.removeEventListener('keydown', handleEscapeKey);
-      document.body.style.overflow = 'unset';
-    };
-  }, [showAuthDialog]);
+  };
+
+
 
   // No automatic redirect - allow users to navigate freely
   // Section overview pages are accessible to everyone
@@ -362,11 +329,10 @@ export default function SectionOverview() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-      {/* Header */}
-      <Header onLoginClick={handleLoginClick} onSignupClick={handleSignupClick} />
+      {/* Header is rendered in App.tsx above this content */}
 
       {/* Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className={`absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br ${section.bgGradient} rounded-full blur-3xl opacity-30`}></div>
         <div className={`absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br ${section.bgGradient} rounded-full blur-3xl opacity-20`}></div>
       </div>
@@ -558,31 +524,7 @@ export default function SectionOverview() {
 
       </div>
 
-      {/* Authentication Dialog */}
-      <Dialog open={showAuthDialog} onOpenChange={setShowAuthDialog}>
-        <DialogPortal>
-          <DialogOverlay
-            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 cursor-pointer"
-            onClick={() => setShowAuthDialog(false)}
-          />
-          <div
-            className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {authMode === 'login' ? (
-              <LoginForm
-                onSuccess={handleAuthSuccess}
-                onSwitchToRegister={switchToRegister}
-              />
-            ) : (
-              <RegisterForm
-                onSuccess={handleAuthSuccess}
-                onSwitchToLogin={switchToLogin}
-              />
-            )}
-          </div>
-        </DialogPortal>
-      </Dialog>
+
     </div>
   );
 }

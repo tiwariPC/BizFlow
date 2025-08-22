@@ -105,13 +105,25 @@ export function TierBasedDashboardLayout({ children }: TierBasedDashboardLayoutP
 
   // Determine user tier and available modules
   const userTier = user.role || 'tier3';
-  const availableModules =
-    userTier === 'tier1' ? tier1Modules : userTier === 'tier2' ? tier2Modules : tier3Modules;
 
-  const getTierBadge = (tier: string) => {
+  // Admin users and Tier1 users get access to all modules (tier1 + tier2 + tier3)
+  let availableModules;
+  if (user.role === 'admin' || user.role === 'tier1' || user.tier === 'tier1') {
+    availableModules = [...tier1Modules, ...tier2Modules, ...tier3Modules];
+  } else {
+    availableModules = userTier === 'tier2' ? tier2Modules : tier3Modules;
+  }
+
+    const getTierBadge = (tier: string) => {
+    // Admin users and Tier1 users get special badge
+    if (user.role === 'admin') {
+      return <Badge className='bg-red-100 text-red-800'>System Admin</Badge>;
+    }
+    if (user.role === 'tier1' || user.tier === 'tier1') {
+      return <Badge className='bg-purple-100 text-purple-800'>Platform Admin</Badge>;
+    }
+    
     switch (tier) {
-      case 'tier1':
-        return <Badge className='bg-purple-100 text-purple-800'>Platform Admin</Badge>;
       case 'tier2':
         return <Badge className='bg-blue-100 text-blue-800'>Organization</Badge>;
       case 'tier3':
@@ -121,10 +133,16 @@ export function TierBasedDashboardLayout({ children }: TierBasedDashboardLayoutP
     }
   };
 
-  const getTierIcon = (tier: string) => {
+    const getTierIcon = (tier: string) => {
+    // Admin users and Tier1 users get special icons
+    if (user.role === 'admin') {
+      return <Shield className='w-5 h-5 text-red-600' />;
+    }
+    if (user.role === 'tier1' || user.tier === 'tier1') {
+      return <Crown className='w-5 h-5 text-purple-600' />;
+    }
+    
     switch (tier) {
-      case 'tier1':
-        return <Crown className='w-5 h-5 text-purple-600' />;
       case 'tier2':
         return <Building className='w-5 h-5 text-blue-600' />;
       case 'tier3':
@@ -274,8 +292,8 @@ export function TierBasedDashboardLayout({ children }: TierBasedDashboardLayoutP
                 </Link>
               ))}
 
-              {/* Future Modules Section - Only show for tier2 and tier3 */}
-              {(userTier === 'tier2' || userTier === 'tier3') && (
+                      {/* Future Modules Section - Show for admin, tier1, tier2 and tier3 */}
+        {(user.role === 'admin' || user.role === 'tier1' || user.tier === 'tier1' || userTier === 'tier2' || userTier === 'tier3') && (
                 <div className='pt-4 border-t border-neutral-200'>
                   <div className='px-3 py-2'>
                     <h3 className='text-xs font-semibold text-neutral-500 uppercase tracking-wide'>

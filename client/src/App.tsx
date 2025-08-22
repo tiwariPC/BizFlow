@@ -96,7 +96,7 @@ function Router() {
 }
 
 function App() {
-  const [showAuthDialog, setShowAuthDialog] = useState(false);
+    const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
 
   const handleLoginClick = () => {
@@ -128,8 +128,26 @@ function App() {
       setShowAuthDialog(true);
     };
 
+    const handleOpenLogin = () => {
+      setAuthMode('login');
+      setShowAuthDialog(true);
+    };
+
+    // Add handlers to window object for direct access
+    (window as any).openSignupDialog = handleOpenSignup;
+    (window as any).openLoginDialog = handleOpenLogin;
+
     window.addEventListener('open-signup', handleOpenSignup);
-    return () => window.removeEventListener('open-signup', handleOpenSignup);
+    window.addEventListener('open-login', handleOpenLogin);
+
+    return () => {
+      // Clean up window object handlers
+      delete (window as any).openSignupDialog;
+      delete (window as any).openLoginDialog;
+
+      window.removeEventListener('open-signup', handleOpenSignup);
+      window.removeEventListener('open-login', handleOpenLogin);
+    };
   }, []);
 
   // Handle Escape key to close dialog

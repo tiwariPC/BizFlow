@@ -47,9 +47,14 @@ export function useAccessToken(): UseAccessTokenReturn {
     }
   }, []);
 
-  const hasAccess = useCallback((module: string): boolean => {
-    // Tier 1 and Tier 2 users have access to all modules
-    if (user && (user.tier === 'tier1' || user.tier === 'tier2')) {
+    const hasAccess = useCallback((module: string): boolean => {
+    // Admin users and Tier1 users always have access to all modules
+    if (user && (user.role === 'admin' || user.role === 'tier1' || user.tier === 'tier1')) {
+      return true;
+    }
+    
+    // Tier 2 users have access to all modules
+    if (user && (user.tier === 'tier2')) {
       return true;
     }
 

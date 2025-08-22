@@ -21,6 +21,8 @@ export function Header({ onLoginClick, onSignupClick }: HeaderProps) {
   const [user, setUser] = useState(authService.getUser());
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+
+
   useEffect(() => {
     const checkAuth = () => {
       setUser(authService.getUser());
