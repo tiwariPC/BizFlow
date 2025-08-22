@@ -254,6 +254,8 @@ npm run setup            # Run setup script (chmod +x setup.sh && ./setup.sh)
 - **Password Hashing**: bcrypt encryption for user passwords
 - **Session Management**: Secure user session handling
 - **Permission System**: Granular access control
+- **Access Token System**: Temporary module access with time and usage limits
+- **Role-Based Access Control**: Three-tier user system with module restrictions
 
 ### 🎨 **User Interface & Experience**
 
@@ -274,6 +276,14 @@ npm run setup            # Run setup script (chmod +x setup.sh && ./setup.sh)
 - **Loading States**: Animated loading indicators
 - **Password Toggle**: Show/hide password functionality
 - **Responsive Design**: Works perfectly on all devices
+
+#### **Access Token Management**
+- **Temporary Access Control**: Grant time-limited access to restricted modules
+- **Token Creation**: Administrators can create access tokens with specific permissions
+- **Usage Tracking**: Monitor token usage and expiration
+- **Module-Specific Access**: Grant access to specific modules (HR, Finance, etc.)
+- **Security Features**: Automatic expiration, usage limits, and revocation
+- **User-Friendly Interface**: Easy token validation and management
 
 #### **Component Library**
 - **Reusable UI Components**: Button, Card, Input, Modal, etc.

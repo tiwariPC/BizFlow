@@ -11,6 +11,9 @@ import {
   type InsertCompany,
   type Organization,
   type InsertOrganization,
+  type AccessToken,
+  type InsertAccessToken,
+  type CreateAccessToken,
 } from '@shared/schema';
 import { randomUUID } from 'crypto';
 import bcrypt from 'bcrypt';
@@ -54,6 +57,12 @@ export interface IStorage {
   getCompanies(): Promise<Company[]>;
   getCompaniesByOwner(ownerId: string): Promise<Company[]>;
   createCompany(company: InsertCompany): Promise<Company>;
+
+  // Access Tokens
+  createAccessToken(data: CreateAccessToken & { grantedBy: string }): Promise<AccessToken>;
+  validateAccessToken(token: string, module: string): Promise<AccessToken | undefined>;
+  getAccessTokens(grantedBy: string): Promise<AccessToken[]>;
+  deactivateAccessToken(id: string, grantedBy: string): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
@@ -63,6 +72,7 @@ export class MemStorage implements IStorage {
   private questionnaires: Map<string, Questionnaire>;
   private companies: Map<string, Company>;
   private organizations: Map<string, Organization>;
+  private accessTokens: Map<string, AccessToken>;
   private initialized: boolean = false;
 
   constructor() {
@@ -72,6 +82,7 @@ export class MemStorage implements IStorage {
     this.questionnaires = new Map();
     this.companies = new Map();
     this.organizations = new Map();
+    this.accessTokens = new Map();
   }
 
   private async ensureInitialized() {
@@ -456,6 +467,83 @@ export class MemStorage implements IStorage {
     } as Company;
     this.companies.set(id, company);
     return company;
+  }
+
+  // Access Tokens
+  async createAccessToken(data: CreateAccessToken & { grantedBy: string }): Promise<AccessToken> {
+    const id = randomUUID();
+    const token = randomUUID(); // Generate unique token
+    
+    const accessToken: AccessToken = {
+      id,
+      token,
+      userId: data.userId,
+      grantedBy: data.grantedBy,
+      modules: data.modules,
+      permissions: data.permissions || {},
+      expiresAt: new Date(data.expiresAt),
+      isActive: true,
+      usageCount: 0,
+      maxUsage: data.maxUsage || null,
+      description: data.description || null,
+      createdAt: new Date(),
+      lastUsedAt: null,
+    };
+
+    this.accessTokens.set(id, accessToken);
+    return accessToken;
+  }
+
+  async validateAccessToken(token: string, module: string): Promise<AccessToken | undefined> {
+    const accessToken = Array.from(this.accessTokens.values()).find(
+      at => at.token === token && at.isActive
+    );
+
+    if (!accessToken) {
+      return undefined;
+    }
+
+    // Check if token is expired
+    if (new Date() > accessToken.expiresAt) {
+      return undefined;
+    }
+
+    // Check if module is allowed
+    if (!accessToken.modules.includes(module)) {
+      return undefined;
+    }
+
+    // Check usage limit
+    if (accessToken.maxUsage && accessToken.usageCount >= accessToken.maxUsage) {
+      return undefined;
+    }
+
+    // Update usage count and last used time
+    const updatedToken: AccessToken = {
+      ...accessToken,
+      usageCount: accessToken.usageCount + 1,
+      lastUsedAt: new Date(),
+    };
+
+    this.accessTokens.set(accessToken.id, updatedToken);
+    return updatedToken;
+  }
+
+  async getAccessTokens(grantedBy: string): Promise<AccessToken[]> {
+    return Array.from(this.accessTokens.values())
+      .filter(token => token.grantedBy === grantedBy)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
+  async deactivateAccessToken(id: string, grantedBy: string): Promise<void> {
+    const token = this.accessTokens.get(id);
+    if (token && token.grantedBy === grantedBy) {
+      const updatedToken: AccessToken = {
+        ...token,
+        isActive: false,
+      };
+      this.accessTokens.set(id, updatedToken);
+    }
   }
 }
 

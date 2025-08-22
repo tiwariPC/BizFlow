@@ -20,6 +20,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
+import { AccessTokenGate } from '@/components/access-token-gate';
 import {
   Users,
   UserPlus,
@@ -456,12 +457,13 @@ export default function Tools() {
   });
 
   return (
-    <DashboardLayout>
-      {/* Header */}
-      <div className='mb-8'>
-        <h1 className='text-3xl font-bold text-neutral-900 mb-2'>HR & Team Management</h1>
-        <p className='text-neutral-600'>Manage your team, payroll, and recruitment</p>
-      </div>
+    <AccessTokenGate module="hr">
+      <DashboardLayout>
+        {/* Header */}
+        <div className='mb-8'>
+          <h1 className='text-3xl font-bold text-neutral-900 mb-2'>HR & Team Management</h1>
+          <p className='text-neutral-600'>Manage your team, payroll, and recruitment</p>
+        </div>
 
       {/* Tab Navigation */}
       <div className='mb-8'>
@@ -1158,6 +1160,7 @@ export default function Tools() {
           </div>
         </DialogContent>
       </Dialog>
-    </DashboardLayout>
+      </DashboardLayout>
+    </AccessTokenGate>
   );
 }

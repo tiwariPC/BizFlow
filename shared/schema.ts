@@ -31,6 +31,29 @@ export const users = pgTable('users', {
   lastLoginAt: timestamp('last_login_at'),
 });
 
+// Access Tokens for temporary module access
+export const accessTokens = pgTable('access_tokens', {
+  id: varchar('id')
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  token: text('token').notNull().unique(), // Unique access token
+  userId: varchar('user_id')
+    .notNull()
+    .references(() => users.id),
+  grantedBy: varchar('granted_by')
+    .notNull()
+    .references(() => users.id), // Who granted the access
+  modules: text('modules').array().notNull(), // Array of module names (e.g., ['hr', 'team_management'])
+  permissions: json('permissions'), // Specific permissions for the modules
+  expiresAt: timestamp('expires_at').notNull(), // When the token expires
+  isActive: boolean('is_active').default(true), // Can be deactivated before expiry
+  usageCount: integer('usage_count').default(0), // Track how many times used
+  maxUsage: integer('max_usage'), // Optional: limit number of uses
+  description: text('description'), // Reason for granting access
+  createdAt: timestamp('created_at').defaultNow(),
+  lastUsedAt: timestamp('last_used_at'),
+});
+
 export const servicePackages = pgTable('service_packages', {
   id: varchar('id')
     .primaryKey()
@@ -125,6 +148,13 @@ export const insertUserSchema = createInsertSchema(users).omit({
   createdAt: true,
 });
 
+export const insertAccessTokenSchema = createInsertSchema(accessTokens).omit({
+  id: true,
+  token: true,
+  createdAt: true,
+  lastUsedAt: true,
+});
+
 export const insertServicePackageSchema = createInsertSchema(servicePackages).omit({
   id: true,
 });
@@ -168,6 +198,22 @@ export const userRegistrationSchema = z.object({
   parentUserId: z.string().optional(),
 });
 
+// Access token creation schema
+export const createAccessTokenSchema = z.object({
+  userId: z.string().min(1, 'User ID is required'),
+  modules: z.array(z.string()).min(1, 'At least one module is required'),
+  permissions: z.record(z.any()).optional(),
+  expiresAt: z.string().datetime(), // ISO string
+  maxUsage: z.number().optional(),
+  description: z.string().optional(),
+});
+
+// Access token validation schema
+export const validateAccessTokenSchema = z.object({
+  token: z.string().min(1, 'Token is required'),
+  module: z.string().min(1, 'Module is required'),
+});
+
 // Organization registration schema
 export const organizationRegistrationSchema = z.object({
   name: z.string().min(1, 'Organization name is required'),
@@ -190,6 +236,10 @@ export const organizationRegistrationSchema = z.object({
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
+export type AccessToken = typeof accessTokens.$inferSelect;
+export type InsertAccessToken = z.infer<typeof insertAccessTokenSchema>;
+export type CreateAccessToken = z.infer<typeof createAccessTokenSchema>;
+export type ValidateAccessToken = z.infer<typeof validateAccessTokenSchema>;
 export type Organization = typeof organizations.$inferSelect;
 export type InsertOrganization = z.infer<typeof insertOrganizationSchema>;
 export type ServicePackage = typeof servicePackages.$inferSelect;
@@ -202,3 +252,19 @@ export type LoginCredentials = z.infer<typeof loginSchema>;
 
 export type Company = typeof companies.$inferSelect;
 export type InsertCompany = z.infer<typeof insertCompanySchema>;
+
+// Module definitions for access control
+export const AVAILABLE_MODULES = [
+  'hr',
+  'team_management',
+  'finance',
+  'compliance',
+  'marketing',
+  'sales',
+  'inventory',
+  'projects',
+  'analytics',
+  'settings',
+] as const;
+
+export type Module = typeof AVAILABLE_MODULES[number];

@@ -56,6 +56,10 @@ const sidebarModules = [
   { icon: BookOpen, label: 'Knowledge Hub', href: '/help' },
   { icon: Network, label: 'Community', href: '/help' },
   { icon: Store, label: 'Marketplace', href: '/store' },
+  // Add access tokens management for tier1 and tier2 users
+  ...(user && (user.tier === 'tier1' || user.tier === 'tier2') ? [
+    { icon: Shield, label: 'Access Tokens', href: '/access-tokens' }
+  ] : []),
 ];
 
 const quickStats = [

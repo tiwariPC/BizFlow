@@ -7,7 +7,12 @@ import {
   insertOrderSchema,
   insertQuestionnaireSchema,
   insertCompanySchema,
+  createAccessTokenSchema,
+  validateAccessTokenSchema,
+  AVAILABLE_MODULES,
   type User,
+  type CreateAccessToken,
+  type ValidateAccessToken,
 } from '@shared/schema';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -630,6 +635,117 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(status);
     } catch (error) {
       res.status(500).json({ message: 'Failed to fetch compliance status' });
+    }
+  });
+
+  // Access Token Management Routes
+  app.post('/api/access-tokens', authenticateToken, async (req: any, res) => {
+    try {
+      // Only tier1 and tier2 users can create access tokens
+      if (req.user.tier !== 'tier1' && req.user.tier !== 'tier2') {
+        return res.status(403).json({ message: 'Insufficient permissions to create access tokens' });
+      }
+
+      const tokenData = createAccessTokenSchema.parse(req.body);
+
+      // Validate modules
+      const invalidModules = tokenData.modules.filter(module => !AVAILABLE_MODULES.includes(module as any));
+      if (invalidModules.length > 0) {
+        return res.status(400).json({
+          message: `Invalid modules: ${invalidModules.join(', ')}`,
+          availableModules: AVAILABLE_MODULES
+        });
+      }
+
+      // Generate unique token
+      const token = `at_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+      const accessToken = await storage.createAccessToken({
+        ...tokenData,
+        token,
+        grantedBy: req.user.id,
+      });
+
+      res.json({
+        success: true,
+        accessToken: {
+          id: accessToken.id,
+          token: accessToken.token,
+          modules: accessToken.modules,
+          expiresAt: accessToken.expiresAt,
+          maxUsage: accessToken.maxUsage,
+          description: accessToken.description,
+        }
+      });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message || 'Failed to create access token' });
+    }
+  });
+
+  app.post('/api/access-tokens/validate', async (req, res) => {
+    try {
+      const { token, module } = validateAccessTokenSchema.parse(req.body);
+
+      const accessToken = await storage.validateAccessToken(token, module);
+
+      if (!accessToken) {
+        return res.status(403).json({ message: 'Invalid or expired access token' });
+      }
+
+      res.json({
+        success: true,
+        accessToken: {
+          id: accessToken.id,
+          modules: accessToken.modules,
+          permissions: accessToken.permissions,
+          expiresAt: accessToken.expiresAt,
+          usageCount: accessToken.usageCount,
+          maxUsage: accessToken.maxUsage,
+        }
+      });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message || 'Failed to validate access token' });
+    }
+  });
+
+  app.get('/api/access-tokens', authenticateToken, async (req: any, res) => {
+    try {
+      // Only tier1 and tier2 users can view access tokens
+      if (req.user.tier !== 'tier1' && req.user.tier !== 'tier2') {
+        return res.status(403).json({ message: 'Insufficient permissions to view access tokens' });
+      }
+
+      const tokens = await storage.getAccessTokens(req.user.id);
+      res.json({ tokens });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message || 'Failed to fetch access tokens' });
+    }
+  });
+
+  app.delete('/api/access-tokens/:id', authenticateToken, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+
+      // Only tier1 and tier2 users can delete access tokens
+      if (req.user.tier !== 'tier1' && req.user.tier !== 'tier2') {
+        return res.status(403).json({ message: 'Insufficient permissions to delete access tokens' });
+      }
+
+      await storage.deactivateAccessToken(id, req.user.id);
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message || 'Failed to deactivate access token' });
+    }
+  });
+
+  app.get('/api/modules', authenticateToken, async (req: any, res) => {
+    try {
+      res.json({
+        modules: AVAILABLE_MODULES,
+        userTier: req.user.tier
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message || 'Failed to fetch modules' });
     }
   });
 

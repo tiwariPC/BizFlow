@@ -49,6 +49,7 @@ import Status from '@/pages/status';
 import Privacy from '@/pages/privacy';
 import Terms from '@/pages/terms';
 import Cookies from '@/pages/cookies';
+import AccessTokens from '@/pages/access-tokens';
 
 function Router() {
   return (
@@ -86,6 +87,7 @@ function Router() {
       <Route path='/privacy' component={Privacy} />
       <Route path='/terms' component={Terms} />
       <Route path='/cookies' component={Cookies} />
+      <Route path='/access-tokens' component={AccessTokens} />
       <Route component={NotFound} />
     </Switch>
   );

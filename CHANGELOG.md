@@ -34,6 +34,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Password Toggle**: Show/hide password functionality
 - **Loading States**: Animated loading indicators
 - **Responsive Design**: Mobile-optimized authentication forms
+- **Access Token System**: Temporary module access with time and usage limits
+- **Token Management Interface**: Create, monitor, and revoke access tokens
+- **Module Access Control**: Restrict tier3 users from HR and team management
+- **Access Token Gate Component**: Protect modules with token validation
+- **Token Request System**: Allow users to request temporary access
 
 ### Changed
 - Enhanced invoice creation process
