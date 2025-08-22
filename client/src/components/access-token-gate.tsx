@@ -97,7 +97,7 @@ export function AccessTokenGate({ module, children, fallback }: AccessTokenGateP
                     Access Granted - {module.replace('_', ' ')}
                   </h3>
                   <p className="text-sm text-green-700">
-                    Token expires: {new Date(accessToken.expiresAt).toLocaleString()} | 
+                    Token expires: {new Date(accessToken.expiresAt).toLocaleString()} |
                     Usage: {accessToken.usageCount}
                     {accessToken.maxUsage ? ` / ${accessToken.maxUsage}` : ''}
                   </p>
@@ -189,7 +189,7 @@ export function AccessTokenGate({ module, children, fallback }: AccessTokenGateP
                 <div>
                   <h4 className="font-medium text-orange-900 mb-1">Security Notice</h4>
                   <p className="text-sm text-orange-800">
-                    Access tokens are temporary and should be kept secure. They will automatically 
+                    Access tokens are temporary and should be kept secure. They will automatically
                     expire based on time or usage limits set by your administrator.
                   </p>
                 </div>

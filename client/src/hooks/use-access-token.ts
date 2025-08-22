@@ -31,11 +31,11 @@ export function useAccessToken(): UseAccessTokenReturn {
       try {
         const tokens = JSON.parse(savedTokens);
         // Filter out expired tokens
-        const validTokens = tokens.filter((token: AccessTokenData) => 
+        const validTokens = tokens.filter((token: AccessTokenData) =>
           new Date(token.expiresAt) > new Date()
         );
         setActiveTokens(validTokens);
-        
+
         // Update localStorage with only valid tokens
         if (validTokens.length !== tokens.length) {
           localStorage.setItem('bizflow_access_tokens', JSON.stringify(validTokens));
@@ -54,8 +54,8 @@ export function useAccessToken(): UseAccessTokenReturn {
     }
 
     // Check if user has an active token for this module
-    return activeTokens.some(token => 
-      token.modules.includes(module) && 
+    return activeTokens.some(token =>
+      token.modules.includes(module) &&
       new Date(token.expiresAt) > new Date()
     );
   }, [user, activeTokens]);
@@ -72,17 +72,17 @@ export function useAccessToken(): UseAccessTokenReturn {
 
       if (data.success) {
         const newToken = data.accessToken;
-        
+
         // Add to active tokens
         setActiveTokens(prev => {
           const updated = [...prev, newToken];
           localStorage.setItem('bizflow_access_tokens', JSON.stringify(updated));
           return updated;
         });
-        
+
         return true;
       }
-      
+
       return false;
     } catch (error) {
       console.error('Error validating access token:', error);

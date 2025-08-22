@@ -9,14 +9,14 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { authService } from '@/lib/auth';
 import { apiRequest } from '@/lib/queryClient';
-import { 
-  Plus, 
-  Clock, 
-  Users, 
-  Shield, 
-  Copy, 
-  Trash2, 
-  Eye, 
+import {
+  Plus,
+  Clock,
+  Users,
+  Shield,
+  Copy,
+  Trash2,
+  Eye,
   Calendar,
   CheckCircle,
   XCircle,
@@ -99,7 +99,7 @@ export default function AccessTokens() {
       });
 
       const data = await response.json();
-      
+
       if (data.success) {
         toast({
           title: 'Success',
@@ -154,19 +154,19 @@ export default function AccessTokens() {
   const getStatusBadge = (token: AccessToken) => {
     const now = new Date();
     const expiresAt = new Date(token.expiresAt);
-    
+
     if (!token.isActive) {
       return <Badge variant="destructive">Revoked</Badge>;
     }
-    
+
     if (now > expiresAt) {
       return <Badge variant="destructive">Expired</Badge>;
     }
-    
+
     if (token.maxUsage && token.usageCount >= token.maxUsage) {
       return <Badge variant="destructive">Usage Limit Reached</Badge>;
     }
-    
+
     return <Badge variant="default">Active</Badge>;
   };
 
@@ -178,12 +178,12 @@ export default function AccessTokens() {
     const now = new Date();
     const expires = new Date(expiresAt);
     const diff = expires.getTime() - now.getTime();
-    
+
     if (diff <= 0) return 'Expired';
-    
+
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    
+
     if (days > 0) return `${days}d ${hours}h remaining`;
     if (hours > 0) return `${hours}h remaining`;
     return 'Less than 1h remaining';
@@ -355,7 +355,7 @@ export default function AccessTokens() {
                           Created {formatDate(token.createdAt)}
                         </span>
                       </div>
-                      
+
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                         <div>
                           <Label className="text-sm font-medium text-gray-700">Token</Label>
@@ -372,7 +372,7 @@ export default function AccessTokens() {
                             </Button>
                           </div>
                         </div>
-                        
+
                         <div>
                           <Label className="text-sm font-medium text-gray-700">Modules</Label>
                           <div className="flex flex-wrap gap-1 mt-1">
@@ -383,7 +383,7 @@ export default function AccessTokens() {
                             ))}
                           </div>
                         </div>
-                        
+
                         <div>
                           <Label className="text-sm font-medium text-gray-700">Usage</Label>
                           <div className="flex items-center gap-1 mt-1">
@@ -398,7 +398,7 @@ export default function AccessTokens() {
                             )}
                           </div>
                         </div>
-                        
+
                         <div>
                           <Label className="text-sm font-medium text-gray-700">Expires</Label>
                           <div className="flex items-center gap-1 mt-1">
@@ -407,7 +407,7 @@ export default function AccessTokens() {
                           </div>
                         </div>
                       </div>
-                      
+
                       {token.description && (
                         <div className="mb-4">
                           <Label className="text-sm font-medium text-gray-700">Description</Label>
@@ -415,7 +415,7 @@ export default function AccessTokens() {
                         </div>
                       )}
                     </div>
-                    
+
                     <div className="flex gap-2">
                       <Button
                         size="sm"

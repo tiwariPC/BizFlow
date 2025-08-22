@@ -473,7 +473,7 @@ export class MemStorage implements IStorage {
   async createAccessToken(data: CreateAccessToken & { grantedBy: string }): Promise<AccessToken> {
     const id = randomUUID();
     const token = randomUUID(); // Generate unique token
-    
+
     const accessToken: AccessToken = {
       id,
       token,

@@ -45,7 +45,7 @@ interface OrderWithDetails extends Order {
   };
 }
 
-const sidebarModules = [
+const baseSidebarModules = [
   { icon: Home, label: 'Home (Overview)', href: '/dashboard' },
   { icon: ShieldCheck, label: 'Business Setup & Compliance', href: '/compliance' },
   { icon: Banknote, label: 'Finance & Accounting', href: '/finance' },
@@ -56,10 +56,6 @@ const sidebarModules = [
   { icon: BookOpen, label: 'Knowledge Hub', href: '/help' },
   { icon: Network, label: 'Community', href: '/help' },
   { icon: Store, label: 'Marketplace', href: '/store' },
-  // Add access tokens management for tier1 and tier2 users
-  ...(user && (user.tier === 'tier1' || user.tier === 'tier2') ? [
-    { icon: Shield, label: 'Access Tokens', href: '/access-tokens' }
-  ] : []),
 ];
 
 const quickStats = [
@@ -141,6 +137,15 @@ export default function Dashboard() {
     }
   }, []);
   const user = authService.getUser();
+
+  // Create dynamic sidebar modules based on user tier
+  const sidebarModules = [
+    ...baseSidebarModules,
+    // Add access tokens management for tier1 and tier2 users
+    ...(user && (user.tier === 'tier1' || user.tier === 'tier2') ? [
+      { icon: Shield, label: 'Access Tokens', href: '/access-tokens' }
+    ] : []),
+  ];
 
   const { data: orders = [], isLoading } = useQuery<OrderWithDetails[]>({
     queryKey: ['/api/orders'],

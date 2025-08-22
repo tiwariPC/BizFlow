@@ -50,6 +50,7 @@ import Privacy from '@/pages/privacy';
 import Terms from '@/pages/terms';
 import Cookies from '@/pages/cookies';
 import AccessTokens from '@/pages/access-tokens';
+import SectionOverview from '@/pages/section-overview';
 
 function Router() {
   return (
@@ -88,6 +89,7 @@ function Router() {
       <Route path='/terms' component={Terms} />
       <Route path='/cookies' component={Cookies} />
       <Route path='/access-tokens' component={AccessTokens} />
+      <Route path='/section/:sectionId' component={SectionOverview} />
       <Route component={NotFound} />
     </Switch>
   );

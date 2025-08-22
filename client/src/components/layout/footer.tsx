@@ -22,15 +22,14 @@ export function Footer() {
     {
       title: 'Business Services',
       links: [
-        { label: 'Company Registration Online', href: '/company-registration' },
-        { label: 'Private & Public Limited Company', href: '/company-registration' },
-        { label: 'One-Person Company Registration', href: '/company-registration' },
-        { label: 'Partnership Firm & LLP Registration', href: '/company-registration' },
-        { label: 'Business License Registration', href: '/company-registration' },
-        { label: 'Small Business Registration', href: '/company-registration' },
+        { label: 'Company Registration', href: '/company-registration' },
+        { label: 'Private Limited Company', href: '/company-registration' },
+        { label: 'One-Person Company', href: '/company-registration' },
+        { label: 'Partnership & LLP', href: '/company-registration' },
+        { label: 'Business License', href: '/company-registration' },
         { label: 'TAN Registration', href: '/gst-registration' },
-        { label: 'PAN Application Process', href: '/gst-registration' },
-        { label: 'Udyog Aadhar Registration', href: '/gst-registration' },
+        { label: 'PAN Application', href: '/gst-registration' },
+        { label: 'Udyog Aadhar', href: '/gst-registration' },
       ],
     },
     {
@@ -40,21 +39,18 @@ export function Footer() {
         { label: 'GST Filing', href: '/gst-registration' },
         { label: 'TDS Return Filing', href: '/tax-filing' },
         { label: 'Income Tax Notice', href: '/compliance' },
-        { label: 'Professional Tax Filing', href: '/tax-filing' },
+        { label: 'Professional Tax', href: '/tax-filing' },
         { label: 'Tax Planner', href: '/finance' },
-        { label: 'Appeal', href: '/compliance' },
-        { label: 'HUF Registration & Filing', href: '/tax-filing' },
-        { label: 'Lower Deduction Certificate', href: '/compliance' },
+        { label: 'HUF Registration', href: '/tax-filing' },
         { label: 'PF Withdrawal', href: '/tools' },
       ],
     },
     {
       title: 'Digital Services',
       links: [
-        { label: 'Digital Signature Certificate', href: '/compliance' },
-        { label: 'Trademarks & DSC Assistance', href: '/compliance' },
-        { label: 'Business License Registration', href: '/company-registration' },
-        { label: 'Legal Service', href: '/compliance' },
+        { label: 'Digital Signature', href: '/compliance' },
+        { label: 'Trademarks', href: '/compliance' },
+        { label: 'Legal Services', href: '/compliance' },
         { label: 'Schedule a Call', href: '/contact' },
         { label: 'MyBizCFO', href: '/finance' },
         { label: 'Accounting Services', href: '/finance' },
@@ -62,111 +58,29 @@ export function Footer() {
       ],
     },
     {
-      title: 'Resources',
+      title: 'Tools & Calculators',
       links: [
-        { label: 'Blog', href: '/help' },
-        { label: 'Write for Us', href: '/help' },
-        { label: 'Newsletter', href: '/help' },
-        { label: 'Calculators', href: '/tools' },
-        { label: 'Income from house property', href: '/help' },
-        { label: 'Rent Receipt Generator', href: '/tools' },
-        { label: 'Leave Encashment Calculator', href: '/tools' },
-        { label: 'Advance Tax Calculator', href: '/tools' },
-        { label: 'Compound Interest Calculator', href: '/tools' },
-        { label: 'Cryptocurrency Tax Calculator', href: '/tools' },
-        { label: 'Rent Free Accommodation', href: '/help' },
-        { label: 'Old Vs New', href: '/help' },
-        { label: 'Pension Calculator', href: '/tools' },
-        { label: 'Home loan EMI', href: '/tools' },
-        { label: 'Simple Interest Calculator', href: '/tools' },
-        { label: 'IFSC Code Search', href: '/tools' },
-        { label: 'Recurring Deposits (RD)', href: '/tools' },
-        { label: 'GST Number Search by Name', href: '/tools' },
-        { label: 'Gratuity Calculator', href: '/tools' },
-        { label: 'Agriculture', href: '/help' },
-        { label: 'Tax Audit', href: '/help' },
-        { label: 'TDS Calculator', href: '/tools' },
-        { label: '80TTA/80TTB', href: '/help' },
+        { label: 'Tax Calculator', href: '/tools' },
+        { label: 'EMI Calculator', href: '/tools' },
+        { label: 'GST Calculator', href: '/tools' },
+        { label: 'EPF Calculator', href: '/tools' },
+        { label: 'SIP Calculator', href: '/tools' },
         { label: 'FD Calculator', href: '/tools' },
-        { label: 'ITR Eligibility Checker', href: '/tools' },
-        { label: 'Gold Rates Today', href: '/tools' },
-        { label: 'NSC', href: '/help' },
-        { label: '80D', href: '/help' },
-        { label: 'Salary', href: '/tools' },
-        { label: 'EMI', href: '/tools' },
-        { label: 'GST', href: '/tools' },
-        { label: 'EPF', href: '/tools' },
-        { label: '80DD', href: '/help' },
-        { label: '80U', href: '/help' },
-        { label: 'Mutual fund', href: '/tools' },
-        { label: 'SIP calculator', href: '/tools' },
-        { label: 'NPS Calculator', href: '/tools' },
-        { label: 'Form 12BB', href: '/help' },
-        { label: 'Relief U/S 89', href: '/help' },
+        { label: 'Rent Receipt Generator', href: '/tools' },
         { label: 'Currency Converter', href: '/tools' },
-        { label: 'HRA', href: '/help' },
       ],
     },
     {
-      title: 'Guides',
+      title: 'Resources',
       links: [
-        { label: 'Income Tax Guides', href: '/help' },
-        { label: 'New Fund Offer (NFO)', href: '/help' },
-        { label: 'Form 15G', href: '/help' },
-        { label: 'Deductions under Section 80RRB', href: '/help' },
-        { label: 'High-Value Transactions & Income Tax', href: '/help' },
+        { label: 'Blog', href: '/help' },
+        { label: 'Newsletter', href: '/help' },
+        { label: 'Tax Guides', href: '/help' },
         { label: 'Form 16', href: '/help' },
-        { label: 'Section 12A of the Income Tax Act', href: '/help' },
-        { label: 'Income from House Property', href: '/help' },
-        { label: 'Corporate Tax in India', href: '/help' },
-        { label: 'Deductions on Income Tax', href: '/help' },
-        { label: 'PAN Card Correction', href: '/help' },
-        { label: 'National Pension Scheme (NPS)', href: '/help' },
         { label: 'Form 26AS', href: '/help' },
-        { label: 'Form 10AB', href: '/help' },
-        { label: 'Form 26QB', href: '/help' },
-        { label: 'Form 15H', href: '/help' },
-        { label: 'Form 16C', href: '/help' },
-        { label: 'Superannuation', href: '/help' },
-        { label: 'Form 12BA', href: '/help' },
-        { label: 'PAN', href: '/help' },
-        { label: 'HUF', href: '/help' },
-        { label: 'Form 27Q', href: '/help' },
-        { label: 'NIL Return', href: '/help' },
-        { label: 'Voter ID Card', href: '/help' },
-        { label: 'ESI Rate', href: '/help' },
-        { label: 'Form 61A', href: '/help' },
-        { label: 'TDS', href: '/help' },
-        { label: 'Section 80EEA', href: '/help' },
-        { label: 'NPS', href: '/help' },
-        { label: 'Section 80GG', href: '/help' },
-        { label: 'Section 80TTA', href: '/help' },
-        { label: 'Section 80LA', href: '/help' },
-        { label: 'Section 269SS', href: '/help' },
-        { label: 'Section 36', href: '/help' },
-        { label: 'Public Provident Fund (PPF)', href: '/help' },
-        { label: 'Securities Transaction Tax', href: '/help' },
-        { label: 'No Objection Certificate (NOC)', href: '/help' },
-        { label: 'Rent Agreement', href: '/help' },
-        { label: 'Future & Options', href: '/help' },
-        { label: 'Section 80QQB', href: '/help' },
-        { label: 'Stipend', href: '/help' },
-        { label: 'Section 80JJAA', href: '/help' },
-        { label: 'Section 92E', href: '/help' },
-        { label: 'GST Guide', href: '/help' },
-        { label: 'GSTR-2B', href: '/help' },
-        { label: 'GSTR-9', href: '/help' },
-        { label: 'GST Return', href: '/help' },
-        { label: 'GSTR-4', href: '/help' },
-        { label: 'GSTR-7', href: '/help' },
-        { label: 'GSTR-6', href: '/help' },
+        { label: 'NPS Guide', href: '/help' },
         { label: 'Mutual Fund Guide', href: '/help' },
-        { label: 'Dividend Mutual Funds', href: '/help' },
-        { label: 'AMFI : Association of Mutual Funds', href: '/help' },
-        { label: 'What is a Debt Fund', href: '/help' },
-        { label: 'Mutual Funds Types', href: '/help' },
-        { label: 'Equity Mutual Funds', href: '/help' },
-        { label: 'Capital Gain', href: '/help' },
+        { label: 'GST Guide', href: '/help' },
       ],
     },
     {
@@ -176,8 +90,8 @@ export function Footer() {
         { label: 'Contact Us', href: '/contact' },
         { label: 'Documentation', href: '/docs' },
         { label: 'Status Page', href: '/status' },
-        { label: 'Talk to Us Whatsapp', href: '/contact' },
-        { label: 'Talk to Tax Expert', href: '/contact' },
+        { label: 'WhatsApp Support', href: '/contact' },
+        { label: 'Tax Expert Chat', href: '/contact' },
         { label: 'Schedule a Call', href: '/contact' },
       ],
     },
@@ -287,7 +201,7 @@ export function Footer() {
         </div>
 
         {/* Service Categories Grid - Optimized Layout */}
-        <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 mb-8'>
+        <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-8'>
           {footerSections.map(section => (
             <div key={section.title} className='min-w-0'>
               <h3 className='text-base font-semibold mb-3 text-white flex items-center gap-2'>
@@ -295,7 +209,7 @@ export function Footer() {
                 <ArrowRight className='w-3 h-3 text-blue-400 flex-shrink-0' />
               </h3>
               <ul className='space-y-1.5'>
-                {section.links.slice(0, 8).map(link => (
+                {section.links.map(link => (
                   <li key={link.label}>
                     <Link
                       href={link.href}
@@ -306,16 +220,6 @@ export function Footer() {
                     </Link>
                   </li>
                 ))}
-                {section.links.length > 8 && (
-                  <li>
-                    <Link
-                      href={`/${section.title.toLowerCase().replace(/\s+/g, '-')}`}
-                      className='text-blue-400 hover:text-blue-300 transition-colors duration-200 text-xs font-medium'
-                    >
-                      View All ({section.links.length})
-                    </Link>
-                  </li>
-                )}
               </ul>
             </div>
           ))}

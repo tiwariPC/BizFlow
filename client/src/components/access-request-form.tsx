@@ -8,10 +8,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { authService } from '@/lib/auth';
 import { apiRequest } from '@/lib/queryClient';
-import { 
-  Mail, 
-  Clock, 
-  Shield, 
+import {
+  Mail,
+  Clock,
+  Shield,
   Send,
   CheckCircle,
   AlertCircle
@@ -35,7 +35,7 @@ export function AccessRequestForm({ onRequestSent }: AccessRequestFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (formData.modules.length === 0) {
       toast({
         title: 'Validation Error',
@@ -59,19 +59,19 @@ export function AccessRequestForm({ onRequestSent }: AccessRequestFormProps) {
       // In a real application, this would send a notification to the admin
       // For now, we'll simulate the request
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       toast({
         title: 'Request Sent',
         description: 'Your access request has been sent to your administrator',
       });
-      
+
       setFormData({
         modules: [],
         duration: '24',
         reason: '',
         urgency: 'normal',
       });
-      
+
       onRequestSent?.();
     } catch (error: any) {
       toast({
