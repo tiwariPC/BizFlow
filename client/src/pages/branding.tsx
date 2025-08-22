@@ -163,8 +163,14 @@ const recentDesigns = [
 ];
 
 export default function Branding() {
-  const [activeTab, setActiveTab] = useState("overview");
+    const [activeTab, setActiveTab] = useState("overview");
   const [logoText, setLogoText] = useState("Your Brand");
+  
+  // AI Logo Generator States
+  const [selectedIndustry, setSelectedIndustry] = useState<string>("");
+  const [selectedStyle, setSelectedStyle] = useState<string>("");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [aiGeneratedLogo, setAiGeneratedLogo] = useState<any>(null);
   
   // Logo Designer States
   const [showLogoDesigner, setShowLogoDesigner] = useState(false);
@@ -174,18 +180,18 @@ export default function Branding() {
   const [zoom, setZoom] = useState(1);
   const [history, setHistory] = useState<LogoElement[][]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
-  
+
   // Brand Kit States
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [showFontManager, setShowFontManager] = useState(false);
   const [newColor, setNewColor] = useState({ name: '', hex: '#000000', category: 'primary' as const });
   const [newFont, setNewFont] = useState({ name: '', category: 'sans-serif', weights: ['400'] });
-  
+
   // Template Designer States
   const [showTemplateDesigner, setShowTemplateDesigner] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<string>('');
   const [templateData, setTemplateData] = useState<any>({});
-  
+
   // Logo Designer Canvas Ref
   const canvasRef = useRef<HTMLDivElement>(null);
 
@@ -210,14 +216,14 @@ export default function Branding() {
         opacity: 1
       }
     };
-    
+
     saveToHistory();
     setLogoElements(prev => [...prev, newElement]);
     setSelectedElement(newElement.id);
   };
 
   const updateLogoElement = (id: string, updates: Partial<LogoElement>) => {
-    setLogoElements(prev => prev.map(el => 
+    setLogoElements(prev => prev.map(el =>
       el.id === id ? { ...el, ...updates } : el
     ));
   };
@@ -287,6 +293,88 @@ export default function Branding() {
   const hexToRgb = (hex: string) => {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([-f\d]{2})$/i.exec(hex);
     return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '0, 0, 0';
+  };
+
+  // AI Logo Generation Functions
+  const generateAILogo = async () => {
+    if (!logoText || !selectedIndustry || !selectedStyle) {
+      alert('Please fill in all fields: Company Name, Industry, and Style Preference');
+      return;
+    }
+
+    setIsGenerating(true);
+    
+    try {
+      // Simulate AI logo generation with a delay
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      
+      const generatedLogo = {
+        companyName: logoText,
+        industry: selectedIndustry,
+        style: selectedStyle,
+        timestamp: new Date().toLocaleString(),
+        logoData: {
+          // In a real implementation, this would contain the actual logo data
+          type: 'ai-generated',
+          elements: [
+            { type: 'text', content: logoText, font: 'Inter', size: 48, color: '#1f2937' },
+            { type: 'shape', shape: 'rectangle', color: '#3b82f6', opacity: 0.1 }
+          ]
+        }
+      };
+      
+      setAiGeneratedLogo(generatedLogo);
+      alert('AI Logo generated successfully!');
+    } catch (error) {
+      console.error('Error generating AI logo:', error);
+      alert('Error generating logo. Please try again.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const downloadAILogo = (format: 'png' | 'svg') => {
+    if (!aiGeneratedLogo) return;
+    
+    // In a real implementation, this would generate and download the actual logo file
+    const filename = `${aiGeneratedLogo.companyName.toLowerCase().replace(/\s+/g, '-')}-logo.${format}`;
+    
+    // Create a simple canvas-based logo for demonstration
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      canvas.width = 800;
+      canvas.height = 400;
+      
+      // Background
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, 800, 400);
+      
+      // Logo text
+      ctx.fillStyle = '#1f2937';
+      ctx.font = 'bold 48px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(aiGeneratedLogo.companyName, 400, 200);
+      
+      // Industry and style
+      ctx.fillStyle = '#6b7280';
+      ctx.font = '16px Inter, sans-serif';
+      ctx.fillText(`${aiGeneratedLogo.industry} • ${aiGeneratedLogo.style}`, 400, 240);
+      
+      // Convert to blob and download
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = filename;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+        }
+      }, format === 'png' ? 'image/png' : 'image/svg+xml');
+    }
   };
 
   const copyToClipboard = (text: string) => {
@@ -427,15 +515,16 @@ export default function Branding() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Button 
-                  onClick={() => setShowLogoDesigner(true)}
+                <Button
+                  onClick={() => setActiveTab("logo")}
                   className="h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700"
                 >
                   <Sparkles className="w-6 h-6" />
-                  <span>Generate Logo</span>
+                  <span>Logo Tools</span>
+                  <span className="text-xs opacity-90">AI + Manual</span>
                 </Button>
 
-                <Button 
+                <Button
                   onClick={() => setActiveTab("brand-kit")}
                   className="h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700"
                 >
@@ -443,7 +532,7 @@ export default function Branding() {
                   <span>Create Brand Kit</span>
                 </Button>
 
-                <Button 
+                <Button
                   onClick={() => setShowTemplateDesigner(true)}
                   className="h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700"
                 >
@@ -491,94 +580,227 @@ export default function Branding() {
 
       {activeTab === "logo" && (
         <div className="space-y-8">
-          {/* Logo Generator */}
+          {/* Logo Creation Options */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5" />
-                AI Logo Generator
+                Logo Creation Options
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Input Section */}
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-2">
-                      Company Name
-                    </label>
-                    <Input
-                      value={logoText}
-                      onChange={(e) => setLogoText(e.target.value)}
-                      placeholder="Enter your company name"
-                      className="w-full"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-2">
-                      Industry
-                    </label>
-                    <select className="w-full p-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                      <option>Technology</option>
-                      <option>Healthcare</option>
-                      <option>Finance</option>
-                      <option>Education</option>
-                      <option>Retail</option>
-                      <option>Manufacturing</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-2">
-                      Style Preference
-                    </label>
-                    <div className="grid grid-cols-2 gap-3">
-                      {["Modern", "Classic", "Playful", "Professional"].map((style) => (
-                        <button
-                          key={style}
-                          className="p-3 border border-neutral-300 rounded-lg text-sm hover:border-blue-500 hover:bg-blue-50"
-                        >
-                          {style}
-                        </button>
-                      ))}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* AI Logo Generator */}
+                <Card className="border-2 border-blue-200 hover:border-blue-300 transition-colors">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-blue-600" />
+                      AI Logo Generator
+                    </CardTitle>
+                    <p className="text-sm text-neutral-600">Let AI create a professional logo for you</p>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-neutral-700 mb-2">
+                        Company Name
+                      </label>
+                      <Input
+                        value={logoText}
+                        onChange={(e) => setLogoText(e.target.value)}
+                        placeholder="Enter your company name"
+                        className="w-full"
+                      />
                     </div>
-                  </div>
 
-                  <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    Generate Logo
-                  </Button>
-                </div>
+                    <div>
+                      <label className="block text-sm font-medium text-neutral-700 mb-2">
+                        Industry
+                      </label>
+                      <Select value={selectedIndustry} onValueChange={setSelectedIndustry}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select industry" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="technology">Technology</SelectItem>
+                          <SelectItem value="healthcare">Healthcare</SelectItem>
+                          <SelectItem value="finance">Finance</SelectItem>
+                          <SelectItem value="education">Education</SelectItem>
+                          <SelectItem value="retail">Retail</SelectItem>
+                          <SelectItem value="manufacturing">Manufacturing</SelectItem>
+                          <SelectItem value="food-beverage">Food & Beverage</SelectItem>
+                          <SelectItem value="fashion-beauty">Fashion & Beauty</SelectItem>
+                          <SelectItem value="real-estate">Real Estate</SelectItem>
+                          <SelectItem value="consulting">Consulting</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                {/* Preview Section */}
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-2">
-                      Logo Preview
-                    </label>
-                    <div className="w-full h-64 bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-dashed border-neutral-300 rounded-lg flex items-center justify-center">
+                    <div>
+                      <label className="block text-sm font-medium text-neutral-700 mb-2">
+                        Style Preference
+                      </label>
+                      <div className="grid grid-cols-2 gap-2">
+                        {["Modern", "Classic", "Playful", "Professional"].map((style) => (
+                          <button
+                            key={style}
+                            onClick={() => setSelectedStyle(style)}
+                            className={`p-2 text-sm border rounded-lg transition-colors ${
+                              selectedStyle === style
+                                ? "border-blue-500 bg-blue-50 text-blue-700"
+                                : "border-neutral-300 hover:border-blue-300"
+                            }`}
+                          >
+                            {style}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <Button 
+                      onClick={generateAILogo}
+                      disabled={!logoText || isGenerating}
+                      className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 disabled:opacity-50"
+                    >
+                      {isGenerating ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                          Generating...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-4 h-4 mr-2" />
+                          Generate AI Logo
+                        </>
+                      )}
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                {/* Manual Logo Designer */}
+                <Card className="border-2 border-green-200 hover:border-green-300 transition-colors">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <PenTool className="w-5 h-5 text-green-600" />
+                      Manual Logo Designer
+                    </CardTitle>
+                    <p className="text-sm text-neutral-600">Design your logo from scratch with full control</p>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2 text-sm text-neutral-600">
+                        <CheckCircle className="w-4 h-4 text-green-600" />
+                        <span>Full design control</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-neutral-600">
+                        <CheckCircle className="w-4 h-4 text-green-600" />
+                        <span>Custom elements & colors</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-neutral-600">
+                        <CheckCircle className="w-4 h-4 text-green-600" />
+                        <span>Export in multiple formats</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-neutral-600">
+                        <CheckCircle className="w-4 h-4 text-green-600" />
+                        <span>Professional tools</span>
+                      </div>
+                    </div>
+                    
+                    <Button 
+                      onClick={() => setShowLogoDesigner(true)}
+                      className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700"
+                    >
+                      <PenTool className="w-4 h-4 mr-2" />
+                      Open Logo Designer
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* AI Generated Logo Preview */}
+          {aiGeneratedLogo && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-purple-600" />
+                  AI Generated Logo
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  {/* Logo Display */}
+                  <div className="space-y-4">
+                    <div className="w-full h-64 bg-white border-2 border-neutral-200 rounded-lg flex items-center justify-center p-4">
                       <div className="text-center">
-                        <Sparkles className="w-12 h-12 text-neutral-400 mx-auto mb-2" />
-                        <p className="text-neutral-600">Your logo will appear here</p>
+                        <div className="text-4xl font-bold text-neutral-800 mb-2">
+                          {aiGeneratedLogo.companyName}
+                        </div>
+                        <div className="text-sm text-neutral-600">
+                          {aiGeneratedLogo.industry} • {aiGeneratedLogo.style}
+                        </div>
+                        <div className="mt-4 text-xs text-neutral-500">
+                          AI Generated Logo Concept
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <Button variant="outline" className="w-full">
-                      <Download className="w-4 h-4 mr-2" />
-                      Download PNG
-                    </Button>
-                    <Button variant="outline" className="w-full">
-                      <Download className="w-4 h-4 mr-2" />
-                      Download SVG
-                    </Button>
+                  {/* Logo Details & Actions */}
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="font-medium text-neutral-900 mb-2">Logo Details</h4>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-sm text-neutral-600">Company:</span>
+                        <span className="text-sm font-medium">{aiGeneratedLogo.companyName}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-neutral-600">Industry:</span>
+                        <span className="text-sm font-medium capitalize">{aiGeneratedLogo.industry}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-neutral-600">Style:</span>
+                        <span className="text-sm font-medium">{aiGeneratedLogo.style}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-neutral-600">Generated:</span>
+                        <span className="text-sm font-medium">{aiGeneratedLogo.timestamp}</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-4 space-y-3">
+                      <Button 
+                        onClick={() => downloadAILogo('png')}
+                        className="w-full bg-blue-600 hover:bg-blue-700"
+                      >
+                        <Download className="w-4 h-4 mr-2" />
+                        Download PNG
+                      </Button>
+                      <Button 
+                        onClick={() => downloadAILogo('svg')}
+                        variant="outline"
+                        className="w-full"
+                      >
+                        <Download className="w-4 h-4 mr-2" />
+                        Download SVG
+                      </Button>
+                      <Button 
+                        onClick={() => setShowLogoDesigner(true)}
+                        variant="outline"
+                        className="w-full"
+                      >
+                        <Edit3 className="w-4 h-4 mr-2" />
+                        Edit in Designer
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
         </div>
       )}
 
@@ -611,7 +833,7 @@ export default function Branding() {
                         <span>HEX</span>
                         <div className="flex items-center gap-1">
                           <span>{color.hex}</span>
-                          <button 
+                          <button
                             className="p-1 hover:bg-neutral-100 rounded"
                             onClick={() => copyToClipboard(color.hex)}
                           >
@@ -623,7 +845,7 @@ export default function Branding() {
                         <span>RGB</span>
                         <div className="flex items-center gap-1">
                           <span>{color.rgb}</span>
-                          <button 
+                          <button
                             className="p-1 hover:bg-neutral-100 rounded"
                             onClick={() => copyToClipboard(color.rgb)}
                           >
@@ -775,24 +997,24 @@ export default function Branding() {
                   <div>
                     <h3 className="font-semibold mb-3">Add Elements</h3>
                     <div className="space-y-2">
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         className="w-full justify-start"
                         onClick={() => addLogoElement('text')}
                       >
                         <Type className="w-4 h-4 mr-2" />
                         Add Text
                       </Button>
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         className="w-full justify-start"
                         onClick={() => addLogoElement('shape')}
                       >
                         <Square className="w-4 h-4 mr-2" />
                         Add Shape
                       </Button>
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         className="w-full justify-start"
                         onClick={() => addLogoElement('image')}
                       >
@@ -844,7 +1066,7 @@ export default function Branding() {
                             </div>
                           </>
                         )}
-                        
+
                         <div>
                           <label className="block text-sm font-medium mb-1">Opacity</label>
                           <Input
@@ -860,8 +1082,8 @@ export default function Branding() {
                           />
                         </div>
 
-                        <Button 
-                          variant="outline" 
+                        <Button
+                          variant="outline"
                           className="w-full text-red-600 hover:text-red-700"
                           onClick={() => deleteLogoElement(selectedElement)}
                         >
@@ -898,11 +1120,11 @@ export default function Branding() {
                   </div>
 
                   {/* Canvas */}
-                  <div 
+                  <div
                     ref={canvasRef}
                     className="border-2 border-dashed border-gray-300 rounded-lg bg-white mx-auto relative overflow-hidden"
-                    style={{ 
-                      width: canvasSize.width * zoom, 
+                    style={{
+                      width: canvasSize.width * zoom,
                       height: canvasSize.height * zoom,
                       transform: `scale(${zoom})`,
                       transformOrigin: 'top left'
@@ -990,7 +1212,7 @@ export default function Branding() {
                   <X className="w-4 h-4" />
                 </Button>
               </div>
-              
+
               <div className="p-6">
                 <Tabs defaultValue="business-card" className="w-full">
                   <TabsList className="grid w-full grid-cols-4">
@@ -999,7 +1221,7 @@ export default function Branding() {
                     <TabsTrigger value="email-signature">Email Signature</TabsTrigger>
                     <TabsTrigger value="social-banner">Social Banner</TabsTrigger>
                   </TabsList>
-                  
+
                   <TabsContent value="business-card" className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-4">
@@ -1028,7 +1250,7 @@ export default function Branding() {
                       </div>
                     </div>
                   </TabsContent>
-                  
+
                   <TabsContent value="letterhead" className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-4">
@@ -1062,7 +1284,7 @@ export default function Branding() {
                       </div>
                     </div>
                   </TabsContent>
-                  
+
                   <TabsContent value="email-signature" className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-4">
@@ -1091,7 +1313,7 @@ export default function Branding() {
                       </div>
                     </div>
                   </TabsContent>
-                  
+
                   <TabsContent value="social-banner" className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-4">
@@ -1155,7 +1377,7 @@ export default function Branding() {
                   <X className="w-4 h-4" />
                 </Button>
               </div>
-              
+
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium mb-2">Color Name</label>
@@ -1165,7 +1387,7 @@ export default function Branding() {
                     placeholder="e.g., Primary Blue"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium mb-2">Color</label>
                   <div className="flex items-center gap-3">
@@ -1183,7 +1405,7 @@ export default function Branding() {
                     />
                   </div>
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium mb-2">Category</label>
                   <Select value={newColor.category} onValueChange={(value: any) => setNewColor(prev => ({ ...prev, category: value }))}>
@@ -1198,7 +1420,7 @@ export default function Branding() {
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 <div className="flex gap-3 pt-4">
                   <Button variant="outline" className="flex-1" onClick={() => setShowColorPicker(false)}>
                     Cancel
@@ -1236,7 +1458,7 @@ export default function Branding() {
                   <X className="w-4 h-4" />
                 </Button>
               </div>
-              
+
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium mb-2">Font Name</label>
@@ -1246,7 +1468,7 @@ export default function Branding() {
                     placeholder="e.g., Roboto"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium mb-2">Category</label>
                   <Select value={newFont.category} onValueChange={(value: string) => setNewFont(prev => ({ ...prev, category: value }))}>
@@ -1261,7 +1483,7 @@ export default function Branding() {
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium mb-2">Font Weights</label>
                   <div className="grid grid-cols-3 gap-2">
@@ -1285,7 +1507,7 @@ export default function Branding() {
                     ))}
                   </div>
                 </div>
-                
+
                 <div className="flex gap-3 pt-4">
                   <Button variant="outline" className="flex-1" onClick={() => setShowFontManager(false)}>
                     Cancel
