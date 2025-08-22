@@ -1,6 +1,19 @@
-import { type User, type InsertUser, type ServicePackage, type InsertServicePackage, type Order, type InsertOrder, type Questionnaire, type InsertQuestionnaire, type Company, type InsertCompany, type Organization, type InsertOrganization } from "@shared/schema";
-import { randomUUID } from "crypto";
-import bcrypt from "bcrypt";
+import {
+  type User,
+  type InsertUser,
+  type ServicePackage,
+  type InsertServicePackage,
+  type Order,
+  type InsertOrder,
+  type Questionnaire,
+  type InsertQuestionnaire,
+  type Company,
+  type InsertCompany,
+  type Organization,
+  type InsertOrganization,
+} from '@shared/schema';
+import { randomUUID } from 'crypto';
+import bcrypt from 'bcrypt';
 
 export interface IStorage {
   // Users
@@ -73,16 +86,16 @@ export class MemStorage implements IStorage {
     const adminId = randomUUID();
     const adminUser: User = {
       id: adminId,
-      username: "admin",
-      email: "admin@bizhub.com",
-      password: await bcrypt.hash("admin123", 10),
-      fullName: "Admin User",
-      role: "tier1",
-      tier: "tier1",
+      username: 'admin',
+      email: 'admin@bizhub.com',
+      password: await bcrypt.hash('admin123', 10),
+      fullName: 'Admin User',
+      role: 'tier1',
+      tier: 'tier1',
       organizationId: null,
       parentUserId: null,
       permissions: { all: true },
-      status: "active",
+      status: 'active',
       createdAt: new Date(),
       lastLoginAt: null,
     };
@@ -92,16 +105,16 @@ export class MemStorage implements IStorage {
     const orgId = randomUUID();
     const orgUser: User = {
       id: orgId,
-      username: "techcorp",
-      email: "admin@techcorp.com",
-      password: await bcrypt.hash("techcorp123", 10),
-      fullName: "TechCorp Solutions",
-      role: "tier2",
-      tier: "tier2",
+      username: 'techcorp',
+      email: 'admin@techcorp.com',
+      password: await bcrypt.hash('techcorp123', 10),
+      fullName: 'TechCorp Solutions',
+      role: 'tier2',
+      tier: 'tier2',
       organizationId: null,
       parentUserId: null,
       permissions: { organization: true, employees: true, services: true },
-      status: "active",
+      status: 'active',
       createdAt: new Date(),
       lastLoginAt: null,
     };
@@ -111,90 +124,110 @@ export class MemStorage implements IStorage {
     const employeeId = randomUUID();
     const employeeUser: User = {
       id: employeeId,
-      username: "employee",
-      email: "employee@techcorp.com",
-      password: await bcrypt.hash("employee123", 10),
-      fullName: "John Employee",
-      role: "tier3",
-      tier: "tier3",
+      username: 'employee',
+      email: 'employee@techcorp.com',
+      password: await bcrypt.hash('employee123', 10),
+      fullName: 'John Employee',
+      role: 'tier3',
+      tier: 'tier3',
       organizationId: orgId,
       parentUserId: orgId,
       permissions: { basic: true, limited: true },
-      status: "active",
+      status: 'active',
       createdAt: new Date(),
       lastLoginAt: null,
     };
     this.users.set(employeeId, employeeUser);
-    console.log("Tier 1 (Admin) user created:", adminUser.username);
-    console.log("Tier 2 (Organization) user created:", orgUser.username);
-    console.log("Tier 3 (Employee) user created:", employeeUser.username);
+    console.log('Tier 1 (Admin) user created:', adminUser.username);
+    console.log('Tier 2 (Organization) user created:', orgUser.username);
+    console.log('Tier 3 (Employee) user created:', employeeUser.username);
 
     // Create default service packages
     const packages: ServicePackage[] = [
       {
         id: randomUUID(),
-        name: "Sole Proprietorship",
-        description: "Simple business structure for individual entrepreneurs",
-        price: "2999",
-        setupTime: "1-2 days",
-        compliance: "Low",
-        icon: "user",
-        features: ["Easy setup", "Minimal compliance", "Direct tax benefits", "Full control"],
+        name: 'Sole Proprietorship',
+        description: 'Simple business structure for individual entrepreneurs',
+        price: '2999',
+        setupTime: '1-2 days',
+        compliance: 'Low',
+        icon: 'user',
+        features: ['Easy setup', 'Minimal compliance', 'Direct tax benefits', 'Full control'],
         popular: false,
       },
       {
         id: randomUUID(),
-        name: "Partnership Firm",
-        description: "Multiple partners sharing profits and responsibilities",
-        price: "5999",
-        setupTime: "3-5 days",
-        compliance: "Medium",
-        icon: "users",
-        features: ["Shared responsibility", "Multiple skills", "Easy formation", "Tax benefits"],
+        name: 'Partnership Firm',
+        description: 'Multiple partners sharing profits and responsibilities',
+        price: '5999',
+        setupTime: '3-5 days',
+        compliance: 'Medium',
+        icon: 'users',
+        features: ['Shared responsibility', 'Multiple skills', 'Easy formation', 'Tax benefits'],
         popular: false,
       },
       {
         id: randomUUID(),
-        name: "Limited Liability Partnership",
-        description: "Professional partnership with limited liability",
-        price: "8999",
-        setupTime: "7-10 days",
-        compliance: "Medium",
-        icon: "handshake",
-        features: ["Limited liability", "Perpetual succession", "Professional management", "Tax advantages"],
+        name: 'Limited Liability Partnership',
+        description: 'Professional partnership with limited liability',
+        price: '8999',
+        setupTime: '7-10 days',
+        compliance: 'Medium',
+        icon: 'handshake',
+        features: [
+          'Limited liability',
+          'Perpetual succession',
+          'Professional management',
+          'Tax advantages',
+        ],
         popular: false,
       },
       {
         id: randomUUID(),
-        name: "One Person Company",
-        description: "Corporate benefits for single entrepreneur",
-        price: "12999",
-        setupTime: "10-15 days",
-        compliance: "High",
-        icon: "user-tie",
-        features: ["Limited liability", "Corporate benefits", "Perpetual succession", "Professional credibility"],
+        name: 'One Person Company',
+        description: 'Corporate benefits for single entrepreneur',
+        price: '12999',
+        setupTime: '10-15 days',
+        compliance: 'High',
+        icon: 'user-tie',
+        features: [
+          'Limited liability',
+          'Corporate benefits',
+          'Perpetual succession',
+          'Professional credibility',
+        ],
         popular: false,
       },
       {
         id: randomUUID(),
-        name: "Private Limited Company",
-        description: "Most preferred structure for startups and SMEs",
-        price: "15999",
-        setupTime: "12-20 days",
-        compliance: "High",
-        icon: "building",
-        features: ["Limited liability", "Easy fundraising", "Professional credibility", "Tax benefits"],
+        name: 'Private Limited Company',
+        description: 'Most preferred structure for startups and SMEs',
+        price: '15999',
+        setupTime: '12-20 days',
+        compliance: 'High',
+        icon: 'building',
+        features: [
+          'Limited liability',
+          'Easy fundraising',
+          'Professional credibility',
+          'Tax benefits',
+        ],
         popular: true,
       },
       {
         id: randomUUID(),
-        name: "Public Limited Company",
-        description: "Large scale operations and public investment",
-        price: "25999",
-        setupTime: "20-30 days",
-        compliance: "Very High",
-        icon: "chart-line",
-        features: ["Public investment", "Large scale operations", "High credibility", "Stock exchange listing"],
+        name: 'Public Limited Company',
+        description: 'Large scale operations and public investment',
+        price: '25999',
+        setupTime: '20-30 days',
+        compliance: 'Very High',
+        icon: 'chart-line',
+        features: [
+          'Public investment',
+          'Large scale operations',
+          'High credibility',
+          'Stock exchange listing',
+        ],
         popular: false,
       },
     ];
@@ -212,16 +245,12 @@ export class MemStorage implements IStorage {
 
   async getUserByUsername(username: string): Promise<User | undefined> {
     await this.ensureInitialized();
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+    return Array.from(this.users.values()).find(user => user.username === username);
   }
 
   async getUserByEmail(email: string): Promise<User | undefined> {
     await this.ensureInitialized();
-    return Array.from(this.users.values()).find(
-      (user) => user.email === email,
-    );
+    return Array.from(this.users.values()).find(user => user.email === email);
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
@@ -230,7 +259,7 @@ export class MemStorage implements IStorage {
     const hashedPassword = await bcrypt.hash(insertUser.password, 10);
     const user: User = {
       ...insertUser,
-              role: insertUser.role || "tier3",
+      role: insertUser.role || 'tier3',
       id,
       password: hashedPassword,
       createdAt: new Date(),
@@ -275,8 +304,8 @@ export class MemStorage implements IStorage {
 
   async getOrganizations(): Promise<Organization[]> {
     await this.ensureInitialized();
-    return Array.from(this.organizations.values()).sort((a, b) =>
-      new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime()
+    return Array.from(this.organizations.values()).sort(
+      (a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime()
     );
   }
 
@@ -300,7 +329,10 @@ export class MemStorage implements IStorage {
     return org;
   }
 
-  async updateOrganization(id: string, updates: Partial<Organization>): Promise<Organization | undefined> {
+  async updateOrganization(
+    id: string,
+    updates: Partial<Organization>,
+  ): Promise<Organization | undefined> {
     await this.ensureInitialized();
     const org = this.organizations.get(id);
     if (!org) return undefined;
@@ -336,8 +368,8 @@ export class MemStorage implements IStorage {
 
   // Orders
   async getOrders(): Promise<Order[]> {
-    return Array.from(this.orders.values()).sort((a, b) =>
-      new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime()
+    return Array.from(this.orders.values()).sort(
+      (a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime()
     );
   }
 
@@ -355,7 +387,7 @@ export class MemStorage implements IStorage {
     const id = randomUUID();
     const order: Order = {
       ...insertOrder,
-      status: insertOrder.status || "pending",
+      status: insertOrder.status || 'pending',
       id,
       createdAt: new Date(),
       completedAt: null,
@@ -395,8 +427,7 @@ export class MemStorage implements IStorage {
   }
 
   async getQuestionnairesByUser(userId: string): Promise<Questionnaire[]> {
-    return Array.from(this.questionnaires.values())
-      .filter(q => q.userId === userId);
+    return Array.from(this.questionnaires.values()).filter(q => q.userId === userId);
   }
 
   // Companies (Legacy)
@@ -405,8 +436,8 @@ export class MemStorage implements IStorage {
   }
 
   async getCompanies(): Promise<Company[]> {
-    return Array.from(this.companies.values()).sort((a, b) =>
-      new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime()
+    return Array.from(this.companies.values()).sort(
+      (a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime()
     );
   }
 

@@ -24,12 +24,28 @@ A comprehensive business solutions platform that serves as a one-stop hub for en
 
 3. **Start development server**
    ```bash
-   npm run dev
+   PORT=3000 npm run dev
    ```
 
 4. **Access the application**
    - **Local Development**: http://localhost:3000
    - **Production**: Configure your deployment platform
+
+### 🧪 Testing the Application
+
+After starting the server, you can test the application with:
+
+```bash
+# Run unit tests
+npm run test
+
+# Run E2E tests
+npm run test:e2e
+
+# Run code quality checks
+npm run lint
+npm run type-check
+```
 
 ## 🔧 Environment Variables
 
@@ -326,6 +342,14 @@ npm run setup            # Run setup script (chmod +x setup.sh && ./setup.sh)
 - **Code Quality**: ESLint, Prettier, and TypeScript strict mode
 - **CI/CD**: Automated testing, building, and deployment pipeline
 
+#### **CI/CD Pipeline (Jenkins)**
+- **Code Quality & Testing**: Parallel execution of TypeScript checks, ESLint, Prettier, unit tests with coverage, and security audits
+- **Build Process**: Automated build with type checking
+- **E2E Testing**: Cross-browser testing with Playwright
+- **Deployment**: Automated deployment with rollback capabilities
+- **Monitoring**: Test reports, coverage reports, and HTML test results
+- **Security**: Automated vulnerability scanning with Trivy
+
 #### **Data Management**
 - **In-Memory Storage**: Fast local development storage
 - **PostgreSQL Support**: Production-ready database
@@ -383,6 +407,13 @@ npm run setup            # Run setup script (chmod +x setup.sh && ./setup.sh)
 > 📖 **For a complete list of all features, see [FEATURES.md](./FEATURES.md)**
 
 ### 🆕 **Recently Added Features**
+
+#### **Recent Bug Fixes & Improvements**
+- **Syntax Error Fixes**: Resolved JSX syntax errors in branding and marketing pages
+- **CI/CD Pipeline**: Comprehensive testing and deployment pipeline with Jenkins
+- **Code Quality Tools**: Enhanced ESLint, Prettier, and TypeScript configurations
+- **Test Infrastructure**: Complete test setup with Vitest, Playwright, and Testing Library
+- **Documentation**: Updated documentation with testing and deployment guides
 
 #### **Advanced Invoice Designer (Tier 1 & 2 Users)**
 - **Custom Branding**: Upload company logos and custom images
@@ -539,6 +570,11 @@ npm run test:e2e
 
 # Run tests in watch mode
 npm run test:watch
+
+# Run code quality checks
+npm run lint
+npm run type-check
+npm run format:check
 ```
 
 ### **Test Structure**
@@ -557,6 +593,12 @@ npm run test:watch
 - **Prettier**: Code formatting
 - **TypeScript**: Strict type checking
 - **Security**: Automated security audits
+
+### **CI/CD Integration**
+- **Jenkins Pipeline**: Automated testing and deployment
+- **Parallel Execution**: Fast test execution with parallel stages
+- **Coverage Reports**: HTML coverage reports for code quality monitoring
+- **Test Reports**: Comprehensive test result reporting
 
 ## 🚀 Deployment Checklist
 

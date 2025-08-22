@@ -78,10 +78,13 @@ global.FileReader = vi.fn().mockImplementation(() => ({
 }));
 
 // Mock crypto.randomUUID
-global.crypto = {
-  ...global.crypto,
-  randomUUID: vi.fn(() => 'mocked-uuid'),
-};
+Object.defineProperty(global, 'crypto', {
+  value: {
+    ...global.crypto,
+    randomUUID: vi.fn(() => 'mocked-uuid'),
+  },
+  writable: true,
+});
 
 // Mock requestAnimationFrame
 global.requestAnimationFrame = vi.fn(cb => setTimeout(cb, 0));
@@ -173,7 +176,7 @@ window.getSelection = vi.fn(() => ({
 }));
 
 // Mock window.URLSearchParams
-global.URLSearchParams = vi.fn().mockImplementation((init) => ({
+global.URLSearchParams = vi.fn().mockImplementation(init => ({
   get: vi.fn(),
   set: vi.fn(),
   append: vi.fn(),
@@ -185,7 +188,7 @@ global.URLSearchParams = vi.fn().mockImplementation((init) => ({
 }));
 
 // Mock window.Headers
-global.Headers = vi.fn().mockImplementation((init) => ({
+global.Headers = vi.fn().mockImplementation(init => ({
   get: vi.fn(),
   set: vi.fn(),
   append: vi.fn(),

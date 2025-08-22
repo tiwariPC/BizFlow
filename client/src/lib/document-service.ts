@@ -32,7 +32,7 @@ export const DOCUMENT_CATEGORIES: DocumentCategory[] = [
     description: 'Business registration and incorporation documents',
     required: true,
     acceptedTypes: ['.pdf', '.jpg', '.jpeg', '.png'],
-    maxSize: 10
+    maxSize: 10,
   },
   {
     id: 'gst',
@@ -40,7 +40,7 @@ export const DOCUMENT_CATEGORIES: DocumentCategory[] = [
     description: 'GST registration and compliance documents',
     required: true,
     acceptedTypes: ['.pdf', '.jpg', '.jpeg', '.png'],
-    maxSize: 10
+    maxSize: 10,
   },
   {
     id: 'banking',
@@ -48,7 +48,7 @@ export const DOCUMENT_CATEGORIES: DocumentCategory[] = [
     description: 'Bank account and financial documents',
     required: true,
     acceptedTypes: ['.pdf', '.jpg', '.jpeg', '.png'],
-    maxSize: 5
+    maxSize: 5,
   },
   {
     id: 'compliance',
@@ -56,7 +56,7 @@ export const DOCUMENT_CATEGORIES: DocumentCategory[] = [
     description: 'Regulatory compliance and legal documents',
     required: false,
     acceptedTypes: ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png'],
-    maxSize: 15
+    maxSize: 15,
   },
   {
     id: 'tax',
@@ -64,14 +64,18 @@ export const DOCUMENT_CATEGORIES: DocumentCategory[] = [
     description: 'Tax filing and payment documents',
     required: false,
     acceptedTypes: ['.pdf', '.xlsx', '.xls', '.jpg', '.jpeg', '.png'],
-    maxSize: 10
-  }
+    maxSize: 10,
+  },
 ];
 
 class DocumentService {
   private baseUrl = '/api/documents';
 
-  async uploadDocument(file: File, category: string, metadata?: Record<string, any>): Promise<UploadResponse> {
+  async uploadDocument(
+    file: File,
+    category: string,
+    metadata?: Record<string, any>,
+  ): Promise<UploadResponse> {
     try {
       // For now, simulate upload since we don't have actual file upload middleware
       // In production, you'd use FormData with multer on the backend
@@ -84,7 +88,7 @@ class DocumentService {
         status: 'pending',
         category,
         url: `/documents/${file.name}`,
-        metadata: metadata || {}
+        metadata: metadata || {},
       };
 
       // Simulate API call
@@ -95,7 +99,7 @@ class DocumentService {
       console.error('Document upload error:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Upload failed'
+        error: error instanceof Error ? error.message : 'Upload failed',
       };
     }
   }
@@ -138,7 +142,7 @@ class DocumentService {
   async deleteDocument(documentId: string): Promise<boolean> {
     try {
       const response = await fetch(`${this.baseUrl}/${documentId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
       });
 
       return response.ok;
@@ -151,7 +155,7 @@ class DocumentService {
   async verifyDocument(documentId: string): Promise<boolean> {
     try {
       const response = await fetch(`${this.baseUrl}/${documentId}/verify`, {
-        method: 'POST'
+        method: 'POST',
       });
 
       return response.ok;
@@ -198,7 +202,7 @@ class DocumentService {
         overallProgress: 0,
         completedSteps: 0,
         totalSteps: 0,
-        missingDocuments: []
+        missingDocuments: [],
       };
     }
   }
@@ -261,7 +265,7 @@ class DocumentService {
         uploadedAt: '2024-01-10T10:30:00Z',
         status: 'verified',
         category: 'incorporation',
-        url: '/documents/incorporation-certificate.pdf'
+        url: '/documents/incorporation-certificate.pdf',
       },
       {
         id: '2',
@@ -271,7 +275,7 @@ class DocumentService {
         uploadedAt: '2024-01-12T14:20:00Z',
         status: 'verified',
         category: 'gst',
-        url: '/documents/gst-certificate.pdf'
+        url: '/documents/gst-certificate.pdf',
       },
       {
         id: '3',
@@ -281,7 +285,7 @@ class DocumentService {
         uploadedAt: '2024-01-15T09:15:00Z',
         status: 'pending',
         category: 'banking',
-        url: '/documents/bank-account.pdf'
+        url: '/documents/bank-account.pdf',
       },
       {
         id: '4',
@@ -291,8 +295,8 @@ class DocumentService {
         uploadedAt: '2024-01-08T16:45:00Z',
         status: 'verified',
         category: 'incorporation',
-        url: '/documents/pan-card.jpg'
-      }
+        url: '/documents/pan-card.jpg',
+      },
     ];
   }
 }

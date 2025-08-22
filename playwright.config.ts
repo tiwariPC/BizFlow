@@ -40,12 +40,12 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run dev',
+    command: 'PORT=3000 npm run dev',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
   },
   outputDir: 'test-results/',
-  globalSetup: require.resolve('./e2e/global-setup.ts'),
-  globalTeardown: require.resolve('./e2e/global-teardown.ts'),
+  globalSetup: './e2e/global-setup.ts',
+  globalTeardown: './e2e/global-teardown.ts',
 });

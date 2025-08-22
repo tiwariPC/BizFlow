@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { DashboardLayout } from "@/components/layout/dashboard-layout";
+import { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import {
   Globe,
   Search,
@@ -30,8 +30,8 @@ import {
   Zap,
   Flag,
   Scale,
-  Gavel
-} from "lucide-react";
+  Gavel,
+} from 'lucide-react';
 
 interface CountryCompliance {
   id: string;
@@ -81,7 +81,7 @@ const countries: CountryCompliance[] = [
         status: 'completed',
         dueDate: '2024-01-15',
         priority: 'high',
-        description: 'Employer Identification Number registration with IRS'
+        description: 'Employer Identification Number registration with IRS',
       },
       {
         id: '2',
@@ -90,7 +90,7 @@ const countries: CountryCompliance[] = [
         status: 'pending',
         dueDate: '2024-03-01',
         priority: 'high',
-        description: 'Business license for California operations'
+        description: 'Business license for California operations',
       },
       {
         id: '3',
@@ -99,8 +99,8 @@ const countries: CountryCompliance[] = [
         status: 'pending',
         dueDate: '2024-02-28',
         priority: 'medium',
-        description: 'Sales tax permit for e-commerce operations'
-      }
+        description: 'Sales tax permit for e-commerce operations',
+      },
     ],
     documents: [
       {
@@ -109,7 +109,7 @@ const countries: CountryCompliance[] = [
         type: 'Certificate',
         status: 'valid',
         expiryDate: 'N/A',
-        fileSize: '2.3 MB'
+        fileSize: '2.3 MB',
       },
       {
         id: '2',
@@ -117,9 +117,9 @@ const countries: CountryCompliance[] = [
         type: 'Registration',
         status: 'valid',
         expiryDate: '2025-01-15',
-        fileSize: '1.8 MB'
-      }
-    ]
+        fileSize: '1.8 MB',
+      },
+    ],
   },
   {
     id: '2',
@@ -137,7 +137,7 @@ const countries: CountryCompliance[] = [
         status: 'pending',
         dueDate: '2024-02-28',
         priority: 'high',
-        description: 'Company registration with Companies House'
+        description: 'Company registration with Companies House',
       },
       {
         id: '2',
@@ -146,8 +146,8 @@ const countries: CountryCompliance[] = [
         status: 'pending',
         dueDate: '2024-03-15',
         priority: 'medium',
-        description: 'Value Added Tax registration with HMRC'
-      }
+        description: 'Value Added Tax registration with HMRC',
+      },
     ],
     documents: [
       {
@@ -156,9 +156,9 @@ const countries: CountryCompliance[] = [
         type: 'Report',
         status: 'pending',
         expiryDate: 'N/A',
-        fileSize: '5.2 MB'
-      }
-    ]
+        fileSize: '5.2 MB',
+      },
+    ],
   },
   {
     id: '3',
@@ -176,7 +176,7 @@ const countries: CountryCompliance[] = [
         status: 'completed',
         dueDate: '2024-01-20',
         priority: 'high',
-        description: 'Company registration with Accounting and Corporate Regulatory Authority'
+        description: 'Company registration with Accounting and Corporate Regulatory Authority',
       },
       {
         id: '2',
@@ -185,8 +185,8 @@ const countries: CountryCompliance[] = [
         status: 'completed',
         dueDate: '2024-01-20',
         priority: 'high',
-        description: 'Goods and Services Tax registration'
-      }
+        description: 'Goods and Services Tax registration',
+      },
     ],
     documents: [
       {
@@ -195,7 +195,7 @@ const countries: CountryCompliance[] = [
         type: 'Certificate',
         status: 'valid',
         expiryDate: '2025-01-20',
-        fileSize: '3.1 MB'
+        fileSize: '3.1 MB',
       },
       {
         id: '2',
@@ -203,9 +203,9 @@ const countries: CountryCompliance[] = [
         type: 'Certificate',
         status: 'valid',
         expiryDate: 'N/A',
-        fileSize: '2.7 MB'
-      }
-    ]
+        fileSize: '2.7 MB',
+      },
+    ],
   },
   {
     id: '4',
@@ -223,7 +223,7 @@ const countries: CountryCompliance[] = [
         status: 'overdue',
         dueDate: '2024-01-31',
         priority: 'high',
-        description: 'Australian Securities and Investments Commission registration'
+        description: 'Australian Securities and Investments Commission registration',
       },
       {
         id: '2',
@@ -232,8 +232,8 @@ const countries: CountryCompliance[] = [
         status: 'overdue',
         dueDate: '2024-01-31',
         priority: 'high',
-        description: 'Australian Business Number registration'
-      }
+        description: 'Australian Business Number registration',
+      },
     ],
     documents: [
       {
@@ -242,10 +242,10 @@ const countries: CountryCompliance[] = [
         type: 'Certificate',
         status: 'expired',
         expiryDate: '2024-01-31',
-        fileSize: '2.9 MB'
-      }
-    ]
-  }
+        fileSize: '2.9 MB',
+      },
+    ],
+  },
 ];
 
 const complianceCategories = [
@@ -253,7 +253,7 @@ const complianceCategories = [
   { name: 'Tax', count: 5, color: 'bg-green-100 text-green-600' },
   { name: 'Legal', count: 4, color: 'bg-purple-100 text-purple-600' },
   { name: 'Regulatory', count: 2, color: 'bg-orange-100 text-orange-600' },
-  { name: 'Financial', count: 1, color: 'bg-red-100 text-red-600' }
+  { name: 'Financial', count: 1, color: 'bg-red-100 text-red-600' },
 ];
 
 const globalRegulations = [
@@ -263,7 +263,7 @@ const globalRegulations = [
     region: 'European Union',
     description: 'General Data Protection Regulation compliance for data handling',
     status: 'required',
-    deadline: '2024-05-25'
+    deadline: '2024-05-25',
   },
   {
     id: '2',
@@ -271,7 +271,7 @@ const globalRegulations = [
     region: 'United States',
     description: 'Sarbanes-Oxley Act compliance for financial reporting',
     status: 'required',
-    deadline: '2024-03-31'
+    deadline: '2024-03-31',
   },
   {
     id: '3',
@@ -279,8 +279,8 @@ const globalRegulations = [
     region: 'Global',
     description: 'Information security management system certification',
     status: 'recommended',
-    deadline: '2024-06-30'
-  }
+    deadline: '2024-06-30',
+  },
 ];
 
 export default function InternationalCompliance() {
@@ -290,13 +290,13 @@ export default function InternationalCompliance() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge className="bg-green-100 text-green-800">Active</Badge>;
+        return <Badge className='bg-green-100 text-green-800'>Active</Badge>;
       case 'pending':
-        return <Badge className="bg-yellow-100 text-yellow-800">Pending</Badge>;
+        return <Badge className='bg-yellow-100 text-yellow-800'>Pending</Badge>;
       case 'expired':
-        return <Badge className="bg-red-100 text-red-800">Expired</Badge>;
+        return <Badge className='bg-red-100 text-red-800'>Expired</Badge>;
       default:
-        return <Badge className="bg-gray-100 text-gray-800">Unknown</Badge>;
+        return <Badge className='bg-gray-100 text-gray-800'>Unknown</Badge>;
     }
   };
 
@@ -322,142 +322,153 @@ export default function InternationalCompliance() {
   return (
     <DashboardLayout>
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-neutral-900 mb-2">International Compliance</h1>
-        <p className="text-neutral-600">Manage compliance requirements across multiple countries and jurisdictions</p>
+      <div className='mb-8'>
+        <h1 className='text-3xl font-bold text-neutral-900 mb-2'>International Compliance</h1>
+        <p className='text-neutral-600'>
+          Manage compliance requirements across multiple countries and jurisdictions
+        </p>
       </div>
 
       {/* Global Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div className='grid grid-cols-1 md:grid-cols-4 gap-6 mb-8'>
         <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
+          <CardContent className='p-6'>
+            <div className='flex items-center justify-between'>
               <div>
-                <p className="text-sm text-neutral-600 mb-1">Active Countries</p>
-                <p className="text-2xl font-bold text-neutral-900">4</p>
+                <p className='text-sm text-neutral-600 mb-1'>Active Countries</p>
+                <p className='text-2xl font-bold text-neutral-900'>4</p>
               </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                <Globe className="w-6 h-6 text-blue-600" />
+              <div className='w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center'>
+                <Globe className='w-6 h-6 text-blue-600' />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
+          <CardContent className='p-6'>
+            <div className='flex items-center justify-between'>
               <div>
-                <p className="text-sm text-neutral-600 mb-1">Total Requirements</p>
-                <p className="text-2xl font-bold text-neutral-900">12</p>
+                <p className='text-sm text-neutral-600 mb-1'>Total Requirements</p>
+                <p className='text-2xl font-bold text-neutral-900'>12</p>
               </div>
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                <Shield className="w-6 h-6 text-green-600" />
+              <div className='w-12 h-12 bg-green-100 rounded-full flex items-center justify-center'>
+                <Shield className='w-6 h-6 text-green-600' />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
+          <CardContent className='p-6'>
+            <div className='flex items-center justify-between'>
               <div>
-                <p className="text-sm text-neutral-600 mb-1">Pending Deadlines</p>
-                <p className="text-2xl font-bold text-neutral-900">5</p>
+                <p className='text-sm text-neutral-600 mb-1'>Pending Deadlines</p>
+                <p className='text-2xl font-bold text-neutral-900'>5</p>
               </div>
-              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
-                <Calendar className="w-6 h-6 text-orange-600" />
+              <div className='w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center'>
+                <Calendar className='w-6 h-6 text-orange-600' />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
+          <CardContent className='p-6'>
+            <div className='flex items-center justify-between'>
               <div>
-                <p className="text-sm text-neutral-600 mb-1">Avg Compliance Score</p>
-                <p className="text-2xl font-bold text-neutral-900">70%</p>
+                <p className='text-sm text-neutral-600 mb-1'>Avg Compliance Score</p>
+                <p className='text-2xl font-bold text-neutral-900'>70%</p>
               </div>
-              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-purple-600" />
+              <div className='w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center'>
+                <TrendingUp className='w-6 h-6 text-purple-600' />
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
         {/* Main Content */}
-        <div className="lg:col-span-2 space-y-8">
+        <div className='lg:col-span-2 space-y-8'>
           {/* Country Compliance Overview */}
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
-                  <Globe className="w-5 h-5" />
+              <div className='flex items-center justify-between'>
+                <CardTitle className='flex items-center gap-2'>
+                  <Globe className='w-5 h-5' />
                   Country Compliance Overview
                 </CardTitle>
-                <div className="flex items-center gap-2">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 w-4 h-4" />
+                <div className='flex items-center gap-2'>
+                  <div className='relative'>
+                    <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 w-4 h-4' />
                     <Input
-                      placeholder="Search countries..."
+                      placeholder='Search countries...'
                       value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10 w-64"
+                      onChange={e => setSearchQuery(e.target.value)}
+                      className='pl-10 w-64'
                     />
                   </div>
-                  <Button variant="outline" size="sm">
-                    <Plus className="w-4 h-4 mr-2" />
+                  <Button variant='outline' size='sm'>
+                    <Plus className='w-4 h-4 mr-2' />
                     Add Country
                   </Button>
                 </div>
               </div>
             </CardHeader>
             <CardContent>
-              <div className="space-y-6">
-                {countries.map((country) => (
-                  <div key={country.id} className="border border-neutral-200 rounded-lg p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-4">
-                        <div className="text-3xl">{country.flag}</div>
+              <div className='space-y-6'>
+                {countries.map(country => (
+                  <div key={country.id} className='border border-neutral-200 rounded-lg p-6'>
+                    <div className='flex items-start justify-between mb-4'>
+                      <div className='flex items-center gap-4'>
+                        <div className='text-3xl'>{country.flag}</div>
                         <div>
-                          <div className="flex items-center gap-2 mb-1">
-                            <h3 className="font-semibold text-neutral-900">{country.country}</h3>
+                          <div className='flex items-center gap-2 mb-1'>
+                            <h3 className='font-semibold text-neutral-900'>{country.country}</h3>
                             {getStatusBadge(country.status)}
                           </div>
-                          <div className="flex items-center gap-4 text-sm text-neutral-600">
+                          <div className='flex items-center gap-4 text-sm text-neutral-600'>
                             <span>Last updated: {country.lastUpdated}</span>
                             <span>Next deadline: {country.nextDeadline}</span>
                           </div>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className={`text-2xl font-bold ${getComplianceScoreColor(country.complianceScore)}`}>
+                      <div className='text-right'>
+                        <p
+                          className={`text-2xl font-bold ${getComplianceScoreColor(country.complianceScore)}`}
+                        >
                           {country.complianceScore}%
                         </p>
-                        <p className="text-sm text-neutral-600">Compliance Score</p>
+                        <p className='text-sm text-neutral-600'>Compliance Score</p>
                       </div>
                     </div>
 
                     {/* Requirements */}
-                    <div className="mb-4">
-                      <h4 className="font-medium text-neutral-900 mb-3">Requirements</h4>
-                      <div className="space-y-2">
-                        {country.requirements.map((req) => (
-                          <div key={req.id} className="flex items-center justify-between p-3 bg-neutral-50 rounded-lg">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                <h5 className="font-medium text-neutral-900">{req.title}</h5>
-                                <Badge variant="outline" className="text-xs">{req.category}</Badge>
+                    <div className='mb-4'>
+                      <h4 className='font-medium text-neutral-900 mb-3'>Requirements</h4>
+                      <div className='space-y-2'>
+                        {country.requirements.map(req => (
+                          <div
+                            key={req.id}
+                            className='flex items-center justify-between p-3 bg-neutral-50 rounded-lg'
+                          >
+                            <div className='flex-1'>
+                              <div className='flex items-center gap-2 mb-1'>
+                                <h5 className='font-medium text-neutral-900'>{req.title}</h5>
+                                <Badge variant='outline' className='text-xs'>
+                                  {req.category}
+                                </Badge>
                               </div>
-                              <p className="text-sm text-neutral-600">{req.description}</p>
+                              <p className='text-sm text-neutral-600'>{req.description}</p>
                             </div>
-                            <div className="text-right">
-                              <p className={`text-sm font-medium ${getRequirementStatusColor(req.status)}`}>
+                            <div className='text-right'>
+                              <p
+                                className={`text-sm font-medium ${getRequirementStatusColor(req.status)}`}
+                              >
                                 {req.status.charAt(0).toUpperCase() + req.status.slice(1)}
                               </p>
-                              <p className="text-xs text-neutral-600">Due: {req.dueDate}</p>
+                              <p className='text-xs text-neutral-600'>Due: {req.dueDate}</p>
                             </div>
                           </div>
                         ))}
@@ -465,20 +476,29 @@ export default function InternationalCompliance() {
                     </div>
 
                     {/* Documents */}
-                    <div className="mb-4">
-                      <h4 className="font-medium text-neutral-900 mb-3">Documents</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        {country.documents.map((doc) => (
-                          <div key={doc.id} className="flex items-center justify-between p-3 border border-neutral-200 rounded-lg">
-                            <div className="flex items-center gap-3">
-                              <FileText className="w-5 h-5 text-neutral-400" />
+                    <div className='mb-4'>
+                      <h4 className='font-medium text-neutral-900 mb-3'>Documents</h4>
+                      <div className='grid grid-cols-1 md:grid-cols-2 gap-3'>
+                        {country.documents.map(doc => (
+                          <div
+                            key={doc.id}
+                            className='flex items-center justify-between p-3 border border-neutral-200 rounded-lg'
+                          >
+                            <div className='flex items-center gap-3'>
+                              <FileText className='w-5 h-5 text-neutral-400' />
                               <div>
-                                <p className="font-medium text-neutral-900">{doc.name}</p>
-                                <p className="text-sm text-neutral-600">{doc.type}</p>
+                                <p className='font-medium text-neutral-900'>{doc.name}</p>
+                                <p className='text-sm text-neutral-600'>{doc.type}</p>
                               </div>
                             </div>
-                            <div className="text-right">
-                              <Badge className={doc.status === 'valid' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
+                            <div className='text-right'>
+                              <Badge
+                                className={
+                                  doc.status === 'valid'
+                                    ? 'bg-green-100 text-green-800'
+                                    : 'bg-red-100 text-red-800'
+                                }
+                              >
                                 {doc.status}
                               </Badge>
                             </div>
@@ -487,18 +507,18 @@ export default function InternationalCompliance() {
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4 text-sm text-neutral-600">
+                    <div className='flex items-center justify-between'>
+                      <div className='flex items-center gap-4 text-sm text-neutral-600'>
                         <span>{country.requirements.length} requirements</span>
                         <span>{country.documents.length} documents</span>
                       </div>
-                      <div className="flex gap-2">
-                        <Button size="sm" variant="outline">
-                          <Eye className="w-4 h-4 mr-1" />
+                      <div className='flex gap-2'>
+                        <Button size='sm' variant='outline'>
+                          <Eye className='w-4 h-4 mr-1' />
                           View Details
                         </Button>
-                        <Button size="sm">
-                          <Settings className="w-4 h-4 mr-1" />
+                        <Button size='sm'>
+                          <Settings className='w-4 h-4 mr-1' />
                           Manage
                         </Button>
                       </div>
@@ -512,41 +532,47 @@ export default function InternationalCompliance() {
           {/* Global Regulations */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Scale className="w-5 h-5" />
+              <CardTitle className='flex items-center gap-2'>
+                <Scale className='w-5 h-5' />
                 Global Regulations
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {globalRegulations.map((regulation) => (
-                  <div key={regulation.id} className="border border-neutral-200 rounded-lg p-4">
-                    <div className="flex items-start justify-between mb-3">
+              <div className='space-y-4'>
+                {globalRegulations.map(regulation => (
+                  <div key={regulation.id} className='border border-neutral-200 rounded-lg p-4'>
+                    <div className='flex items-start justify-between mb-3'>
                       <div>
-                        <h4 className="font-medium text-neutral-900 mb-1">{regulation.title}</h4>
-                        <p className="text-sm text-neutral-600 mb-2">{regulation.description}</p>
-                        <div className="flex items-center gap-4 text-sm text-neutral-600">
-                          <span className="flex items-center gap-1">
-                            <MapPin className="w-4 h-4" />
+                        <h4 className='font-medium text-neutral-900 mb-1'>{regulation.title}</h4>
+                        <p className='text-sm text-neutral-600 mb-2'>{regulation.description}</p>
+                        <div className='flex items-center gap-4 text-sm text-neutral-600'>
+                          <span className='flex items-center gap-1'>
+                            <MapPin className='w-4 h-4' />
                             {regulation.region}
                           </span>
-                          <span className="flex items-center gap-1">
-                            <Calendar className="w-4 h-4" />
+                          <span className='flex items-center gap-1'>
+                            <Calendar className='w-4 h-4' />
                             Due: {regulation.deadline}
                           </span>
                         </div>
                       </div>
-                      <Badge className={regulation.status === 'required' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}>
+                      <Badge
+                        className={
+                          regulation.status === 'required'
+                            ? 'bg-red-100 text-red-800'
+                            : 'bg-blue-100 text-blue-800'
+                        }
+                      >
                         {regulation.status}
                       </Badge>
                     </div>
-                    <div className="flex gap-2">
-                      <Button size="sm" variant="outline">
-                        <BookOpen className="w-4 h-4 mr-1" />
+                    <div className='flex gap-2'>
+                      <Button size='sm' variant='outline'>
+                        <BookOpen className='w-4 h-4 mr-1' />
                         Learn More
                       </Button>
-                      <Button size="sm">
-                        <CheckCircle className="w-4 h-4 mr-1" />
+                      <Button size='sm'>
+                        <CheckCircle className='w-4 h-4 mr-1' />
                         Start Compliance
                       </Button>
                     </div>
@@ -558,15 +584,15 @@ export default function InternationalCompliance() {
         </div>
 
         {/* Sidebar */}
-        <div className="space-y-6">
+        <div className='space-y-6'>
           {/* Categories Filter */}
           <Card>
             <CardHeader>
               <CardTitle>Categories</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                {complianceCategories.map((category) => (
+              <div className='space-y-3'>
+                {complianceCategories.map(category => (
                   <button
                     key={category.name}
                     onClick={() => setSelectedCategory(category.name)}
@@ -576,7 +602,7 @@ export default function InternationalCompliance() {
                         : 'border-neutral-200 hover:border-neutral-300'
                     }`}
                   >
-                    <span className="font-medium text-neutral-900">{category.name}</span>
+                    <span className='font-medium text-neutral-900'>{category.name}</span>
                     <Badge className={category.color}>{category.count}</Badge>
                   </button>
                 ))}
@@ -590,24 +616,24 @@ export default function InternationalCompliance() {
               <CardTitle>Quick Actions</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                <Button className="w-full justify-start" variant="outline">
-                  <Upload className="w-4 h-4 mr-2" />
+              <div className='space-y-3'>
+                <Button className='w-full justify-start' variant='outline'>
+                  <Upload className='w-4 h-4 mr-2' />
                   Upload Documents
                 </Button>
 
-                <Button className="w-full justify-start" variant="outline">
-                  <Calendar className="w-4 h-4 mr-2" />
+                <Button className='w-full justify-start' variant='outline'>
+                  <Calendar className='w-4 h-4 mr-2' />
                   View Deadlines
                 </Button>
 
-                <Button className="w-full justify-start" variant="outline">
-                  <Download className="w-4 h-4 mr-2" />
+                <Button className='w-full justify-start' variant='outline'>
+                  <Download className='w-4 h-4 mr-2' />
                   Export Reports
                 </Button>
 
-                <Button className="w-full justify-start" variant="outline">
-                  <MessageSquare className="w-4 h-4 mr-2" />
+                <Button className='w-full justify-start' variant='outline'>
+                  <MessageSquare className='w-4 h-4 mr-2' />
                   Contact Experts
                 </Button>
               </div>
@@ -617,43 +643,46 @@ export default function InternationalCompliance() {
           {/* Compliance Alerts */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5" />
+              <CardTitle className='flex items-center gap-2'>
+                <AlertTriangle className='w-5 h-5' />
                 Alerts
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <div className="flex items-center gap-2 mb-1">
-                    <AlertTriangle className="w-4 h-4 text-red-600" />
-                    <span className="font-medium text-red-800">Australia ASIC Expired</span>
+              <div className='space-y-3'>
+                <div className='p-3 bg-red-50 border border-red-200 rounded-lg'>
+                  <div className='flex items-center gap-2 mb-1'>
+                    <AlertTriangle className='w-4 h-4 text-red-600' />
+                    <span className='font-medium text-red-800'>Australia ASIC Expired</span>
                   </div>
-                  <p className="text-sm text-red-700">Registration expired on Jan 31, 2024</p>
+                  <p className='text-sm text-red-700'>Registration expired on Jan 31, 2024</p>
                 </div>
 
-                <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Clock className="w-4 h-4 text-yellow-600" />
-                    <span className="font-medium text-yellow-800">UK VAT Registration</span>
+                <div className='p-3 bg-yellow-50 border border-yellow-200 rounded-lg'>
+                  <div className='flex items-center gap-2 mb-1'>
+                    <Clock className='w-4 h-4 text-yellow-600' />
+                    <span className='font-medium text-yellow-800'>UK VAT Registration</span>
                   </div>
-                  <p className="text-sm text-yellow-700">Due in 15 days</p>
+                  <p className='text-sm text-yellow-700'>Due in 15 days</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           {/* Coming Soon */}
-          <Card className="border-dashed border-2 border-neutral-300">
-            <CardContent className="p-4 text-center">
-              <div className="w-12 h-12 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Zap className="w-6 h-6 text-neutral-500" />
+          <Card className='border-dashed border-2 border-neutral-300'>
+            <CardContent className='p-4 text-center'>
+              <div className='w-12 h-12 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-3'>
+                <Zap className='w-6 h-6 text-neutral-500' />
               </div>
-              <h4 className="font-medium text-neutral-900 mb-2">Advanced Features</h4>
-              <p className="text-sm text-neutral-600 mb-3">
-                AI-powered compliance monitoring, automated filing, and real-time regulatory updates coming soon!
+              <h4 className='font-medium text-neutral-900 mb-2'>Advanced Features</h4>
+              <p className='text-sm text-neutral-600 mb-3'>
+                AI-powered compliance monitoring, automated filing, and real-time regulatory updates
+                coming soon!
               </p>
-              <Badge variant="outline" className="text-xs">Coming Soon</Badge>
+              <Badge variant='outline' className='text-xs'>
+                Coming Soon
+              </Badge>
             </CardContent>
           </Card>
         </div>
@@ -661,4 +690,3 @@ export default function InternationalCompliance() {
     </DashboardLayout>
   );
 }
-

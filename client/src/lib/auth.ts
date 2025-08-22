@@ -1,4 +1,4 @@
-import { User } from "@shared/schema";
+import { User } from '@shared/schema';
 
 export interface AuthUser {
   id: string;
@@ -62,7 +62,7 @@ class AuthService {
   getAuthHeaders(): Record<string, string> {
     if (!this.token) return {};
     return {
-      'Authorization': `Bearer ${this.token}`,
+      Authorization: `Bearer ${this.token}`,
     };
   }
 }

@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   root: true,
   env: {
     browser: true,
@@ -7,11 +7,6 @@ export default {
   },
   extends: [
     'eslint:recommended',
-    '@typescript-eslint/recommended',
-    'plugin:react/recommended',
-    'plugin:react-hooks/recommended',
-    'plugin:jsx-a11y/recommended',
-    'prettier',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -22,11 +17,7 @@ export default {
     sourceType: 'module',
   },
   plugins: [
-    'react',
-    'react-hooks',
     '@typescript-eslint',
-    'jsx-a11y',
-    'prettier',
   ],
   rules: {
     // TypeScript rules

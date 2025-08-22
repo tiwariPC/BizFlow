@@ -25,7 +25,7 @@ class NotificationService {
         const parsed = JSON.parse(stored);
         this.notifications = parsed.map((n: any) => ({
           ...n,
-          timestamp: new Date(n.timestamp)
+          timestamp: new Date(n.timestamp),
         }));
       } catch (error) {
         console.error('Failed to load notifications from storage:', error);
@@ -56,7 +56,7 @@ class NotificationService {
       ...notification,
       id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
       timestamp: new Date(),
-      read: false
+      read: false,
     };
 
     this.notifications.unshift(newNotification);
@@ -80,7 +80,7 @@ class NotificationService {
   markAllAsRead() {
     this.notifications = this.notifications.map(notification => ({
       ...notification,
-      read: true
+      read: true,
     }));
     this.saveToStorage();
     this.notifyListeners();
@@ -116,7 +116,7 @@ class NotificationService {
       message,
       priority: 'high',
       actionUrl: actionUrl || '/compliance',
-      metadata: { dueDate }
+      metadata: { dueDate },
     });
   }
 
@@ -127,7 +127,7 @@ class NotificationService {
       message,
       priority: 'high',
       actionUrl: actionUrl || '/finance',
-      metadata: { amount }
+      metadata: { amount },
     });
   }
 
@@ -138,7 +138,7 @@ class NotificationService {
       message,
       priority: 'medium',
       actionUrl: actionUrl || '/marketing',
-      metadata: { performance }
+      metadata: { performance },
     });
   }
 
@@ -149,16 +149,20 @@ class NotificationService {
       message,
       priority: 'low',
       actionUrl: actionUrl || '/community',
-      metadata: { author }
+      metadata: { author },
     });
   }
 
-  addSystemNotification(title: string, message: string, priority: 'high' | 'medium' | 'low' = 'medium') {
+  addSystemNotification(
+    title: string,
+    message: string,
+    priority: 'high' | 'medium' | 'low' = 'medium',
+  ) {
     return this.addNotification({
       type: 'system',
       title,
       message,
-      priority
+      priority,
     });
   }
 
@@ -168,7 +172,7 @@ class NotificationService {
         body: notification.message,
         icon: '/favicon.ico',
         tag: notification.id,
-        requireInteraction: notification.priority === 'high'
+        requireInteraction: notification.priority === 'high',
       });
     }
   }
@@ -202,29 +206,29 @@ class NotificationService {
         title: 'GST Filing Due',
         message: 'Your GST return for March 2024 is due in 3 days',
         priority: 'high' as const,
-        actionUrl: '/compliance'
+        actionUrl: '/compliance',
       },
       {
         type: 'invoice' as const,
         title: 'Unpaid Invoice',
         message: 'Invoice #INV-2024-001 for ₹25,000 is overdue by 5 days',
         priority: 'high' as const,
-        actionUrl: '/finance'
+        actionUrl: '/finance',
       },
       {
         type: 'campaign' as const,
         title: 'Campaign Performance',
         message: 'Your "Summer Sale" campaign achieved 150% of target clicks',
         priority: 'medium' as const,
-        actionUrl: '/marketing'
+        actionUrl: '/marketing',
       },
       {
         type: 'community' as const,
         title: 'New Community Post',
         message: 'Rahul Sharma replied to your question about GST filing',
         priority: 'low' as const,
-        actionUrl: '/community'
-      }
+        actionUrl: '/community',
+      },
     ];
 
     mockNotifications.forEach(notification => {
@@ -234,4 +238,3 @@ class NotificationService {
 }
 
 export const notificationService = new NotificationService();
-

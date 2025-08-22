@@ -1,11 +1,18 @@
-import type { Express } from "express";
-import { createServer, type Server } from "http";
-import { storage } from "./storage";
-import { insertUserSchema, loginSchema, insertOrderSchema, insertQuestionnaireSchema, insertCompanySchema, type User } from "@shared/schema";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import type { Express } from 'express';
+import { createServer, type Server } from 'http';
+import { storage } from './storage';
+import {
+  insertUserSchema,
+  loginSchema,
+  insertOrderSchema,
+  insertQuestionnaireSchema,
+  insertCompanySchema,
+  type User,
+} from '@shared/schema';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 // Middleware to verify JWT token
 const authenticateToken = async (req: any, res: any, next: any) => {
@@ -39,16 +46,17 @@ const requireAdmin = (req: any, res: any, next: any) => {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes
-  app.post("/api/auth/register", async (req, res) => {
+  app.post('/api/auth/register', async (req, res) => {
     try {
       const userData = insertUserSchema.parse(req.body);
 
       // Check if user already exists
-      const existingUser = await storage.getUserByUsername(userData.username) ||
-                          await storage.getUserByEmail(userData.email);
+      const existingUser =
+        (await storage.getUserByUsername(userData.username)) ||
+        (await storage.getUserByEmail(userData.email));
 
       if (existingUser) {
-        return res.status(400).json({ message: "User already exists" });
+        return res.status(400).json({ message: 'User already exists' });
       }
 
       const user = await storage.createUser(userData);
@@ -60,32 +68,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
           username: user.username,
           email: user.email,
           fullName: user.fullName,
-          role: user.role
+          role: user.role,
         },
-        token
+        token,
       });
     } catch (error) {
-      res.status(400).json({ message: "Invalid input data" });
+      res.status(400).json({ message: 'Invalid input data' });
     }
   });
 
-  app.post("/api/auth/login", async (req, res) => {
+  app.post('/api/auth/login', async (req, res) => {
     try {
       const credentials = loginSchema.parse(req.body);
-      console.log("Login attempt for username:", credentials.username);
+      console.log('Login attempt for username:', credentials.username);
 
       const user = await storage.getUserByUsername(credentials.username);
-      console.log("User found:", user ? "Yes" : "No");
+      console.log('User found:', user ? 'Yes' : 'No');
 
       if (!user) {
-        return res.status(401).json({ message: "Invalid credentials" });
+        return res.status(401).json({ message: 'Invalid credentials' });
       }
 
       const passwordMatch = await bcrypt.compare(credentials.password, user.password);
-      console.log("Password match:", passwordMatch);
+      console.log('Password match:', passwordMatch);
 
       if (!passwordMatch) {
-        return res.status(401).json({ message: "Invalid credentials" });
+        return res.status(401).json({ message: 'Invalid credentials' });
       }
 
       const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '24h' });
@@ -96,23 +104,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
           username: user.username,
           email: user.email,
           fullName: user.fullName,
-          role: user.role
+          role: user.role,
         },
-        token
+        token,
       });
     } catch (error) {
-      console.error("Login error:", error);
-      res.status(400).json({ message: "Invalid input data" });
+      console.error('Login error:', error);
+      res.status(400).json({ message: 'Invalid input data' });
     }
   });
 
-    // Google OAuth authentication
-  app.post("/api/auth/google", async (req, res) => {
+  // Google OAuth authentication
+  app.post('/api/auth/google', async (req, res) => {
     try {
       const { googleToken, userData, selectedTier } = req.body;
 
       if (!googleToken || !userData) {
-        return res.status(400).json({ message: "Google token and user data required" });
+        return res.status(400).json({ message: 'Google token and user data required' });
       }
 
       // Check if user already exists by email
@@ -132,10 +140,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           tier: selectedTier,
           organizationId: null,
           parentUserId: null,
-          permissions: selectedTier === "tier1" ? { all: true } :
-                      selectedTier === "tier2" ? { organization: true, employees: true, services: true } :
-                      { basic: true, limited: true },
-          status: "active",
+          permissions:
+            selectedTier === 'tier1'
+              ? { all: true }
+              : selectedTier === 'tier2'
+                ? { organization: true, employees: true, services: true }
+                : { basic: true, limited: true },
+          status: 'active',
         };
 
         user = await storage.createUser(newUserData);
@@ -150,24 +161,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
           email: user.email,
           fullName: user.fullName,
           role: user.role,
-          tier: user.tier
+          tier: user.tier,
         },
         token,
-        isNewUser: !user.lastLoginAt
+        isNewUser: !user.lastLoginAt,
       });
     } catch (error) {
-      console.error("Google auth error:", error);
-      res.status(500).json({ message: "Google authentication failed" });
+      console.error('Google auth error:', error);
+      res.status(500).json({ message: 'Google authentication failed' });
     }
   });
 
   // Apple OAuth authentication
-  app.post("/api/auth/apple", async (req, res) => {
+  app.post('/api/auth/apple', async (req, res) => {
     try {
       const { appleToken, userData, selectedTier } = req.body;
 
       if (!appleToken || !userData) {
-        return res.status(400).json({ message: "Apple token and user data required" });
+        return res.status(400).json({ message: 'Apple token and user data required' });
       }
 
       // Check if user already exists by email
@@ -187,10 +198,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           tier: selectedTier,
           organizationId: null,
           parentUserId: null,
-          permissions: selectedTier === "tier1" ? { all: true } :
-                      selectedTier === "tier2" ? { organization: true, employees: true, services: true } :
-                      { basic: true, limited: true },
-          status: "active",
+          permissions:
+            selectedTier === 'tier1'
+              ? { all: true }
+              : selectedTier === 'tier2'
+                ? { organization: true, employees: true, services: true }
+                : { basic: true, limited: true },
+          status: 'active',
         };
 
         user = await storage.createUser(newUserData);
@@ -205,97 +219,101 @@ export async function registerRoutes(app: Express): Promise<Server> {
           email: user.email,
           fullName: user.fullName,
           role: user.role,
-          tier: user.tier
+          tier: user.tier,
         },
         token,
-        isNewUser: !user.lastLoginAt
+        isNewUser: !user.lastLoginAt,
       });
     } catch (error) {
-      console.error("Apple auth error:", error);
-      res.status(500).json({ message: "Apple authentication failed" });
+      console.error('Apple auth error:', error);
+      res.status(500).json({ message: 'Apple authentication failed' });
     }
   });
 
   // Get current user
-  app.get("/api/auth/me", authenticateToken, (req: any, res) => {
+  app.get('/api/auth/me', authenticateToken, (req: any, res) => {
     res.json({
       user: {
         id: req.user.id,
         username: req.user.username,
         email: req.user.email,
         fullName: req.user.fullName,
-        role: req.user.role
+        role: req.user.role,
       }
     });
   });
 
   // Debug endpoint to check users (remove in production)
-  app.get("/api/debug/users", async (req, res) => {
+  app.get('/api/debug/users', async (req, res) => {
     try {
       const users = await storage.getAllUsers();
       res.json({ users: users.map((u: User) => ({ username: u.username, role: u.role })) });
     } catch (error) {
-      res.status(500).json({ error: "Failed to get users" });
+      res.status(500).json({ error: 'Failed to get users' });
     }
   });
 
   // Service packages routes
-  app.get("/api/packages", async (req, res) => {
+  app.get('/api/packages', async (req, res) => {
     try {
       const packages = await storage.getAllServicePackages();
       res.json(packages);
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch service packages" });
+      res.status(500).json({ message: 'Failed to fetch service packages' });
     }
   });
 
-  app.get("/api/packages/:id", async (req, res) => {
+  app.get('/api/packages/:id', async (req, res) => {
     try {
       const pkg = await storage.getServicePackage(req.params.id);
       if (!pkg) {
-        return res.status(404).json({ message: "Package not found" });
+        return res.status(404).json({ message: 'Package not found' });
       }
       res.json(pkg);
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch package" });
+      res.status(500).json({ message: 'Failed to fetch package' });
     }
   });
 
   // Orders routes
-  app.get("/api/orders", authenticateToken, async (req: any, res) => {
+  app.get('/api/orders', authenticateToken, async (req: any, res) => {
     try {
       let orders;
       if (req.user.role === 'admin') {
         orders = await storage.getOrders();
         // Include user and package details for admin
-        const ordersWithDetails = await Promise.all(orders.map(async (order) => {
-          const user = await storage.getUser(order.userId);
-          const pkg = await storage.getServicePackage(order.packageId);
-          return {
-            ...order,
-            user: user ? { id: user.id, fullName: user.fullName, email: user.email } : null,
-            package: pkg ? { id: pkg.id, name: pkg.name } : null,
-          };
-        }));
+        const ordersWithDetails = await Promise.all(
+          orders.map(async order => {
+            const user = await storage.getUser(order.userId);
+            const pkg = await storage.getServicePackage(order.packageId);
+            return {
+              ...order,
+              user: user ? { id: user.id, fullName: user.fullName, email: user.email } : null,
+              package: pkg ? { id: pkg.id, name: pkg.name } : null,
+            };
+          })
+        );
         res.json(ordersWithDetails);
       } else {
         orders = await storage.getOrdersByUser(req.user.id);
         // Include package details for customer
-        const ordersWithDetails = await Promise.all(orders.map(async (order) => {
-          const pkg = await storage.getServicePackage(order.packageId);
-          return {
-            ...order,
-            package: pkg ? { id: pkg.id, name: pkg.name, setupTime: pkg.setupTime } : null,
-          };
-        }));
+        const ordersWithDetails = await Promise.all(
+          orders.map(async order => {
+            const pkg = await storage.getServicePackage(order.packageId);
+            return {
+              ...order,
+              package: pkg ? { id: pkg.id, name: pkg.name, setupTime: pkg.setupTime } : null,
+            };
+          })
+        );
         res.json(ordersWithDetails);
       }
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch orders" });
+      res.status(500).json({ message: 'Failed to fetch orders' });
     }
   });
 
-  app.post("/api/orders", authenticateToken, async (req: any, res) => {
+  app.post('/api/orders', authenticateToken, async (req: any, res) => {
     try {
       const orderData = insertOrderSchema.parse({
         ...req.body,
@@ -305,7 +323,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Verify package exists
       const pkg = await storage.getServicePackage(orderData.packageId);
       if (!pkg) {
-        return res.status(404).json({ message: "Package not found" });
+        return res.status(404).json({ message: 'Package not found' });
       }
 
       const order = await storage.createOrder({
@@ -315,27 +333,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json(order);
     } catch (error) {
-      res.status(400).json({ message: "Invalid order data" });
+      res.status(400).json({ message: 'Invalid order data' });
     }
   });
 
-  app.patch("/api/orders/:id/status", authenticateToken, requireAdmin, async (req, res) => {
+  app.patch('/api/orders/:id/status', authenticateToken, requireAdmin, async (req, res) => {
     try {
       const { status, notes } = req.body;
       const order = await storage.updateOrderStatus(req.params.id, status, notes);
 
       if (!order) {
-        return res.status(404).json({ message: "Order not found" });
+        return res.status(404).json({ message: 'Order not found' });
       }
 
       res.json(order);
     } catch (error) {
-      res.status(500).json({ message: "Failed to update order status" });
+      res.status(500).json({ message: 'Failed to update order status' });
     }
   });
 
   // Questionnaire routes
-  app.post("/api/questionnaire", authenticateToken, async (req: any, res) => {
+  app.post('/api/questionnaire', authenticateToken, async (req: any, res) => {
     try {
       const questionnaireData = insertQuestionnaireSchema.parse({
         ...req.body,
@@ -345,25 +363,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const questionnaire = await storage.createQuestionnaire(questionnaireData);
       res.json(questionnaire);
     } catch (error) {
-      res.status(400).json({ message: "Invalid questionnaire data" });
+      res.status(400).json({ message: 'Invalid questionnaire data' });
     }
   });
 
-  app.get("/api/questionnaire", authenticateToken, async (req: any, res) => {
+  app.get('/api/questionnaire', authenticateToken, async (req: any, res) => {
     try {
       const questionnaires = await storage.getQuestionnairesByUser(req.user.id);
       res.json(questionnaires);
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch questionnaires" });
+      res.status(500).json({ message: 'Failed to fetch questionnaires' });
     }
   });
 
   // Admin stats
-  app.get("/api/admin/stats", authenticateToken, requireAdmin, async (req, res) => {
+  app.get('/api/admin/stats', authenticateToken, requireAdmin, async (req, res) => {
     try {
       const orders = await storage.getOrders();
       const totalOrders = orders.length;
-      const pendingOrders = orders.filter(o => o.status === 'pending' || o.status === 'processing').length;
+      const pendingOrders = orders.filter(
+        o => o.status === 'pending' || o.status === 'processing'
+      ).length;
       const completedOrders = orders.filter(o => o.status === 'completed').length;
 
       // Calculate monthly revenue (current month)
@@ -373,7 +393,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const orderDate = new Date(o.createdAt!);
         return orderDate.getMonth() === currentMonth && orderDate.getFullYear() === currentYear;
       });
-      const monthlyRevenue = monthlyOrders.reduce((sum, order) => sum + parseFloat(order.amount), 0);
+      const monthlyRevenue = monthlyOrders.reduce(
+        (sum, order) => sum + parseFloat(order.amount),
+        0
+      );
 
       // Count active customers (users with orders)
       const activeCustomers = new Set(orders.map(o => o.userId)).size;
@@ -386,12 +409,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         activeCustomers,
       });
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch admin stats" });
+      res.status(500).json({ message: 'Failed to fetch admin stats' });
     }
   });
 
   // Companies routes
-  app.get("/api/companies", authenticateToken, async (req: any, res) => {
+  app.get('/api/companies', authenticateToken, async (req: any, res) => {
     try {
       if (req.user.role === 'admin') {
         const companies = await storage.getCompanies();
@@ -400,11 +423,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const companies = await storage.getCompaniesByOwner(req.user.id);
       return res.json(companies);
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch companies" });
+      res.status(500).json({ message: 'Failed to fetch companies' });
     }
   });
 
-  app.post("/api/companies", authenticateToken, async (req: any, res) => {
+  app.post('/api/companies', authenticateToken, async (req: any, res) => {
     try {
       const data = insertCompanySchema.parse({
         ...req.body,
@@ -413,12 +436,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const company = await storage.createCompany(data);
       res.json(company);
     } catch (error) {
-      res.status(400).json({ message: "Invalid company data" });
+      res.status(400).json({ message: 'Invalid company data' });
     }
   });
 
   // Document upload routes
-  app.post("/api/documents/upload", authenticateToken, async (req: any, res) => {
+  app.post('/api/documents/upload', authenticateToken, async (req: any, res) => {
     try {
       // For now, we'll simulate file upload
       // In production, you'd use multer or similar middleware
@@ -433,7 +456,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         status: 'pending' as const,
         category: category || 'general',
         url: `/documents/${fileName}`,
-        metadata: metadata || {}
+        metadata: metadata || {},
       };
 
       // In production, save to database
@@ -441,11 +464,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json({ success: true, document });
     } catch (error) {
-      res.status(500).json({ message: "Failed to upload document" });
+      res.status(500).json({ message: 'Failed to upload document' });
     }
   });
 
-  app.get("/api/documents", authenticateToken, async (req: any, res) => {
+  app.get('/api/documents', authenticateToken, async (req: any, res) => {
     try {
       const { category } = req.query;
 
@@ -459,7 +482,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           uploadedAt: '2024-01-10T10:30:00Z',
           status: 'verified',
           category: 'incorporation',
-          url: '/documents/incorporation-certificate.pdf'
+          url: '/documents/incorporation-certificate.pdf',
         },
         {
           id: '2',
@@ -469,7 +492,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           uploadedAt: '2024-01-12T14:20:00Z',
           status: 'verified',
           category: 'gst',
-          url: '/documents/gst-certificate.pdf'
+          url: '/documents/gst-certificate.pdf',
         },
         {
           id: '3',
@@ -479,7 +502,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           uploadedAt: '2024-01-15T09:15:00Z',
           status: 'pending',
           category: 'banking',
-          url: '/documents/bank-account.pdf'
+          url: '/documents/bank-account.pdf',
         }
       ];
 
@@ -490,11 +513,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json({ documents });
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch documents" });
+      res.status(500).json({ message: 'Failed to fetch documents' });
     }
   });
 
-  app.get("/api/documents/:id/download", authenticateToken, async (req: any, res) => {
+  app.get('/api/documents/:id/download', authenticateToken, async (req: any, res) => {
     try {
       const { id } = req.params;
 
@@ -502,21 +525,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const mockDocument = {
         id,
         name: 'document.pdf',
-        type: 'application/pdf'
+        type: 'application/pdf',
       };
 
       // Create a mock PDF blob
-      const mockPdfContent = '%PDF-1.4\n1 0 obj\n<<\n/Type /Catalog\n/Pages 2 0 R\n>>\nendobj\n2 0 obj\n<<\n/Type /Pages\n/Kids [3 0 R]\n/Count 1\n>>\nendobj\n3 0 obj\n<<\n/Type /Page\n/Parent 2 0 R\n/MediaBox [0 0 612 792]\n/Contents 4 0 R\n>>\nendobj\n4 0 obj\n<<\n/Length 44\n>>\nstream\nBT\n/F1 12 Tf\n72 720 Td\n(Hello World) Tj\nET\nendstream\nendobj\nxref\n0 5\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \n0000000204 00000 n \ntrailer\n<<\n/Size 5\n/Root 1 0 R\n>>\nstartxref\n297\n%%EOF';
+      const mockPdfContent =
+        '%PDF-1.4\n1 0 obj\n<<\n/Type /Catalog\n/Pages 2 0 R\n>>\nendobj\n2 0 obj\n<<\n/Type /Pages\n/Kids [3 0 R]\n/Count 1\n>>\nendobj\n3 0 obj\n<<\n/Type /Page\n/Parent 2 0 R\n/MediaBox [0 0 612 792]\n/Contents 4 0 R\n>>\nendobj\n4 0 obj\n<<\n/Length 44\n>>\nstream\nBT\n/F1 12 Tf\n72 720 Td\n(Hello World) Tj\nET\nendstream\nendobj\nxref\n0 5\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \n0000000204 00000 n \ntrailer\n<<\n/Size 5\n/Root 1 0 R\n>>\nstartxref\n297\n%%EOF';
 
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader('Content-Disposition', `attachment; filename="${mockDocument.name}"`);
       res.send(Buffer.from(mockPdfContent, 'utf8'));
     } catch (error) {
-      res.status(500).json({ message: "Failed to download document" });
+      res.status(500).json({ message: 'Failed to download document' });
     }
   });
 
-  app.delete("/api/documents/:id", authenticateToken, async (req: any, res) => {
+  app.delete('/api/documents/:id', authenticateToken, async (req: any, res) => {
     try {
       const { id } = req.params;
 
@@ -525,11 +549,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json({ success: true });
     } catch (error) {
-      res.status(500).json({ message: "Failed to delete document" });
+      res.status(500).json({ message: 'Failed to delete document' });
     }
   });
 
-  app.post("/api/documents/:id/verify", authenticateToken, async (req: any, res) => {
+  app.post('/api/documents/:id/verify', authenticateToken, async (req: any, res) => {
     try {
       const { id } = req.params;
 
@@ -538,11 +562,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json({ success: true });
     } catch (error) {
-      res.status(500).json({ message: "Failed to verify document" });
+      res.status(500).json({ message: 'Failed to verify document' });
     }
   });
 
-  app.get("/api/documents/categories", authenticateToken, async (req: any, res) => {
+  app.get('/api/documents/categories', authenticateToken, async (req: any, res) => {
     try {
       const categories = [
         {
@@ -551,7 +575,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           description: 'Business registration and incorporation documents',
           required: true,
           acceptedTypes: ['.pdf', '.jpg', '.jpeg', '.png'],
-          maxSize: 10
+          maxSize: 10,
         },
         {
           id: 'gst',
@@ -559,7 +583,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           description: 'GST registration and compliance documents',
           required: true,
           acceptedTypes: ['.pdf', '.jpg', '.jpeg', '.png'],
-          maxSize: 10
+          maxSize: 10,
         },
         {
           id: 'banking',
@@ -567,7 +591,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           description: 'Bank account and financial documents',
           required: true,
           acceptedTypes: ['.pdf', '.jpg', '.jpeg', '.png'],
-          maxSize: 5
+          maxSize: 5,
         },
         {
           id: 'compliance',
@@ -575,7 +599,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           description: 'Regulatory compliance and legal documents',
           required: false,
           acceptedTypes: ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png'],
-          maxSize: 15
+          maxSize: 15,
         },
         {
           id: 'tax',
@@ -583,38 +607,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
           description: 'Tax filing and payment documents',
           required: false,
           acceptedTypes: ['.pdf', '.xlsx', '.xls', '.jpg', '.jpeg', '.png'],
-          maxSize: 10
+          maxSize: 10,
         }
       ];
 
       res.json({ categories });
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch document categories" });
+      res.status(500).json({ message: 'Failed to fetch document categories' });
     }
   });
 
-  app.get("/api/documents/compliance-status", authenticateToken, async (req: any, res) => {
+  app.get('/api/documents/compliance-status', authenticateToken, async (req: any, res) => {
     try {
       // Mock compliance status
       const status = {
         overallProgress: 75,
         completedSteps: 3,
         totalSteps: 4,
-        missingDocuments: ['Bank Account Details']
+        missingDocuments: ['Bank Account Details'],
       };
 
       res.json(status);
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch compliance status" });
+      res.status(500).json({ message: 'Failed to fetch compliance status' });
     }
   });
 
   // Health check endpoint
-  app.get("/api/health", (req, res) => {
+  app.get('/api/health', (req, res) => {
     res.json({
-      status: "healthy",
+      status: 'healthy',
       timestamp: new Date().toISOString(),
-      version: "1.0.0"
+      version: '1.0.0',
     });
   });
 

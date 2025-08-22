@@ -7,7 +7,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: ['./src/test/setup.ts'],
+    setupFiles: ['./client/src/test/setup.ts'],
     css: true,
     coverage: {
       provider: 'v8',
@@ -38,11 +38,11 @@ export default defineConfig({
         }
       }
     },
-    include: [
-      'src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
-      'server/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts}',
-      '**/__tests__/**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'
-    ],
+            include: [
+          'client/src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
+          'server/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts}',
+          '**/__tests__/**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'
+        ],
     exclude: [
       'node_modules/',
       'dist/',
@@ -55,17 +55,17 @@ export default defineConfig({
       '**/e2e/**'
     ]
   },
-  resolve: {
-    alias: {
-      '@': resolve(__dirname, './src'),
-      '@components': resolve(__dirname, './src/components'),
-      '@pages': resolve(__dirname, './src/pages'),
-      '@lib': resolve(__dirname, './src/lib'),
-      '@hooks': resolve(__dirname, './src/hooks'),
-      '@ui': resolve(__dirname, './src/components/ui'),
-      '@shared': resolve(__dirname, './shared')
-    }
-  },
+          resolve: {
+          alias: {
+            '@': resolve(__dirname, './client/src'),
+            '@components': resolve(__dirname, './client/src/components'),
+            '@pages': resolve(__dirname, './client/src/pages'),
+            '@lib': resolve(__dirname, './client/src/lib'),
+            '@hooks': resolve(__dirname, './client/src/hooks'),
+            '@ui': resolve(__dirname, './client/src/components/ui'),
+            '@shared': resolve(__dirname, './shared')
+          }
+        },
   server: {
     port: 3000
   }

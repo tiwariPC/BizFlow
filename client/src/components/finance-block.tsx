@@ -1,14 +1,14 @@
-import { motion } from "framer-motion";
-import { Banknote, ArrowRight } from "lucide-react";
-import { Link } from "wouter";
+import { motion } from 'framer-motion';
+import { Banknote, ArrowRight } from 'lucide-react';
+import { Link } from 'wouter';
 
 const financeTypes = [
-  "Current Account",
-  "UPI Integration",
-  "Business Loans",
-  "Investor Connect",
-  "Payment Gateway",
-  "Financial Planning",
+  'Current Account',
+  'UPI Integration',
+  'Business Loans',
+  'Investor Connect',
+  'Payment Gateway',
+  'Financial Planning',
 ] as const;
 
 const containerVariants = {
@@ -45,55 +45,52 @@ const buttonVariants = {
 export function FinanceBlock() {
   return (
     <motion.div
-      className="bg-white rounded-2xl border border-neutral-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 h-full flex flex-col"
+      className='bg-white rounded-2xl border border-neutral-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 h-full flex flex-col'
       variants={containerVariants}
-      initial="hidden"
-      animate="visible"
+      initial='hidden'
+      animate='visible'
     >
-      <div className="p-8 flex flex-col h-full">
+      <div className='p-8 flex flex-col h-full'>
         {/* Header */}
-        <motion.div
-          className="flex items-center gap-3 mb-6"
-          variants={itemVariants}
-        >
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg">
-            <Banknote className="w-6 h-6 text-white" />
+        <motion.div className='flex items-center gap-3 mb-6' variants={itemVariants}>
+          <div className='w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg'>
+            <Banknote className='w-6 h-6 text-white' />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-neutral-900">Banking & Finance</h2>
-            <p className="text-neutral-600">Manage your financial operations</p>
+            <h2 className='text-2xl font-bold text-neutral-900'>Banking & Finance</h2>
+            <p className='text-neutral-600'>Manage your financial operations</p>
           </div>
         </motion.div>
 
         {/* Finance Types Grid */}
         <motion.div
-          className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-8 flex-1"
+          className='grid grid-cols-2 md:grid-cols-3 gap-3 mb-8 flex-1'
           variants={containerVariants}
         >
           {financeTypes.map((type, index) => (
             <motion.div
               key={type}
-              className="flex items-center gap-2 p-3 rounded-lg bg-white border border-neutral-200 hover:bg-emerald-50 hover:border-emerald-300 transition-colors duration-200 shadow-sm"
+              className='flex items-center gap-2 p-3 rounded-lg bg-white border border-neutral-200 hover:bg-emerald-50 hover:border-emerald-300 transition-colors duration-200 shadow-sm'
               variants={itemVariants}
               whileHover={{ scale: 1.02 }}
             >
-              <div className="w-2 h-2 rounded-full bg-emerald-500" />
-              <span className="text-sm font-medium text-neutral-800">{type}</span>
+              <div className='w-2 h-2 rounded-full bg-emerald-500' />
+              <span className='text-sm font-medium text-neutral-800'>{type}</span>
             </motion.div>
           ))}
         </motion.div>
 
         {/* Explore Button */}
-        <motion.div variants={itemVariants} className="mt-auto">
-          <Link href="/finance">
+        <motion.div variants={itemVariants} className='mt-auto'>
+          <Link href='/finance'>
             <motion.button
-              className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white py-3 px-6 rounded-xl font-semibold flex items-center justify-center gap-2 hover:shadow-lg transition-shadow duration-200"
+              className='w-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white py-3 px-6 rounded-xl font-semibold flex items-center justify-center gap-2 hover:shadow-lg transition-shadow duration-200'
               variants={buttonVariants}
-              whileHover="hover"
-              whileTap="tap"
+              whileHover='hover'
+              whileTap='tap'
             >
               Explore Financial Services
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className='w-4 h-4' />
             </motion.button>
           </Link>
         </motion.div>
