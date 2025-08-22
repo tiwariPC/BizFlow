@@ -34,7 +34,6 @@ const sidebarModules = [
   { icon: Banknote, label: "Finance & Accounting", href: "/finance" },
   { icon: Palette, label: "Branding & Identity", href: "/branding" },
   { icon: TrendingUp, label: "Marketing & Sales", href: "/marketing" },
-      { icon: PenTool, label: "Branding & Design", href: "/branding" },
   { icon: Users, label: "HR & Team", href: "/tools" },
   { icon: BookOpen, label: "Knowledge Hub", href: "/knowledge-hub" },
   { icon: Network, label: "Community", href: "/community" },
