@@ -77,6 +77,8 @@ interface BrandColor {
   hex: string;
   rgb: string;
   category: 'primary' | 'secondary' | 'accent' | 'neutral';
+  usage?: string;
+  createdAt: string;
 }
 
 interface BrandFont {
@@ -85,19 +87,93 @@ interface BrandFont {
   category: string;
   weights: string[];
   url?: string;
+  usage?: string;
+  createdAt: string;
+}
+
+interface BrandAsset {
+  id: string;
+  name: string;
+  type: 'logo' | 'icon' | 'image' | 'document';
+  url: string;
+  format: string;
+  size: string;
+  createdAt: string;
+  tags: string[];
+}
+
+interface BrandGuideline {
+  id: string;
+  title: string;
+  content: string;
+  category: 'logo' | 'color' | 'typography' | 'spacing' | 'general';
+  createdAt: string;
 }
 
 const brandColors: BrandColor[] = [
-  { id: '1', name: "Primary Blue", hex: "#2563EB", rgb: "37, 99, 235", category: 'primary' },
-  { id: '2', name: "Secondary Gray", hex: "#6B7280", rgb: "107, 114, 128", category: 'secondary' },
-  { id: '3', name: "Accent Orange", hex: "#F59E0B", rgb: "245, 158, 11", category: 'accent' },
-  { id: '4', name: "Success Green", hex: "#10B981", rgb: "16, 185, 129", category: 'accent' }
+  { 
+    id: '1', 
+    name: "Primary Blue", 
+    hex: "#2563EB", 
+    rgb: "37, 99, 235", 
+    category: 'primary',
+    usage: "Main brand color, headers, primary buttons",
+    createdAt: "2024-01-15"
+  },
+  { 
+    id: '2', 
+    name: "Secondary Gray", 
+    hex: "#6B7280", 
+    rgb: "107, 114, 128", 
+    category: 'secondary',
+    usage: "Body text, secondary elements",
+    createdAt: "2024-01-15"
+  },
+  { 
+    id: '3', 
+    name: "Accent Orange", 
+    hex: "#F59E0B", 
+    rgb: "245, 158, 11", 
+    category: 'accent',
+    usage: "Call-to-action buttons, highlights",
+    createdAt: "2024-01-15"
+  },
+  { 
+    id: '4', 
+    name: "Success Green", 
+    hex: "#10B981", 
+    rgb: "16, 185, 129", 
+    category: 'accent',
+    usage: "Success states, positive feedback",
+    createdAt: "2024-01-15"
+  }
 ];
 
 const brandFonts: BrandFont[] = [
-  { id: '1', name: "Inter", category: "Sans-serif", weights: ["400", "500", "600", "700"] },
-  { id: '2', name: "Poppins", category: "Sans-serif", weights: ["400", "500", "600"] },
-  { id: '3', name: "Playfair Display", category: "Serif", weights: ["400", "700"] }
+  { 
+    id: '1', 
+    name: "Inter", 
+    category: "Sans-serif", 
+    weights: ["400", "500", "600", "700"],
+    usage: "Body text, UI elements",
+    createdAt: "2024-01-15"
+  },
+  { 
+    id: '2', 
+    name: "Poppins", 
+    category: "Sans-serif", 
+    weights: ["400", "500", "600"],
+    usage: "Headings, titles",
+    createdAt: "2024-01-15"
+  },
+  { 
+    id: '3', 
+    name: "Playfair Display", 
+    category: "Serif", 
+    weights: ["400", "700"],
+    usage: "Display text, hero sections",
+    createdAt: "2024-01-15"
+  }
 ];
 
 const templates = [
@@ -165,13 +241,13 @@ const recentDesigns = [
 export default function Branding() {
     const [activeTab, setActiveTab] = useState("overview");
   const [logoText, setLogoText] = useState("Your Brand");
-  
+
   // AI Logo Generator States
   const [selectedIndustry, setSelectedIndustry] = useState<string>("");
   const [selectedStyle, setSelectedStyle] = useState<string>("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiGeneratedLogo, setAiGeneratedLogo] = useState<any>(null);
-  
+
   // Logo Designer States
   const [showLogoDesigner, setShowLogoDesigner] = useState(false);
   const [logoElements, setLogoElements] = useState<LogoElement[]>([]);
@@ -184,8 +260,34 @@ export default function Branding() {
   // Brand Kit States
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [showFontManager, setShowFontManager] = useState(false);
-  const [newColor, setNewColor] = useState({ name: '', hex: '#000000', category: 'primary' as const });
-  const [newFont, setNewFont] = useState({ name: '', category: 'sans-serif', weights: ['400'] });
+  const [showAssetManager, setShowAssetManager] = useState(false);
+  const [showGuidelineEditor, setShowGuidelineEditor] = useState(false);
+  const [selectedColor, setSelectedColor] = useState<BrandColor | null>(null);
+  const [selectedFont, setSelectedFont] = useState<BrandFont | null>(null);
+  const [brandAssets, setBrandAssets] = useState<BrandAsset[]>([]);
+  const [brandGuidelines, setBrandGuidelines] = useState<BrandGuideline[]>([]);
+  const [newColor, setNewColor] = useState({ 
+    name: '', 
+    hex: '#000000', 
+    category: 'primary' as const,
+    usage: ''
+  });
+  const [newFont, setNewFont] = useState({ 
+    name: '', 
+    category: 'sans-serif', 
+    weights: ['400'],
+    usage: ''
+  });
+  const [newAsset, setNewAsset] = useState({
+    name: '',
+    type: 'logo' as const,
+    tags: [] as string[]
+  });
+  const [newGuideline, setNewGuideline] = useState({
+    title: '',
+    content: '',
+    category: 'general' as const
+  });
 
   // Template Designer States
   const [showTemplateDesigner, setShowTemplateDesigner] = useState(false);
@@ -268,11 +370,16 @@ export default function Branding() {
         name: newColor.name,
         hex: newColor.hex,
         rgb: hexToRgb(newColor.hex),
-        category: newColor.category
+        category: newColor.category,
+        usage: newColor.usage,
+        createdAt: new Date().toISOString().split('T')[0]
       };
       brandColors.push(color);
-      setNewColor({ name: '', hex: '#000000', category: 'primary' });
+      setNewColor({ name: '', hex: '#000000', category: 'primary', usage: '' });
       setShowColorPicker(false);
+      alert('Brand color added successfully!');
+    } else {
+      alert('Please fill in all required fields');
     }
   };
 
@@ -282,12 +389,98 @@ export default function Branding() {
         id: Date.now().toString(),
         name: newFont.name,
         category: newFont.category,
-        weights: newFont.weights
+        weights: newFont.weights,
+        usage: newFont.usage,
+        createdAt: new Date().toISOString().split('T')[0]
       };
       brandFonts.push(font);
-      setNewFont({ name: '', category: 'sans-serif', weights: ['400'] });
+      setNewFont({ name: '', category: 'sans-serif', weights: ['400'], usage: '' });
       setShowFontManager(false);
+      alert('Brand font added successfully!');
+    } else {
+      alert('Please fill in font name');
     }
+  };
+
+  const deleteBrandColor = (id: string) => {
+    if (confirm('Are you sure you want to delete this color?')) {
+      const index = brandColors.findIndex(color => color.id === id);
+      if (index > -1) {
+        brandColors.splice(index, 1);
+        alert('Color deleted successfully!');
+      }
+    }
+  };
+
+  const deleteBrandFont = (id: string) => {
+    if (confirm('Are you sure you want to delete this font?')) {
+      const index = brandFonts.findIndex(font => font.id === id);
+      if (index > -1) {
+        brandFonts.splice(index, 1);
+        alert('Font deleted successfully!');
+      }
+    }
+  };
+
+  const addBrandAsset = () => {
+    if (newAsset.name) {
+      const asset: BrandAsset = {
+        id: Date.now().toString(),
+        name: newAsset.name,
+        type: newAsset.type,
+        url: '#', // In real implementation, this would be the uploaded file URL
+        format: 'PNG',
+        size: '2.4 MB',
+        createdAt: new Date().toISOString().split('T')[0],
+        tags: newAsset.tags
+      };
+      setBrandAssets(prev => [asset, ...prev]);
+      setNewAsset({ name: '', type: 'logo', tags: [] });
+      setShowAssetManager(false);
+      alert('Brand asset added successfully!');
+    } else {
+      alert('Please fill in asset name');
+    }
+  };
+
+  const addBrandGuideline = () => {
+    if (newGuideline.title && newGuideline.content) {
+      const guideline: BrandGuideline = {
+        id: Date.now().toString(),
+        title: newGuideline.title,
+        content: newGuideline.content,
+        category: newGuideline.category,
+        createdAt: new Date().toISOString().split('T')[0]
+      };
+      setBrandGuidelines(prev => [guideline, ...prev]);
+      setNewGuideline({ title: '', content: '', category: 'general' });
+      setShowGuidelineEditor(false);
+      alert('Brand guideline added successfully!');
+    } else {
+      alert('Please fill in title and content');
+    }
+  };
+
+  const exportBrandKit = () => {
+    const brandKit = {
+      colors: brandColors,
+      fonts: brandFonts,
+      assets: brandAssets,
+      guidelines: brandGuidelines,
+      exportedAt: new Date().toISOString()
+    };
+    
+    const dataStr = JSON.stringify(brandKit, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'brand-kit.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    alert('Brand kit exported successfully!');
   };
 
   const hexToRgb = (hex: string) => {
@@ -303,11 +496,11 @@ export default function Branding() {
     }
 
     setIsGenerating(true);
-    
+
     try {
       // Simulate AI logo generation with a delay
       await new Promise(resolve => setTimeout(resolve, 3000));
-      
+
       const generatedLogo = {
         companyName: logoText,
         industry: selectedIndustry,
@@ -322,7 +515,7 @@ export default function Branding() {
           ]
         }
       };
-      
+
       setAiGeneratedLogo(generatedLogo);
       alert('AI Logo generated successfully!');
     } catch (error) {
@@ -335,32 +528,32 @@ export default function Branding() {
 
   const downloadAILogo = (format: 'png' | 'svg') => {
     if (!aiGeneratedLogo) return;
-    
+
     // In a real implementation, this would generate and download the actual logo file
     const filename = `${aiGeneratedLogo.companyName.toLowerCase().replace(/\s+/g, '-')}-logo.${format}`;
-    
+
     // Create a simple canvas-based logo for demonstration
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     if (ctx) {
       canvas.width = 800;
       canvas.height = 400;
-      
+
       // Background
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, 800, 400);
-      
+
       // Logo text
       ctx.fillStyle = '#1f2937';
       ctx.font = 'bold 48px Inter, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(aiGeneratedLogo.companyName, 400, 200);
-      
+
       // Industry and style
       ctx.fillStyle = '#6b7280';
       ctx.font = '16px Inter, sans-serif';
       ctx.fillText(`${aiGeneratedLogo.industry} • ${aiGeneratedLogo.style}`, 400, 240);
-      
+
       // Convert to blob and download
       canvas.toBlob((blob) => {
         if (blob) {
@@ -656,7 +849,7 @@ export default function Branding() {
                       </div>
                     </div>
 
-                    <Button 
+                    <Button
                       onClick={generateAILogo}
                       disabled={!logoText || isGenerating}
                       className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 disabled:opacity-50"
@@ -704,8 +897,8 @@ export default function Branding() {
                         <span>Professional tools</span>
                       </div>
                     </div>
-                    
-                    <Button 
+
+                    <Button
                       onClick={() => setShowLogoDesigner(true)}
                       className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700"
                     >
@@ -751,7 +944,7 @@ export default function Branding() {
                     <div>
                       <h4 className="font-medium text-neutral-900 mb-2">Logo Details</h4>
                     </div>
-                    
+
                     <div className="space-y-3">
                       <div className="flex justify-between">
                         <span className="text-sm text-neutral-600">Company:</span>
@@ -772,14 +965,14 @@ export default function Branding() {
                     </div>
 
                     <div className="pt-4 space-y-3">
-                      <Button 
+                      <Button
                         onClick={() => downloadAILogo('png')}
                         className="w-full bg-blue-600 hover:bg-blue-700"
                       >
                         <Download className="w-4 h-4 mr-2" />
                         Download PNG
                       </Button>
-                      <Button 
+                      <Button
                         onClick={() => downloadAILogo('svg')}
                         variant="outline"
                         className="w-full"
@@ -787,7 +980,7 @@ export default function Branding() {
                         <Download className="w-4 h-4 mr-2" />
                         Download SVG
                       </Button>
-                      <Button 
+                      <Button
                         onClick={() => setShowLogoDesigner(true)}
                         variant="outline"
                         className="w-full"
@@ -806,79 +999,119 @@ export default function Branding() {
 
       {activeTab === "brand-kit" && (
         <div className="space-y-8">
+          {/* Brand Kit Header */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-neutral-900">Brand Kit</h2>
+              <p className="text-neutral-600">Manage your brand colors, fonts, assets, and guidelines</p>
+            </div>
+            <Button onClick={exportBrandKit} className="bg-blue-600 hover:bg-blue-700">
+              <Download className="w-4 h-4 mr-2" />
+              Export Brand Kit
+            </Button>
+          </div>
+
           {/* Brand Colors */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Palette className="w-5 h-5" />
-                Brand Colors
-              </CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <Palette className="w-5 h-5" />
+                  Brand Colors ({brandColors.length})
+                </CardTitle>
+                <Button variant="outline" size="sm" onClick={() => setShowColorPicker(true)}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Color
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {brandColors.map((color) => (
-                  <div key={color.name} className="p-4 border border-neutral-200 rounded-lg">
+                  <div key={color.id} className="p-4 border border-neutral-200 rounded-lg hover:shadow-md transition-shadow">
                     <div className="flex items-center gap-3 mb-3">
                       <div
-                        className="w-12 h-12 rounded-lg border border-neutral-200"
+                        className="w-12 h-12 rounded-lg border border-neutral-200 shadow-sm"
                         style={{ backgroundColor: color.hex }}
                       />
                       <div className="flex-1">
                         <h4 className="font-medium text-neutral-900">{color.name}</h4>
                         <p className="text-sm text-neutral-600">{color.hex}</p>
+                        <p className="text-xs text-neutral-500 capitalize">{color.category}</p>
                       </div>
                     </div>
+                    {color.usage && (
+                      <p className="text-xs text-neutral-600 mb-3 italic">"{color.usage}"</p>
+                    )}
                     <div className="space-y-2">
                       <div className="flex items-center justify-between text-xs">
-                        <span>HEX</span>
+                        <span className="font-medium">HEX</span>
                         <div className="flex items-center gap-1">
-                          <span>{color.hex}</span>
+                          <span className="font-mono">{color.hex}</span>
                           <button
                             className="p-1 hover:bg-neutral-100 rounded"
                             onClick={() => copyToClipboard(color.hex)}
+                            title="Copy HEX"
                           >
                             <Copy className="w-3 h-3" />
                           </button>
                         </div>
                       </div>
                       <div className="flex items-center justify-between text-xs">
-                        <span>RGB</span>
+                        <span className="font-medium">RGB</span>
                         <div className="flex items-center gap-1">
-                          <span>{color.rgb}</span>
+                          <span className="font-mono">{color.rgb}</span>
                           <button
                             className="p-1 hover:bg-neutral-100 rounded"
                             onClick={() => copyToClipboard(color.rgb)}
+                            title="Copy RGB"
                           >
                             <Copy className="w-3 h-3" />
                           </button>
                         </div>
                       </div>
+                    </div>
+                    <div className="mt-3 pt-3 border-t border-neutral-100">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="w-full text-red-600 hover:text-red-700"
+                        onClick={() => deleteBrandColor(color.id)}
+                      >
+                        <Trash2 className="w-3 h-3 mr-1" />
+                        Delete
+                      </Button>
                     </div>
                   </div>
                 ))}
               </div>
-              <Button className="mt-4" variant="outline" onClick={() => setShowColorPicker(true)}>
-                <Plus className="w-4 h-4 mr-2" />
-                Add Color
-              </Button>
             </CardContent>
           </Card>
 
           {/* Brand Fonts */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Type className="w-5 h-5" />
-                Brand Fonts
-              </CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <Type className="w-5 h-5" />
+                  Brand Fonts ({brandFonts.length})
+                </CardTitle>
+                <Button variant="outline" size="sm" onClick={() => setShowFontManager(true)}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Font
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 {brandFonts.map((font) => (
-                  <div key={font.name} className="flex items-center justify-between p-4 border border-neutral-200 rounded-lg">
-                    <div>
+                  <div key={font.id} className="flex items-center justify-between p-4 border border-neutral-200 rounded-lg hover:shadow-md transition-shadow">
+                    <div className="flex-1">
                       <h4 className="font-medium text-neutral-900 mb-1">{font.name}</h4>
                       <p className="text-sm text-neutral-600">{font.category} • {font.weights.join(', ')}</p>
+                      {font.usage && (
+                        <p className="text-xs text-neutral-500 mt-1 italic">"{font.usage}"</p>
+                      )}
                     </div>
                     <div className="flex items-center gap-2">
                       <Button size="sm" variant="outline">
@@ -887,14 +1120,129 @@ export default function Branding() {
                       <Button size="sm" variant="outline">
                         <Settings className="w-4 h-4" />
                       </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="text-red-600 hover:text-red-700"
+                        onClick={() => deleteBrandFont(font.id)}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
                     </div>
                   </div>
                 ))}
               </div>
-              <Button className="mt-4" variant="outline" onClick={() => setShowFontManager(true)}>
-                <Plus className="w-4 h-4 mr-2" />
-                Add Font
-              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Brand Assets */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <ImageIcon className="w-5 h-5" />
+                  Brand Assets ({brandAssets.length})
+                </CardTitle>
+                <Button variant="outline" size="sm" onClick={() => setShowAssetManager(true)}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Asset
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {brandAssets.length === 0 ? (
+                <div className="text-center py-8">
+                  <ImageIcon className="w-12 h-12 text-neutral-400 mx-auto mb-2" />
+                  <p className="text-neutral-600">No brand assets yet</p>
+                  <p className="text-sm text-neutral-500">Add logos, icons, and other brand materials</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {brandAssets.map((asset) => (
+                    <div key={asset.id} className="p-4 border border-neutral-200 rounded-lg hover:shadow-md transition-shadow">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-12 h-12 bg-neutral-100 rounded-lg flex items-center justify-center">
+                          <ImageIcon className="w-6 h-6 text-neutral-600" />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-medium text-neutral-900">{asset.name}</h4>
+                          <p className="text-sm text-neutral-600 capitalize">{asset.type}</p>
+                          <p className="text-xs text-neutral-500">{asset.format} • {asset.size}</p>
+                        </div>
+                      </div>
+                      {asset.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mb-3">
+                          {asset.tags.map((tag, index) => (
+                            <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="outline" className="flex-1">
+                          <Download className="w-3 h-3 mr-1" />
+                          Download
+                        </Button>
+                        <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700">
+                          <Trash2 className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Brand Guidelines */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="w-5 h-5" />
+                  Brand Guidelines ({brandGuidelines.length})
+                </CardTitle>
+                <Button variant="outline" size="sm" onClick={() => setShowGuidelineEditor(true)}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Guideline
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {brandGuidelines.length === 0 ? (
+                <div className="text-center py-8">
+                  <FileText className="w-12 h-12 text-neutral-400 mx-auto mb-2" />
+                  <p className="text-neutral-600">No brand guidelines yet</p>
+                  <p className="text-sm text-neutral-500">Add usage guidelines and best practices</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {brandGuidelines.map((guideline) => (
+                    <div key={guideline.id} className="p-4 border border-neutral-200 rounded-lg hover:shadow-md transition-shadow">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h4 className="font-medium text-neutral-900 mb-1">{guideline.title}</h4>
+                          <p className="text-sm text-neutral-600 mb-2">{guideline.content}</p>
+                          <div className="flex items-center gap-2 text-xs text-neutral-500">
+                            <span className="capitalize">{guideline.category}</span>
+                            <span>•</span>
+                            <span>{guideline.createdAt}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button size="sm" variant="outline">
+                            <Edit3 className="w-4 h-4" />
+                          </Button>
+                          <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700">
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -1420,6 +1768,16 @@ export default function Branding() {
                     </SelectContent>
                   </Select>
                 </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-2">Usage Description</label>
+                  <Textarea
+                    value={newColor.usage}
+                    onChange={(e) => setNewColor(prev => ({ ...prev, usage: e.target.value }))}
+                    placeholder="e.g., Main brand color, headers, primary buttons"
+                    rows={2}
+                  />
+                </div>
 
                 <div className="flex gap-3 pt-4">
                   <Button variant="outline" className="flex-1" onClick={() => setShowColorPicker(false)}>
@@ -1507,6 +1865,16 @@ export default function Branding() {
                     ))}
                   </div>
                 </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-2">Usage Description</label>
+                  <Textarea
+                    value={newFont.usage}
+                    onChange={(e) => setNewFont(prev => ({ ...prev, usage: e.target.value }))}
+                    placeholder="e.g., Body text, UI elements, headings"
+                    rows={2}
+                  />
+                </div>
 
                 <div className="flex gap-3 pt-4">
                   <Button variant="outline" className="flex-1" onClick={() => setShowFontManager(false)}>
@@ -1514,6 +1882,156 @@ export default function Branding() {
                   </Button>
                   <Button className="flex-1" onClick={addBrandFont}>
                     Add Font
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Asset Manager Modal */}
+      <AnimatePresence>
+        {showAssetManager && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+            onClick={() => setShowAssetManager(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-lg w-full max-w-md p-6"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-semibold">Add Brand Asset</h3>
+                <Button variant="ghost" size="sm" onClick={() => setShowAssetManager(false)}>
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Asset Name</label>
+                  <Input
+                    value={newAsset.name}
+                    onChange={(e) => setNewAsset(prev => ({ ...prev, name: e.target.value }))}
+                    placeholder="e.g., Company Logo, Brand Icon"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-2">Asset Type</label>
+                  <Select value={newAsset.type} onValueChange={(value: any) => setNewAsset(prev => ({ ...prev, type: value }))}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="logo">Logo</SelectItem>
+                      <SelectItem value="icon">Icon</SelectItem>
+                      <SelectItem value="image">Image</SelectItem>
+                      <SelectItem value="document">Document</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-2">Tags (optional)</label>
+                  <Input
+                    value={newAsset.tags.join(', ')}
+                    onChange={(e) => setNewAsset(prev => ({ 
+                      ...prev, 
+                      tags: e.target.value.split(',').map(tag => tag.trim()).filter(tag => tag)
+                    }))}
+                    placeholder="e.g., primary, dark, social media"
+                  />
+                  <p className="text-xs text-neutral-500 mt-1">Separate tags with commas</p>
+                </div>
+                
+                <div className="flex gap-3 pt-4">
+                  <Button variant="outline" className="flex-1" onClick={() => setShowAssetManager(false)}>
+                    Cancel
+                  </Button>
+                  <Button className="flex-1" onClick={addBrandAsset}>
+                    Add Asset
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Guideline Editor Modal */}
+      <AnimatePresence>
+        {showGuidelineEditor && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+            onClick={() => setShowGuidelineEditor(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-lg w-full max-w-lg p-6"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-semibold">Add Brand Guideline</h3>
+                <Button variant="ghost" size="sm" onClick={() => setShowGuidelineEditor(false)}>
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Title</label>
+                  <Input
+                    value={newGuideline.title}
+                    onChange={(e) => setNewGuideline(prev => ({ ...prev, title: e.target.value }))}
+                    placeholder="e.g., Logo Usage Guidelines"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-2">Category</label>
+                  <Select value={newGuideline.category} onValueChange={(value: any) => setNewGuideline(prev => ({ ...prev, category: value }))}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="logo">Logo</SelectItem>
+                      <SelectItem value="color">Color</SelectItem>
+                      <SelectItem value="typography">Typography</SelectItem>
+                      <SelectItem value="spacing">Spacing</SelectItem>
+                      <SelectItem value="general">General</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-2">Content</label>
+                  <Textarea
+                    value={newGuideline.content}
+                    onChange={(e) => setNewGuideline(prev => ({ ...prev, content: e.target.value }))}
+                    placeholder="Describe the guideline, best practices, and usage rules..."
+                    rows={4}
+                  />
+                </div>
+                
+                <div className="flex gap-3 pt-4">
+                  <Button variant="outline" className="flex-1" onClick={() => setShowGuidelineEditor(false)}>
+                    Cancel
+                  </Button>
+                  <Button className="flex-1" onClick={addBrandGuideline}>
+                    Add Guideline
                   </Button>
                 </div>
               </div>
