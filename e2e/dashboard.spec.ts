@@ -55,13 +55,13 @@ test.describe('Dashboard', () => {
 
   test('should be responsive on mobile', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
-    
+
     // Check if mobile menu is accessible
     await expect(page.getByRole('button', { name: /menu/i })).toBeVisible();
-    
+
     // Open mobile menu
     await page.getByRole('button', { name: /menu/i }).click();
-    
+
     // Check if navigation links are visible in mobile menu
     await expect(page.getByRole('link', { name: /dashboard/i })).toBeVisible();
     await expect(page.getByRole('link', { name: /compliance/i })).toBeVisible();

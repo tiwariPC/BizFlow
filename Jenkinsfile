@@ -178,10 +178,10 @@ pipeline {
                 script {
                     // Install Playwright browsers
                     sh 'npx playwright install --with-deps'
-                    
+
                     // Run E2E tests
                     sh 'npm run test:e2e'
-                    
+
                     // Publish test results
                     publishHTML([
                         allowMissing: false,

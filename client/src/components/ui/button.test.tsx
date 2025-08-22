@@ -47,7 +47,7 @@ describe('Button', () => {
   it('handles click events', () => {
     const handleClick = vi.fn();
     render(<Button onClick={handleClick}>Click me</Button>);
-    
+
     screen.getByRole('button').click();
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
@@ -55,11 +55,11 @@ describe('Button', () => {
   it('can be disabled', () => {
     const handleClick = vi.fn();
     render(<Button disabled onClick={handleClick}>Disabled</Button>);
-    
+
     const button = screen.getByRole('button');
     expect(button).toBeDisabled();
     expect(button).toHaveClass('pointer-events-none', 'opacity-50');
-    
+
     button.click();
     expect(handleClick).not.toHaveBeenCalled();
   });
@@ -70,7 +70,7 @@ describe('Button', () => {
         <a href="/test">Link Button</a>
       </Button>
     );
-    
+
     const link = screen.getByRole('link', { name: /link button/i });
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute('href', '/test');

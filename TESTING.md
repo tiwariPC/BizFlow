@@ -89,7 +89,7 @@ describe('Button', () => {
   it('handles click events', () => {
     const handleClick = vi.fn();
     render(<Button onClick={handleClick}>Click me</Button>);
-    
+
     screen.getByRole('button').click();
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
@@ -157,21 +157,21 @@ describe('useCounter', () => {
 
   it('increments counter', () => {
     const { result } = renderHook(() => useCounter());
-    
+
     act(() => {
       result.current.increment();
     });
-    
+
     expect(result.current.count).toBe(1);
   });
 
   it('decrements counter', () => {
     const { result } = renderHook(() => useCounter(5));
-    
+
     act(() => {
       result.current.decrement();
     });
-    
+
     expect(result.current.count).toBe(4);
   });
 });
@@ -235,7 +235,7 @@ describe('API Endpoints', () => {
   it('GET /api/health returns healthy status', async () => {
     const response = await fetch('http://localhost:3000/api/health');
     const data = await response.json();
-    
+
     expect(response.status).toBe(200);
     expect(data.status).toBe('healthy');
   });
@@ -249,7 +249,7 @@ describe('API Endpoints', () => {
         password: 'admin123',
       }),
     });
-    
+
     const data = await response.json();
     expect(response.status).toBe(200);
     expect(data.token).toBeDefined();
@@ -268,11 +268,11 @@ import { test, expect } from '@playwright/test';
 test.describe('Authentication', () => {
   test('should login with valid credentials', async ({ page }) => {
     await page.goto('/login');
-    
+
     await page.getByLabel(/username/i).fill('admin');
     await page.getByLabel(/password/i).fill('admin123');
     await page.getByRole('button', { name: /sign in/i }).click();
-    
+
     // Should redirect to dashboard
     await expect(page).toHaveURL(/\/dashboard/);
     await expect(page.getByText(/welcome/i)).toBeVisible();
@@ -280,11 +280,11 @@ test.describe('Authentication', () => {
 
   test('should show error with invalid credentials', async ({ page }) => {
     await page.goto('/login');
-    
+
     await page.getByLabel(/username/i).fill('invalid');
     await page.getByLabel(/password/i).fill('invalid');
     await page.getByRole('button', { name: /sign in/i }).click();
-    
+
     await expect(page.getByText(/invalid credentials/i)).toBeVisible();
   });
 });
@@ -329,13 +329,13 @@ test.describe('Mobile Responsiveness', () => {
   test('should display mobile menu', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
     await page.goto('/dashboard');
-    
+
     // Check if mobile menu button is visible
     await expect(page.getByRole('button', { name: /menu/i })).toBeVisible();
-    
+
     // Open mobile menu
     await page.getByRole('button', { name: /menu/i }).click();
-    
+
     // Check if navigation links are visible
     await expect(page.getByRole('link', { name: /dashboard/i })).toBeVisible();
     await expect(page.getByRole('link', { name: /compliance/i })).toBeVisible();
@@ -354,17 +354,17 @@ import { test, expect } from '@playwright/test';
 test.describe('Accessibility', () => {
   test('should meet accessibility standards', async ({ page }) => {
     await page.goto('/dashboard');
-    
+
     // Check for proper heading structure
     await expect(page.locator('h1')).toBeVisible();
-    
+
     // Check for alt text on images
     const images = page.locator('img');
     for (let i = 0; i < await images.count(); i++) {
       const alt = await images.nth(i).getAttribute('alt');
       expect(alt).toBeTruthy();
     }
-    
+
     // Check for proper form labels
     const inputs = page.locator('input');
     for (let i = 0; i < await inputs.count(); i++) {
@@ -390,29 +390,29 @@ import { test, expect } from '@playwright/test';
 test.describe('Performance', () => {
   test('should load dashboard within 3 seconds', async ({ page }) => {
     const startTime = Date.now();
-    
+
     await page.goto('/dashboard');
     await page.waitForLoadState('networkidle');
-    
+
     const loadTime = Date.now() - startTime;
     expect(loadTime).toBeLessThan(3000);
   });
 
   test('should handle multiple concurrent users', async ({ browser }) => {
     const promises = [];
-    
+
     // Simulate 10 concurrent users
     for (let i = 0; i < 10; i++) {
       const context = await browser.newContext();
       const page = await context.newPage();
-      
+
       promises.push(
         page.goto('/dashboard').then(() => {
           return page.getByText(/welcome/i).isVisible();
         })
       );
     }
-    
+
     const results = await Promise.all(promises);
     expect(results.every(result => result)).toBe(true);
   });
@@ -561,12 +561,12 @@ global.localStorage = localStorageMock;
 ```typescript
 it('should handle async operations', async () => {
   const { result } = renderHook(() => useAsyncData());
-  
+
   // Wait for async operation to complete
   await waitFor(() => {
     expect(result.current.data).toBeDefined();
   });
-  
+
   expect(result.current.loading).toBe(false);
 });
 ```
@@ -576,13 +576,13 @@ it('should handle async operations', async () => {
 it('should handle error states', async () => {
   // Mock API to throw error
   vi.mocked(fetchUser).mockRejectedValue(new Error('API Error'));
-  
+
   const { result } = renderHook(() => useAsyncData());
-  
+
   await waitFor(() => {
     expect(result.current.error).toBeDefined();
   });
-  
+
   expect(result.current.error.message).toBe('API Error');
 });
 ```
@@ -724,6 +724,6 @@ npm run format
 
 ---
 
-**Last Updated**: August 2024  
-**Version**: 1.0.0  
+**Last Updated**: August 2024
+**Version**: 1.0.0
 **Maintainer**: Development Team

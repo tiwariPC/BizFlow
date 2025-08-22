@@ -331,6 +331,6 @@ curl https://bizflow.com/api/metrics
 
 ---
 
-**Last Updated**: August 2024  
-**Version**: 1.0.0  
+**Last Updated**: August 2024
+**Version**: 1.0.0
 **Maintainer**: DevOps Team
