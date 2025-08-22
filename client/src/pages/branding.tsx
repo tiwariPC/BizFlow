@@ -46,7 +46,12 @@ import {
   Minus,
   Square,
   Circle,
-  Triangle
+  Triangle,
+  Printer,
+  CreditCard,
+  Mail,
+  Stamp,
+  Info
 } from "lucide-react";
 
 // Interfaces
@@ -110,39 +115,62 @@ interface BrandGuideline {
   createdAt: string;
 }
 
+interface PrintTemplate {
+  id: string;
+  name: string;
+  type: 'letterhead' | 'business-card' | 'envelope' | 'stamp';
+  design: any;
+  companyInfo: {
+    name: string;
+    address: string;
+    phone: string;
+    email: string;
+    website: string;
+    logo?: string;
+  };
+  specifications: {
+    size: string;
+    paper: string;
+    quantity: number;
+    color: string;
+  };
+  createdAt: string;
+  status: 'draft' | 'ready' | 'printed';
+}
+
 const brandColors: BrandColor[] = [
-  { 
-    id: '1', 
-    name: "Primary Blue", 
-    hex: "#2563EB", 
-    rgb: "37, 99, 235", 
+  {
+    id: '1',
+    name: "Primary Blue",
+    hex: "#2563EB",
+    rgb: "37, 99, 235",
     category: 'primary',
     usage: "Main brand color, headers, primary buttons",
     createdAt: "2024-01-15"
   },
-  { 
-    id: '2', 
-    name: "Secondary Gray", 
-    hex: "#6B7280", 
-    rgb: "107, 114, 128", 
+  {
+    id: '2',
+    name: "Secondary Gray",
+    hex: "#6B7280",
+    rgb: "107, 114, 128",
     category: 'secondary',
     usage: "Body text, secondary elements",
     createdAt: "2024-01-15"
   },
-  { 
-    id: '3', 
-    name: "Accent Orange", 
-    hex: "#F59E0B", 
-    rgb: "245, 158, 11", 
+  {
+    id: '3',
+    name: "Accent Orange",
+    hex: "#F59E0B",
+    rgb: "245, 158, 11",
     category: 'accent',
     usage: "Call-to-action buttons, highlights",
     createdAt: "2024-01-15"
   },
-  { 
-    id: '4', 
-    name: "Success Green", 
-    hex: "#10B981", 
-    rgb: "16, 185, 129", 
+  {
+    id: '4',
+    name: "Success Green",
+    hex: "#10B981",
+    rgb: "16, 185, 129",
     category: 'accent',
     usage: "Success states, positive feedback",
     createdAt: "2024-01-15"
@@ -150,26 +178,26 @@ const brandColors: BrandColor[] = [
 ];
 
 const brandFonts: BrandFont[] = [
-  { 
-    id: '1', 
-    name: "Inter", 
-    category: "Sans-serif", 
+  {
+    id: '1',
+    name: "Inter",
+    category: "Sans-serif",
     weights: ["400", "500", "600", "700"],
     usage: "Body text, UI elements",
     createdAt: "2024-01-15"
   },
-  { 
-    id: '2', 
-    name: "Poppins", 
-    category: "Sans-serif", 
+  {
+    id: '2',
+    name: "Poppins",
+    category: "Sans-serif",
     weights: ["400", "500", "600"],
     usage: "Headings, titles",
     createdAt: "2024-01-15"
   },
-  { 
-    id: '3', 
-    name: "Playfair Display", 
-    category: "Serif", 
+  {
+    id: '3',
+    name: "Playfair Display",
+    category: "Serif",
     weights: ["400", "700"],
     usage: "Display text, hero sections",
     createdAt: "2024-01-15"
@@ -266,15 +294,15 @@ export default function Branding() {
   const [selectedFont, setSelectedFont] = useState<BrandFont | null>(null);
   const [brandAssets, setBrandAssets] = useState<BrandAsset[]>([]);
   const [brandGuidelines, setBrandGuidelines] = useState<BrandGuideline[]>([]);
-  const [newColor, setNewColor] = useState({ 
-    name: '', 
-    hex: '#000000', 
+  const [newColor, setNewColor] = useState({
+    name: '',
+    hex: '#000000',
     category: 'primary' as const,
     usage: ''
   });
-  const [newFont, setNewFont] = useState({ 
-    name: '', 
-    category: 'sans-serif', 
+  const [newFont, setNewFont] = useState({
+    name: '',
+    category: 'sans-serif',
     weights: ['400'],
     usage: ''
   });
@@ -287,6 +315,26 @@ export default function Branding() {
     title: '',
     content: '',
     category: 'general' as const
+  });
+
+  // Print Template States
+  const [showPrintDesigner, setShowPrintDesigner] = useState(false);
+  const [selectedPrintType, setSelectedPrintType] = useState<'letterhead' | 'business-card' | 'envelope' | 'stamp' | null>(null);
+  const [printTemplates, setPrintTemplates] = useState<PrintTemplate[]>([]);
+  const [currentPrintDesign, setCurrentPrintDesign] = useState<any>(null);
+  const [companyInfo, setCompanyInfo] = useState({
+    name: 'Your Company Name',
+    address: '123 Business Street, City, State 12345',
+    phone: '+1 (555) 123-4567',
+    email: 'info@yourcompany.com',
+    website: 'www.yourcompany.com',
+    logo: ''
+  });
+  const [printSpecifications, setPrintSpecifications] = useState({
+    size: 'A4',
+    paper: 'Premium White',
+    quantity: 100,
+    color: 'Full Color'
   });
 
   // Template Designer States
@@ -461,7 +509,7 @@ export default function Branding() {
     }
   };
 
-  const exportBrandKit = () => {
+    const exportBrandKit = () => {
     const brandKit = {
       colors: brandColors,
       fonts: brandFonts,
@@ -481,6 +529,106 @@ export default function Branding() {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
     alert('Brand kit exported successfully!');
+  };
+
+  // Print Template Functions
+  const openPrintDesigner = (type: 'letterhead' | 'business-card' | 'envelope' | 'stamp') => {
+    setSelectedPrintType(type);
+    setShowPrintDesigner(true);
+    
+    // Initialize design based on type
+    const defaultDesign = {
+      header: { text: companyInfo.name, fontSize: 24, color: '#2563EB', position: { x: 50, y: 50 } },
+      logo: { url: companyInfo.logo, position: { x: 50, y: 100 }, size: { width: 100, height: 50 } },
+      contact: { 
+        address: companyInfo.address,
+        phone: companyInfo.phone,
+        email: companyInfo.email,
+        website: companyInfo.website,
+        position: { x: 50, y: 200 }
+      }
+    };
+    
+    setCurrentPrintDesign(defaultDesign);
+  };
+
+  const savePrintTemplate = () => {
+    if (!selectedPrintType || !currentPrintDesign) return;
+    
+    const template: PrintTemplate = {
+      id: Date.now().toString(),
+      name: `${selectedPrintType.charAt(0).toUpperCase() + selectedPrintType.slice(1)} - ${companyInfo.name}`,
+      type: selectedPrintType,
+      design: currentPrintDesign,
+      companyInfo: { ...companyInfo },
+      specifications: { ...printSpecifications },
+      createdAt: new Date().toISOString().split('T')[0],
+      status: 'draft'
+    };
+    
+    setPrintTemplates(prev => [template, ...prev]);
+    setShowPrintDesigner(false);
+    alert('Print template saved successfully!');
+  };
+
+  const exportPrintTemplate = (template: PrintTemplate) => {
+    // In a real implementation, this would generate a PDF or print-ready file
+    const templateData = {
+      ...template,
+      exportedAt: new Date().toISOString()
+    };
+    
+    const dataStr = JSON.stringify(templateData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${template.name.toLowerCase().replace(/\s+/g, '-')}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    alert('Print template exported successfully!');
+  };
+
+  const printTemplate = (template: PrintTemplate) => {
+    // In a real implementation, this would send to a print service
+    alert(`Printing ${template.name}...\nQuantity: ${template.specifications.quantity}\nPaper: ${template.specifications.paper}\nColor: ${template.specifications.color}`);
+    
+    // Update status to printed
+    setPrintTemplates(prev => prev.map(t => 
+      t.id === template.id ? { ...t, status: 'printed' } : t
+    ));
+  };
+
+  const getPrintSpecifications = (type: string) => {
+    const specs = {
+      letterhead: {
+        size: 'A4 (210 x 297 mm)',
+        paper: 'Premium White (100gsm)',
+        quantity: 500,
+        color: 'Full Color'
+      },
+      'business-card': {
+        size: 'Standard (85 x 55 mm)',
+        paper: 'Premium Card Stock (350gsm)',
+        quantity: 1000,
+        color: 'Full Color'
+      },
+      envelope: {
+        size: 'DL (110 x 220 mm)',
+        paper: 'Premium White (90gsm)',
+        quantity: 500,
+        color: 'Full Color'
+      },
+      stamp: {
+        size: 'Custom (40 x 40 mm)',
+        paper: 'Rubber Stamp Material',
+        quantity: 1,
+        color: 'Black'
+      }
+    };
+    return specs[type as keyof typeof specs] || specs.letterhead;
   };
 
   const hexToRgb = (hex: string) => {
@@ -1250,54 +1398,196 @@ export default function Branding() {
 
       {activeTab === "templates" && (
         <div className="space-y-8">
-          {/* Templates Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {templates.map((template) => (
-              <Card key={template.id} className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardContent className="p-6">
-                  <div className={`w-full h-32 ${template.preview} rounded-lg mb-4 flex items-center justify-center`}>
-                    <FileText className="w-8 h-8 text-white" />
-                  </div>
-                  <h4 className="font-medium text-neutral-900 mb-1">{template.name}</h4>
-                  <p className="text-sm text-neutral-600 mb-3">{template.category}</p>
-                  <div className="flex items-center justify-between text-sm text-neutral-600 mb-4">
-                    <span>{template.downloads} downloads</span>
-                    <span>•</span>
-                    <span>{template.lastUsed}</span>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button size="sm" className="flex-1">
-                      <Download className="w-4 h-4 mr-1" />
-                      Download
-                    </Button>
-                    <Button size="sm" variant="outline">
-                      <Edit3 className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+          {/* Print Templates Header */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-neutral-900">Print Templates</h2>
+              <p className="text-neutral-600">Design and print professional business materials</p>
+            </div>
           </div>
 
-          {/* Create New Template */}
+          {/* Print Templates Grid */}
+          {printTemplates.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Printer className="w-5 h-5" />
+                  Your Print Templates ({printTemplates.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {printTemplates.map((template) => (
+                    <div key={template.id} className="p-4 border border-neutral-200 rounded-lg hover:shadow-md transition-shadow">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                          {template.type === 'letterhead' && <FileText className="w-6 h-6 text-blue-600" />}
+                          {template.type === 'business-card' && <CreditCard className="w-6 h-6 text-blue-600" />}
+                          {template.type === 'envelope' && <Mail className="w-6 h-6 text-blue-600" />}
+                          {template.type === 'stamp' && <Stamp className="w-6 h-6 text-blue-600" />}
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-medium text-neutral-900">{template.name}</h4>
+                          <p className="text-sm text-neutral-600 capitalize">{template.type.replace('-', ' ')}</p>
+                          <p className="text-xs text-neutral-500">{template.createdAt}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-2 mb-4">
+                        <div className="flex items-center justify-between text-xs">
+                          <span>Status:</span>
+                          <span className={`px-2 py-1 rounded text-xs ${
+                            template.status === 'draft' ? 'bg-yellow-100 text-yellow-800' :
+                            template.status === 'ready' ? 'bg-green-100 text-green-800' :
+                            'bg-blue-100 text-blue-800'
+                          }`}>
+                            {template.status}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs">
+                          <span>Quantity:</span>
+                          <span>{template.specifications.quantity}</span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs">
+                          <span>Paper:</span>
+                          <span>{template.specifications.paper}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="outline" className="flex-1" onClick={() => exportPrintTemplate(template)}>
+                          <Download className="w-3 h-3 mr-1" />
+                          Export
+                        </Button>
+                        <Button size="sm" variant="outline" className="flex-1" onClick={() => printTemplate(template)}>
+                          <Printer className="w-3 h-3 mr-1" />
+                          Print
+                        </Button>
+                        <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700">
+                          <Trash2 className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Create New Print Template */}
           <Card>
             <CardHeader>
-              <CardTitle>Create New Template</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Plus className="w-5 h-5" />
+                Create New Print Template
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Button className="h-32 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-neutral-300 hover:border-neutral-400">
-                  <Plus className="w-8 h-8 text-neutral-400" />
-                  <span className="text-neutral-600">Business Card</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <Button 
+                  className="h-40 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-neutral-300 hover:border-neutral-400 hover:bg-neutral-50 transition-colors"
+                  onClick={() => openPrintDesigner('letterhead')}
+                >
+                  <div className="w-16 h-20 bg-white border-2 border-neutral-300 rounded flex items-center justify-center">
+                    <FileText className="w-8 h-8 text-neutral-400" />
+                  </div>
+                  <div className="text-center">
+                    <span className="font-medium text-neutral-900">Letterhead</span>
+                    <p className="text-xs text-neutral-600 mt-1">Professional letterhead design</p>
+                  </div>
                 </Button>
-                <Button className="h-32 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-neutral-300 hover:border-neutral-400">
-                  <Plus className="w-8 h-8 text-neutral-400" />
-                  <span className="text-neutral-600">Letterhead</span>
+                
+                <Button 
+                  className="h-40 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-neutral-300 hover:border-neutral-400 hover:bg-neutral-50 transition-colors"
+                  onClick={() => openPrintDesigner('business-card')}
+                >
+                  <div className="w-20 h-12 bg-white border-2 border-neutral-300 rounded flex items-center justify-center">
+                    <CreditCard className="w-6 h-6 text-neutral-400" />
+                  </div>
+                  <div className="text-center">
+                    <span className="font-medium text-neutral-900">Business Card</span>
+                    <p className="text-xs text-neutral-600 mt-1">Professional business cards</p>
+                  </div>
                 </Button>
-                <Button className="h-32 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-neutral-300 hover:border-neutral-400">
-                  <Plus className="w-8 h-8 text-neutral-400" />
-                  <span className="text-neutral-600">Email Signature</span>
+                
+                <Button 
+                  className="h-40 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-neutral-300 hover:border-neutral-400 hover:bg-neutral-50 transition-colors"
+                  onClick={() => openPrintDesigner('envelope')}
+                >
+                  <div className="w-16 h-12 bg-white border-2 border-neutral-300 rounded flex items-center justify-center">
+                    <Mail className="w-6 h-6 text-neutral-400" />
+                  </div>
+                  <div className="text-center">
+                    <span className="font-medium text-neutral-900">Envelope</span>
+                    <p className="text-xs text-neutral-600 mt-1">Custom envelope design</p>
+                  </div>
                 </Button>
+                
+                <Button 
+                  className="h-40 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-neutral-300 hover:border-neutral-400 hover:bg-neutral-50 transition-colors"
+                  onClick={() => openPrintDesigner('stamp')}
+                >
+                  <div className="w-12 h-12 bg-white border-2 border-neutral-300 rounded flex items-center justify-center">
+                    <Stamp className="w-6 h-6 text-neutral-400" />
+                  </div>
+                  <div className="text-center">
+                    <span className="font-medium text-neutral-900">Company Stamp</span>
+                    <p className="text-xs text-neutral-600 mt-1">Custom rubber stamp design</p>
+                  </div>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Print Specifications Guide */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Info className="w-5 h-5" />
+                Print Specifications Guide
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="p-4 border border-neutral-200 rounded-lg">
+                  <h4 className="font-medium text-neutral-900 mb-2">Letterhead</h4>
+                  <div className="space-y-1 text-sm text-neutral-600">
+                    <p><strong>Size:</strong> A4 (210 x 297 mm)</p>
+                    <p><strong>Paper:</strong> Premium White (100gsm)</p>
+                    <p><strong>Quantity:</strong> 500 sheets</p>
+                    <p><strong>Color:</strong> Full Color</p>
+                  </div>
+                </div>
+                
+                <div className="p-4 border border-neutral-200 rounded-lg">
+                  <h4 className="font-medium text-neutral-900 mb-2">Business Card</h4>
+                  <div className="space-y-1 text-sm text-neutral-600">
+                    <p><strong>Size:</strong> Standard (85 x 55 mm)</p>
+                    <p><strong>Paper:</strong> Premium Card Stock (350gsm)</p>
+                    <p><strong>Quantity:</strong> 1000 cards</p>
+                    <p><strong>Color:</strong> Full Color</p>
+                  </div>
+                </div>
+                
+                <div className="p-4 border border-neutral-200 rounded-lg">
+                  <h4 className="font-medium text-neutral-900 mb-2">Envelope</h4>
+                  <div className="space-y-1 text-sm text-neutral-600">
+                    <p><strong>Size:</strong> DL (110 x 220 mm)</p>
+                    <p><strong>Paper:</strong> Premium White (90gsm)</p>
+                    <p><strong>Quantity:</strong> 500 envelopes</p>
+                    <p><strong>Color:</strong> Full Color</p>
+                  </div>
+                </div>
+                
+                <div className="p-4 border border-neutral-200 rounded-lg">
+                  <h4 className="font-medium text-neutral-900 mb-2">Company Stamp</h4>
+                  <div className="space-y-1 text-sm text-neutral-600">
+                    <p><strong>Size:</strong> Custom (40 x 40 mm)</p>
+                    <p><strong>Material:</strong> Rubber Stamp</p>
+                    <p><strong>Quantity:</strong> 1 stamp</p>
+                    <p><strong>Color:</strong> Black</p>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -1768,7 +2058,7 @@ export default function Branding() {
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium mb-2">Usage Description</label>
                   <Textarea
@@ -1865,7 +2155,7 @@ export default function Branding() {
                     ))}
                   </div>
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium mb-2">Usage Description</label>
                   <Textarea
@@ -1913,7 +2203,7 @@ export default function Branding() {
                   <X className="w-4 h-4" />
                 </Button>
               </div>
-              
+
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium mb-2">Asset Name</label>
@@ -1923,7 +2213,7 @@ export default function Branding() {
                     placeholder="e.g., Company Logo, Brand Icon"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium mb-2">Asset Type</label>
                   <Select value={newAsset.type} onValueChange={(value: any) => setNewAsset(prev => ({ ...prev, type: value }))}>
@@ -1938,20 +2228,20 @@ export default function Branding() {
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium mb-2">Tags (optional)</label>
                   <Input
                     value={newAsset.tags.join(', ')}
-                    onChange={(e) => setNewAsset(prev => ({ 
-                      ...prev, 
+                    onChange={(e) => setNewAsset(prev => ({
+                      ...prev,
                       tags: e.target.value.split(',').map(tag => tag.trim()).filter(tag => tag)
                     }))}
                     placeholder="e.g., primary, dark, social media"
                   />
                   <p className="text-xs text-neutral-500 mt-1">Separate tags with commas</p>
                 </div>
-                
+
                 <div className="flex gap-3 pt-4">
                   <Button variant="outline" className="flex-1" onClick={() => setShowAssetManager(false)}>
                     Cancel
@@ -1989,7 +2279,7 @@ export default function Branding() {
                   <X className="w-4 h-4" />
                 </Button>
               </div>
-              
+
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium mb-2">Title</label>
@@ -1999,7 +2289,7 @@ export default function Branding() {
                     placeholder="e.g., Logo Usage Guidelines"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium mb-2">Category</label>
                   <Select value={newGuideline.category} onValueChange={(value: any) => setNewGuideline(prev => ({ ...prev, category: value }))}>
@@ -2015,7 +2305,7 @@ export default function Branding() {
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium mb-2">Content</label>
                   <Textarea
@@ -2025,7 +2315,7 @@ export default function Branding() {
                     rows={4}
                   />
                 </div>
-                
+
                 <div className="flex gap-3 pt-4">
                   <Button variant="outline" className="flex-1" onClick={() => setShowGuidelineEditor(false)}>
                     Cancel
@@ -2033,6 +2323,320 @@ export default function Branding() {
                   <Button className="flex-1" onClick={addBrandGuideline}>
                     Add Guideline
                   </Button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Print Designer Modal */}
+      <AnimatePresence>
+        {showPrintDesigner && selectedPrintType && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+            onClick={() => setShowPrintDesigner(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-lg w-full max-w-6xl max-h-[95vh] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between p-6 border-b">
+                <div>
+                  <h2 className="text-2xl font-bold">Print Designer - {selectedPrintType.charAt(0).toUpperCase() + selectedPrintType.slice(1).replace('-', ' ')}</h2>
+                  <p className="text-neutral-600">Design your professional {selectedPrintType.replace('-', ' ')}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" onClick={savePrintTemplate}>
+                    <Save className="w-4 h-4 mr-2" />
+                    Save Template
+                  </Button>
+                  <Button variant="outline" onClick={() => setShowPrintDesigner(false)}>
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+
+              <div className="flex h-[calc(95vh-120px)]">
+                {/* Left Sidebar - Company Info & Settings */}
+                <div className="w-80 border-r bg-gray-50 p-4 space-y-6">
+                  <div>
+                    <h3 className="font-semibold mb-3">Company Information</h3>
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Company Name</label>
+                        <Input
+                          value={companyInfo.name}
+                          onChange={(e) => setCompanyInfo(prev => ({ ...prev, name: e.target.value }))}
+                          placeholder="Your Company Name"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Address</label>
+                        <Textarea
+                          value={companyInfo.address}
+                          onChange={(e) => setCompanyInfo(prev => ({ ...prev, address: e.target.value }))}
+                          placeholder="123 Business Street, City, State 12345"
+                          rows={2}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Phone</label>
+                        <Input
+                          value={companyInfo.phone}
+                          onChange={(e) => setCompanyInfo(prev => ({ ...prev, phone: e.target.value }))}
+                          placeholder="+1 (555) 123-4567"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Email</label>
+                        <Input
+                          value={companyInfo.email}
+                          onChange={(e) => setCompanyInfo(prev => ({ ...prev, email: e.target.value }))}
+                          placeholder="info@yourcompany.com"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Website</label>
+                        <Input
+                          value={companyInfo.website}
+                          onChange={(e) => setCompanyInfo(prev => ({ ...prev, website: e.target.value }))}
+                          placeholder="www.yourcompany.com"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="font-semibold mb-3">Print Specifications</h3>
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Size</label>
+                        <Select 
+                          value={printSpecifications.size} 
+                          onValueChange={(value) => setPrintSpecifications(prev => ({ ...prev, size: value }))}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {selectedPrintType === 'letterhead' && (
+                              <>
+                                <SelectItem value="A4 (210 x 297 mm)">A4 (210 x 297 mm)</SelectItem>
+                                <SelectItem value="Letter (216 x 279 mm)">Letter (216 x 279 mm)</SelectItem>
+                                <SelectItem value="Legal (216 x 356 mm)">Legal (216 x 356 mm)</SelectItem>
+                              </>
+                            )}
+                            {selectedPrintType === 'business-card' && (
+                              <>
+                                <SelectItem value="Standard (85 x 55 mm)">Standard (85 x 55 mm)</SelectItem>
+                                <SelectItem value="Square (85 x 85 mm)">Square (85 x 85 mm)</SelectItem>
+                                <SelectItem value="European (85 x 55 mm)">European (85 x 55 mm)</SelectItem>
+                              </>
+                            )}
+                            {selectedPrintType === 'envelope' && (
+                              <>
+                                <SelectItem value="DL (110 x 220 mm)">DL (110 x 220 mm)</SelectItem>
+                                <SelectItem value="C4 (229 x 324 mm)">C4 (229 x 324 mm)</SelectItem>
+                                <SelectItem value="C5 (162 x 229 mm)">C5 (162 x 229 mm)</SelectItem>
+                              </>
+                            )}
+                            {selectedPrintType === 'stamp' && (
+                              <>
+                                <SelectItem value="Custom (40 x 40 mm)">Custom (40 x 40 mm)</SelectItem>
+                                <SelectItem value="Large (50 x 50 mm)">Large (50 x 50 mm)</SelectItem>
+                                <SelectItem value="Small (30 x 30 mm)">Small (30 x 30 mm)</SelectItem>
+                              </>
+                            )}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Paper</label>
+                        <Select 
+                          value={printSpecifications.paper} 
+                          onValueChange={(value) => setPrintSpecifications(prev => ({ ...prev, paper: value }))}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {selectedPrintType === 'letterhead' && (
+                              <>
+                                <SelectItem value="Premium White (100gsm)">Premium White (100gsm)</SelectItem>
+                                <SelectItem value="Bond Paper (80gsm)">Bond Paper (80gsm)</SelectItem>
+                                <SelectItem value="Recycled (90gsm)">Recycled (90gsm)</SelectItem>
+                              </>
+                            )}
+                            {selectedPrintType === 'business-card' && (
+                              <>
+                                <SelectItem value="Premium Card Stock (350gsm)">Premium Card Stock (350gsm)</SelectItem>
+                                <SelectItem value="Matte Finish (300gsm)">Matte Finish (300gsm)</SelectItem>
+                                <SelectItem value="Glossy Finish (350gsm)">Glossy Finish (350gsm)</SelectItem>
+                              </>
+                            )}
+                            {selectedPrintType === 'envelope' && (
+                              <>
+                                <SelectItem value="Premium White (90gsm)">Premium White (90gsm)</SelectItem>
+                                <SelectItem value="Kraft Paper (80gsm)">Kraft Paper (80gsm)</SelectItem>
+                                <SelectItem value="Recycled (85gsm)">Recycled (85gsm)</SelectItem>
+                              </>
+                            )}
+                            {selectedPrintType === 'stamp' && (
+                              <>
+                                <SelectItem value="Rubber Stamp Material">Rubber Stamp Material</SelectItem>
+                                <SelectItem value="Self-Inking">Self-Inking</SelectItem>
+                                <SelectItem value="Custom Design">Custom Design</SelectItem>
+                              </>
+                            )}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Quantity</label>
+                        <Input
+                          type="number"
+                          value={printSpecifications.quantity}
+                          onChange={(e) => setPrintSpecifications(prev => ({ ...prev, quantity: parseInt(e.target.value) || 100 }))}
+                          min="1"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Color</label>
+                        <Select 
+                          value={printSpecifications.color} 
+                          onValueChange={(value) => setPrintSpecifications(prev => ({ ...prev, color: value }))}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Full Color">Full Color</SelectItem>
+                            <SelectItem value="Black & White">Black & White</SelectItem>
+                            <SelectItem value="Spot Color">Spot Color</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Main Design Area */}
+                <div className="flex-1 p-6">
+                  <div className="h-full flex flex-col">
+                    {/* Design Preview */}
+                    <div className="flex-1 bg-white border-2 border-neutral-200 rounded-lg p-8 mb-4 overflow-auto">
+                      <div className="relative w-full h-full min-h-[400px] bg-white">
+                        {/* Letterhead Design */}
+                        {selectedPrintType === 'letterhead' && (
+                          <div className="w-full h-full relative">
+                            {/* Header */}
+                            <div className="absolute top-8 left-8 right-8">
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <h1 className="text-2xl font-bold text-blue-600 mb-2">{companyInfo.name}</h1>
+                                  <div className="text-sm text-neutral-600 space-y-1">
+                                    <p>{companyInfo.address}</p>
+                                    <p>Phone: {companyInfo.phone}</p>
+                                    <p>Email: {companyInfo.email}</p>
+                                    <p>Website: {companyInfo.website}</p>
+                                  </div>
+                                </div>
+                                <div className="w-24 h-16 bg-blue-100 rounded flex items-center justify-center">
+                                  <span className="text-blue-600 text-xs">LOGO</span>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            {/* Content Area */}
+                            <div className="absolute top-48 left-8 right-8 bottom-8">
+                              <div className="border-l-4 border-blue-600 pl-4">
+                                <p className="text-lg font-medium mb-4">Sample Letterhead Content</p>
+                                <p className="text-neutral-700 mb-2">This is where your letter content would appear.</p>
+                                <p className="text-neutral-700 mb-2">The design includes your company branding and contact information.</p>
+                                <p className="text-neutral-700">Professional and clean layout for business correspondence.</p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Business Card Design */}
+                        {selectedPrintType === 'business-card' && (
+                          <div className="w-80 h-48 bg-white border-2 border-neutral-300 rounded-lg p-4 mx-auto">
+                            <div className="h-full flex flex-col justify-between">
+                              <div>
+                                <h2 className="text-lg font-bold text-blue-600 mb-1">{companyInfo.name}</h2>
+                                <p className="text-xs text-neutral-600 mb-2">Professional Title</p>
+                              </div>
+                              <div className="text-xs text-neutral-600 space-y-1">
+                                <p>{companyInfo.address}</p>
+                                <p>Phone: {companyInfo.phone}</p>
+                                <p>Email: {companyInfo.email}</p>
+                                <p>Website: {companyInfo.website}</p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Envelope Design */}
+                        {selectedPrintType === 'envelope' && (
+                          <div className="w-64 h-40 bg-white border-2 border-neutral-300 rounded-lg p-4 mx-auto">
+                            <div className="h-full flex flex-col justify-center">
+                              <div className="text-center">
+                                <h2 className="text-sm font-bold text-blue-600 mb-2">{companyInfo.name}</h2>
+                                <p className="text-xs text-neutral-600">{companyInfo.address}</p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Stamp Design */}
+                        {selectedPrintType === 'stamp' && (
+                          <div className="w-32 h-32 bg-white border-2 border-neutral-300 rounded-full mx-auto flex items-center justify-center">
+                            <div className="text-center">
+                              <h2 className="text-sm font-bold text-blue-600">{companyInfo.name}</h2>
+                              <p className="text-xs text-neutral-600">Official</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex items-center justify-between">
+                      <div className="text-sm text-neutral-600">
+                        <p><strong>Size:</strong> {printSpecifications.size}</p>
+                        <p><strong>Paper:</strong> {printSpecifications.paper}</p>
+                        <p><strong>Quantity:</strong> {printSpecifications.quantity}</p>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button variant="outline" onClick={() => exportPrintTemplate({
+                          id: 'preview',
+                          name: `${selectedPrintType} - ${companyInfo.name}`,
+                          type: selectedPrintType,
+                          design: currentPrintDesign,
+                          companyInfo,
+                          specifications: printSpecifications,
+                          createdAt: new Date().toISOString().split('T')[0],
+                          status: 'draft'
+                        })}>
+                          <Download className="w-4 h-4 mr-2" />
+                          Export Design
+                        </Button>
+                        <Button onClick={savePrintTemplate}>
+                          <Save className="w-4 h-4 mr-2" />
+                          Save Template
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </motion.div>
