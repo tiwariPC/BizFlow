@@ -129,16 +129,44 @@ BizFlow/
 
 ```bash
 # Development
-npm run dev          # Start development server with hot reload
-npm run build        # Build for production
-npm run start        # Start production server
-npm run check        # TypeScript type checking
+npm run dev              # Start development server with hot reload
+npm run build            # Build for production
+npm run start            # Start production server
+npm run type-check       # TypeScript type checking
+
+# Testing
+npm run test             # Run unit tests
+npm run test:watch       # Run tests in watch mode
+npm run test:coverage    # Run tests with coverage report
+npm run test:ui          # Run tests with UI
+npm run test:e2e         # Run end-to-end tests
+npm run test:e2e:ui      # Run E2E tests with UI
+
+# Code Quality
+npm run lint             # Run ESLint
+npm run lint:fix         # Fix ESLint issues
+npm run format           # Format code with Prettier
+npm run format:check     # Check code formatting
+
+# Security
+npm run security:audit   # Run security audit
+npm run security:fix     # Fix security issues
+
+# CI/CD
+npm run ci:test          # Run all tests for CI
+npm run ci:build         # Build with type checking
+npm run ci:e2e           # Run E2E tests for CI
+
+# Docker
+npm run docker:build     # Build Docker image
+npm run docker:run       # Run Docker container
+npm run docker:test      # Run tests in Docker
 
 # Database (if using PostgreSQL)
-npm run db:push      # Push schema changes to database
+npm run db:push          # Push schema changes to database
 
 # Setup
-npm run setup        # Run setup script (chmod +x setup.sh && ./setup.sh)
+npm run setup            # Run setup script (chmod +x setup.sh && ./setup.sh)
 ```
 
 ## ✨ Platform Features
@@ -294,6 +322,9 @@ npm run setup        # Run setup script (chmod +x setup.sh && ./setup.sh)
 - **React 18**: Modern React with hooks and context
 - **Vite**: Fast build tool and development server
 - **Express.js**: Robust backend API framework
+- **Testing**: Comprehensive test suite with Vitest, Playwright, and Testing Library
+- **Code Quality**: ESLint, Prettier, and TypeScript strict mode
+- **CI/CD**: Automated testing, building, and deployment pipeline
 
 #### **Data Management**
 - **In-Memory Storage**: Fast local development storage
@@ -486,6 +517,47 @@ POST   /api/invoices/:id/export    # Export invoice (PDF/Excel)
 GET /api/debug/users       # List all users (remove in production)
 ```
 
+## 🧪 Testing
+
+### **Test Coverage**
+- **Unit Tests**: Component and utility function testing with Vitest
+- **Integration Tests**: API endpoint and service testing
+- **E2E Tests**: Full user journey testing with Playwright
+- **Accessibility Tests**: Automated a11y testing
+- **Performance Tests**: Load and stress testing
+
+### **Test Commands**
+```bash
+# Run all tests
+npm run test
+
+# Run tests with coverage
+npm run test:coverage
+
+# Run E2E tests
+npm run test:e2e
+
+# Run tests in watch mode
+npm run test:watch
+```
+
+### **Test Structure**
+```
+├── client/src/test/          # Test setup and utilities
+├── client/src/components/    # Component tests
+├── e2e/                     # End-to-end tests
+│   ├── auth.spec.ts         # Authentication tests
+│   ├── dashboard.spec.ts    # Dashboard tests
+│   └── ...
+└── server/                  # Server-side tests
+```
+
+### **Code Quality**
+- **ESLint**: Code linting with TypeScript and React rules
+- **Prettier**: Code formatting
+- **TypeScript**: Strict type checking
+- **Security**: Automated security audits
+
 ## 🚀 Deployment Checklist
 
 ### ✅ Pre-Deployment
@@ -499,6 +571,10 @@ GET /api/debug/users       # List all users (remove in production)
 - [x] Footer links working
 - [x] Legal pages created
 - [x] Contact and support pages ready
+- [x] Unit tests passing
+- [x] E2E tests passing
+- [x] Code quality checks passing
+- [x] Security audit clean
 
 ### 🔧 Production Setup
 - [ ] Set `NODE_ENV=production`

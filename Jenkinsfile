@@ -30,33 +30,39 @@ pipeline {
             }
         }
 
-        stage('Lint and Test') {
+        stage('Code Quality & Testing') {
             parallel {
                 stage('TypeScript Check') {
                     steps {
-                        sh 'npm run check'
+                        sh 'npm run type-check'
                     }
                 }
                 stage('ESLint') {
                     steps {
-                        script {
-                            if (fileExists('.eslintrc.js') || fileExists('.eslintrc.json')) {
-                                sh 'npm run lint'
-                            } else {
-                                echo 'ESLint not configured, skipping...'
-                            }
-                        }
+                        sh 'npm run lint'
+                    }
+                }
+                stage('Prettier Check') {
+                    steps {
+                        sh 'npm run format:check'
                     }
                 }
                 stage('Unit Tests') {
                     steps {
-                        script {
-                            if (fileExists('jest.config.js') || fileExists('vitest.config.ts')) {
-                                sh 'npm test'
-                            } else {
-                                echo 'Test framework not configured, skipping...'
-                            }
-                        }
+                        sh 'npm run test:coverage'
+                        publishHTML([
+                            allowMissing: false,
+                            alwaysLinkToLastBuild: true,
+                            keepAll: true,
+                            reportDir: 'coverage',
+                            reportFiles: 'index.html',
+                            reportName: 'Coverage Report'
+                        ])
+                    }
+                }
+                stage('Security Audit') {
+                    steps {
+                        sh 'npm run security:audit'
                     }
                 }
             }
@@ -164,18 +170,27 @@ pipeline {
             }
         }
 
-        stage('Post-deployment Tests') {
+        stage('E2E Tests') {
             when {
                 branch 'main'
             }
             steps {
                 script {
-                    // Run smoke tests
-                    sh '''
-                        echo "Running smoke tests..."
-                        # Add your smoke test commands here
-                        # Example: npm run test:smoke
-                    '''
+                    // Install Playwright browsers
+                    sh 'npx playwright install --with-deps'
+                    
+                    // Run E2E tests
+                    sh 'npm run test:e2e'
+                    
+                    // Publish test results
+                    publishHTML([
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'test-results',
+                        reportFiles: 'playwright-report/index.html',
+                        reportName: 'E2E Test Report'
+                    ])
                 }
             }
         }
